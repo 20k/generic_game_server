@@ -45,15 +45,21 @@ int main()
             {
                 for(const write_data& network_data : datas)
                 {
-                    std::cout << "Msg " << network_data.data << std::endl;
-
                     nlohmann::json data = nlohmann::json::parse(network_data.data);
 
                     if(data.count("type") > 0 && data.count("msg") > 0 && data["type"] == 0)
                     {
                         std::string msg = data["msg"];
 
-                        std::cout << "Got msg " << msg << std::endl;
+                        nlohmann::json out_js;
+                        out_js["type"] = 0;
+                        out_js["msg"] = msg;
+
+                        write_data pong;
+                        pong.id = id;
+                        pong.data = out_js.dump();
+
+                        send.write_to_websocket(pong);
                     }
                 }
             }
