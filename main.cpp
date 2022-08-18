@@ -10,6 +10,33 @@
 
 #define SCRIPT_THREADS 3
 
+template<typename T>
+struct async_queue
+{
+    std::mutex mut;
+    std::vector<T> data;
+
+    void push(const T& d)
+    {
+        std::lock_guard guard(mut);
+        data.push_back(d);
+    }
+
+    bool has_front()
+    {
+        std::lock_guard guard(mut);
+        return data.size() > 0;
+    }
+
+    T pop_front()
+    {
+        std::lock_guard guard(mut);
+        T val = data.front();
+        data.erase(data.begin());
+        return val;
+    }
+};
+
 struct fiber_queue
 {
     std::vector<std::function<void()>> q;
@@ -166,8 +193,25 @@ void boot_fiber_manager()
 
 struct client_state
 {
-
+    async_queue<nlohmann::json> to_client;
 };
+
+void execute_client_logic(std::shared_ptr<client_state> state, nlohmann::json client_msg)
+{
+    if(client_msg.count("type") == 0)
+        return;
+
+    if(client_msg.count("msg") == 0)
+        return;
+
+    std::string msg = client_msg["msg"];
+
+    nlohmann::json response;
+    response["type"] = 0;
+    response["msg"] = msg;
+
+    state->to_client.push(response);
+}
 
 int main()
 {
@@ -212,25 +256,33 @@ int main()
                 {
                     nlohmann::json data = nlohmann::json::parse(network_data.data);
 
-                    if(data.count("type") > 0 && data.count("msg") > 0 && data["type"] == 0)
-                    {
-                        std::string msg = data["msg"];
-
-                        nlohmann::json out_js;
-                        out_js["type"] = 0;
-                        out_js["msg"] = msg;
-
-                        write_data pong;
-                        pong.id = id;
-                        pong.data = out_js.dump();
-
-                        send.write_to_websocket(pong);
-                    }
+                    get_global_fiber_queue().add(execute_client_logic, state[id], data);
                 }
             }
             catch(...)
             {
                 send.disconnect(id);
+            }
+        }
+
+        for(auto& [id, st] : state)
+        {
+            while(st->to_client.has_front())
+            {
+                try
+                {
+                    nlohmann::json js = st->to_client.pop_front();
+
+                    write_data dat;
+                    dat.id = id;
+                    dat.data = js.dump();
+
+                    send.write_to_websocket(dat);
+                }
+                catch(...)
+                {
+                    send.disconnect(id);
+                }
             }
         }
 
