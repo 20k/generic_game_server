@@ -42,8 +42,6 @@ struct scheduler_data
 {
     std::deque<boost::fibers::context*> q;
     std::atomic_int approx_queue_size = 0;
-    boost::fibers::fiber::id dispatcher_id;
-    //std::mutex lock;
 };
 
 struct custom_scheduler : boost::fibers::algo::algorithm
@@ -96,10 +94,6 @@ void worker_thread(int id, std::array<scheduler_data, HARDWARE_THREADS>* pothers
     std::array<scheduler_data, HARDWARE_THREADS>& others = *pothers;
 
     boost::fibers::use_scheduling_algorithm<custom_scheduler>(others[id]);
-
-    others[id].dispatcher_id = boost::this_fiber::get_id();
-
-    std::cout << "WORKER FIBER ID " << others[id].dispatcher_id << std::endl;
 
     fiber_queue& queue = fqueue;
 
