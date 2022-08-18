@@ -11,7 +11,9 @@ int main()
     connection_settings sett;
 
     connection conn;
-    conn.host("0.0.0.0", 6600, connection_type::PLAIN, sett);
+    conn.host("0.0.0.0", 6600, connection_type::SSL, sett);
+
+    std::cout << "Hosted\n";
 
     connection_received_data recv;
     connection_send_data send(sett);
@@ -25,6 +27,8 @@ int main()
         for(auto i : recv.new_clients)
         {
             state[i] = client_state();
+
+            std::cout << "client" << std::endl;
         }
 
         for(auto i : recv.disconnected_clients)
@@ -41,6 +45,8 @@ int main()
             {
                 for(const write_data& network_data : datas)
                 {
+                    std::cout << "Msg " << network_data.data << std::endl;
+
                     nlohmann::json data = nlohmann::json::parse(network_data.data);
 
                     if(data.count("type") > 0 && data.count("msg") > 0 && data["type"] == 0)
@@ -58,6 +64,8 @@ int main()
         }
 
         conn.send_bulk(send);
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 
     return 0;
