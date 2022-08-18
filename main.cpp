@@ -7,6 +7,7 @@
 #include <SFML/System/Sleep.hpp>
 #include <atomic>
 #include <deque>
+#include <SFML/System/Clock.hpp>
 
 #define SCRIPT_THREADS 3
 
@@ -106,7 +107,14 @@ struct custom_scheduler : boost::fibers::algo::algorithm
 
     void suspend_until(std::chrono::steady_clock::time_point const& until) noexcept override
     {
-        sf::sleep(sf::milliseconds(1));
+        auto diff = std::chrono::steady_clock::now() - until;
+
+        auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(diff).count();
+
+        if(ms >= 4)
+            sf::sleep(sf::milliseconds(1));
+        else
+            std::this_thread::yield();
     }
 
     void notify() noexcept override
@@ -125,6 +133,8 @@ void worker_thread(int id, std::array<scheduler_data, HARDWARE_THREADS>* pothers
     fiber_queue& queue = fqueue;
 
     printf("Boot fiber worker %i\n", id);
+
+    sf::Clock last_work;
 
     while(1)
     {
@@ -152,6 +162,8 @@ void worker_thread(int id, std::array<scheduler_data, HARDWARE_THREADS>* pothers
 
             if(queue.q.size() > 0)
             {
+                last_work.restart();
+
                 boost::fibers::fiber([](auto in)
                 {
                     try
@@ -170,7 +182,12 @@ void worker_thread(int id, std::array<scheduler_data, HARDWARE_THREADS>* pothers
         }
 
         if(!found_work)
-            boost::this_fiber::sleep_for(std::chrono::milliseconds(1));
+        {
+            if(last_work.getElapsedTime().asSeconds() < 10)
+                boost::this_fiber::yield();
+            else
+                boost::this_fiber::sleep_for(std::chrono::milliseconds(16));
+        }
     }
 }
 
@@ -193,6 +210,8 @@ void boot_fiber_manager()
 
 struct client_state
 {
+    sf::Clock clk;
+
     async_queue<nlohmann::json> to_client;
 };
 
@@ -229,6 +248,8 @@ int main()
 
     std::map<uint64_t, std::shared_ptr<client_state>> state;
 
+    sf::Clock time_since_last_message;
+
     while(1)
     {
         conn.receive_bulk(recv);
@@ -250,11 +271,15 @@ int main()
 
         for(auto& [id, datas] : recv.websocket_read_queue)
         {
+            time_since_last_message.restart();
+
             try
             {
                 for(const write_data& network_data : datas)
                 {
                     nlohmann::json data = nlohmann::json::parse(network_data.data);
+
+                    state[id]->clk.restart();
 
                     get_global_fiber_queue().add(execute_client_logic, state[id], data);
                 }
@@ -269,6 +294,8 @@ int main()
         {
             while(st->to_client.has_front())
             {
+                time_since_last_message.restart();
+
                 try
                 {
                     nlohmann::json js = st->to_client.pop_front();
@@ -276,6 +303,10 @@ int main()
                     write_data dat;
                     dat.id = id;
                     dat.data = js.dump();
+
+                    double elapsed = state[id]->clk.getElapsedTime().asMicroseconds() / 1000.;
+
+                    std::cout << "Elapsed ms " << elapsed << std::endl;
 
                     send.write_to_websocket(dat);
                 }
@@ -288,7 +319,10 @@ int main()
 
         conn.send_bulk(send);
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        if(time_since_last_message.getElapsedTime().asSeconds() > 5)
+            sf::sleep(sf::milliseconds(1));
+        else
+            std::this_thread::yield();
     }
 
     return 0;
