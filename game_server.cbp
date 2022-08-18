@@ -19,6 +19,44 @@
 				<Option compiler="gcc-msys2-mingw64" />
 			</Target>
 		</Build>
+		<Compiler>
+			<Add option="-std=c++20" />
+			<Add option="-fexceptions" />
+			<Add option="-Wno-narrowing" />
+			<Add option="-fno-strict-aliasing" />
+			<Add option="-Wno-unused-parameter" />
+			<Add option="-Wno-unused-label" />
+			<Add option="-no-pie" />
+			<Add option="-Werror=return-type" />
+			<Add option="-Wno-cast-function-type" />
+			<Add option="-DBOOST_STACKTRACE_USE_BACKTRACE" />
+			<Add option="-DSERVER" />
+			<Add option='-DCONFIG_VERSION=&quot;&quot;' />
+			<Add option="-DCONFIG_BIGNUM" />
+			<Add option="-DDUMP_LEAKS" />
+			<Add option="-DUSE_FIBERS" />
+			<Add option="-DSUPPORT_NO_SSL_SERVER" />
+			<Add option="-DSERVER_ONLY" />
+		</Compiler>
+		<Linker>
+			<Add option="-lmingw32" />
+			<Add option="-lsfml-system" />
+			<Add option="-lws2_32" />
+			<Add option="-lboost_system-mt" />
+			<Add option="-lmswsock" />
+			<Add option="-lole32" />
+			<Add option="-lboost_filesystem-mt" />
+			<Add option="-ldbgeng" />
+			<Add option="-lcrypto" />
+			<Add option="-lssl" />
+			<Add option="-fno-pie" />
+			<Add option="-lbacktrace" />
+			<Add option="-lsdkencryptedappticket64" />
+			<Add option="-lboost_fiber-mt" />
+			<Add option="-lboost_context-mt" />
+			<Add option="-llmdb" />
+			<Add option="-l:libmsgpackc.a" />
+		</Linker>
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />

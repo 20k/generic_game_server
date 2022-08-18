@@ -1,9 +1,7 @@
 #include <iostream>
-
-using namespace std;
+#include <networking/networking.hpp>
 
 int main()
 {
-    cout << "Hello world!" << endl;
     return 0;
 }
