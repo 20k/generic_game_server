@@ -1,0 +1,18 @@
+[submodule "deps/networking"]
+	path = deps/networking
+	url = https://github.com/20k/clientservernetworking
+[submodule "deps/toolkit"]
+	path = deps/toolkit
+	url = https://github.com/20k/JGameToolkit
+[submodule "deps/vec"]
+	path = deps/vec
+	url = https://github.com/20k/funvectormaths
+[submodule "deps/quickjs_cpp"]
+	path = deps/quickjs_cpp
+	url = git@github.com:20k/quickjs_cpp.git
+[submodule "deps/quickjs"]
+	path = deps/quickjs
+	url = https://github.com/20k/quickjs
+[submodule "deps/imgui"]
+	path = deps/imgui
+	url = https://github.com/20k/imgui-fork
