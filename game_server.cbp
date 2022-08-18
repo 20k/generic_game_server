@@ -37,6 +37,8 @@
 			<Add option="-DUSE_FIBERS" />
 			<Add option="-DSUPPORT_NO_SSL_SERVER" />
 			<Add option="-DSERVER_ONLY" />
+			<Add directory="deps/liblmdb" />
+			<Add directory="deps" />
 		</Compiler>
 		<Linker>
 			<Add option="-lmingw32" />
@@ -51,12 +53,20 @@
 			<Add option="-lssl" />
 			<Add option="-fno-pie" />
 			<Add option="-lbacktrace" />
-			<Add option="-lsdkencryptedappticket64" />
 			<Add option="-lboost_fiber-mt" />
 			<Add option="-lboost_context-mt" />
 			<Add option="-llmdb" />
 			<Add option="-l:libmsgpackc.a" />
+			<Add directory="deps/liblmdb" />
 		</Linker>
+		<Unit filename="deps/networking/beast_compilation_unit.cpp" />
+		<Unit filename="deps/networking/networking.cpp" />
+		<Unit filename="deps/networking/networking.hpp" />
+		<Unit filename="deps/networking/serialisable.cpp" />
+		<Unit filename="deps/networking/serialisable.hpp" />
+		<Unit filename="deps/networking/serialisable_fwd.hpp" />
+		<Unit filename="deps/networking/serialisable_msgpack.hpp" />
+		<Unit filename="deps/networking/serialisable_msgpack_fwd.hpp" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
