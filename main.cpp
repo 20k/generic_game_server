@@ -107,7 +107,7 @@ struct custom_scheduler : boost::fibers::algo::algorithm
 
     void suspend_until(std::chrono::steady_clock::time_point const& until) noexcept override
     {
-        auto diff = std::chrono::steady_clock::now() - until;
+        auto diff = until - std::chrono::steady_clock::now();
 
         auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(diff).count();
 
