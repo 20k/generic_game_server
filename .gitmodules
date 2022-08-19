@@ -16,3 +16,6 @@
 [submodule "deps/imgui"]
 	path = deps/imgui
 	url = https://github.com/20k/imgui-fork
+[submodule "deps/js_imgui"]
+	path = deps/js_imgui
+	url = git@github.com:20k/js_imgui.git
