@@ -334,7 +334,38 @@ js::value db_read(js::value_context* vctx, js::value js_db_id, js::value js_key)
     return ret;
 }
 
-js::value start_transaction(js::value_context& vctx, bool is_read_write)
+js::value db_write(js::value_context* vctx, js::value js_db_id, js::value js_key, js::value js_value)
+{
+    int db_id = (int)js_db_id;
+    std::string key = (std::string)js_key;
+    std::string data = js_value.to_json();
+
+    js::value called_on = js::get_this(*vctx);
+
+    if(!called_on.has_hidden("db_transaction"))
+        return js::make_value(*vctx, "No hidden variable for db_read transaction");
+
+    js::value hidden = called_on.get_hidden("db_transaction");
+
+    db::read_tx* base = hidden.get_ptr<db::read_tx>();
+
+    if(base == nullptr)
+        return js::make_value(*vctx, "Critical error in db_read, nullptr pointer");
+
+    if(!base->is_read_write)
+        return js::make_value(*vctx, "Tried to write on read only tx");
+
+    db::read_write_tx* rwtx = dynamic_cast<db::read_write_tx*>(base);
+
+    assert(rwtx);
+
+    rwtx->write(db_id, key, data);
+
+    js::value none(*vctx);
+    return none;
+}
+
+js::value start_transaction(js::value_context* vctx, bool is_read_write)
 {
     db::read_tx* base = nullptr;
 
@@ -343,20 +374,45 @@ js::value start_transaction(js::value_context& vctx, bool is_read_write)
     else
         base = new db::read_tx;
 
-    js::value hidden_ptr(vctx);
+    js::value hidden_ptr(*vctx);
     hidden_ptr.set_ptr(base);
 
-    js::value ret(vctx);
+    js::value ret(*vctx);
     ret.add_hidden_value("db_transaction", hidden_ptr);
 
     js::add_key_value(ret, "read", js::function<db_read>);
+    js::add_key_value(ret, "write", js::function<db_write>);
 
     return ret;
+}
+
+js::value close_transaction(js::value_context* vctx, js::value called_on)
+{
+    if(!called_on.has_hidden("db_transaction"))
+        return js::make_value(*vctx, "No hidden variable for transaction");
+
+    js::value hidden = called_on.get_hidden("db_transaction");
+
+    db::read_tx* base = hidden.get_ptr<db::read_tx>();
+
+    if(base == nullptr)
+        return js::make_value(*vctx, "Critical error in db_read, nullptr pointer");
+
+    delete base;
+
+    hidden.set_ptr(nullptr);
+
+    called_on.del("db_transaction");
+
+    js::value none(*vctx);
+    return none;
 }
 
 void system_global(js::value_context& vctx)
 {
     js::value glob = js::get_global(vctx);
+    js::add_key_value(glob, "start_transaction", js::function<start_transaction>);
+    js::add_key_value(glob, "close_transaction", js::function<close_transaction>);
 }
 
 void client_ui_thread(std::shared_ptr<client_state> state)
