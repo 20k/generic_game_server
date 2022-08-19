@@ -297,6 +297,13 @@ void execute_client_logic(std::shared_ptr<client_state> state, nlohmann::json cl
     state->to_client.push(response);
 }
 
+js::value in_script_eval(js::value_context* vctx, std::string val)
+{
+    script s = load_script("./scripts/" + val + ".js");
+
+    return js::eval(*vctx, s.contents);
+}
+
 void client_ui_thread(std::shared_ptr<client_state> state)
 {
     int script_id = 0;
@@ -305,6 +312,9 @@ void client_ui_thread(std::shared_ptr<client_state> state)
 
     sandbox sand;
     js::value_context vctx(nullptr, &sand);
+
+    js::value glob = js::get_global(vctx);
+    glob["exec"] = js::function<in_script_eval>;
 
     js_ui::startup_state(vctx, &shared, script_id);
 
@@ -391,7 +401,6 @@ int main()
 
                     if(data["type"] == "client_ui_element")
                     {
-
                         state[id]->client_ui_messages.push(data);
                     }
                     else

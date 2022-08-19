@@ -1,11 +1,14 @@
 if(globalThis.test == undefined)
 	globalThis.test = false;
 
-if(imgui.button("Hello there") || globalThis.test)
+if(imgui.button("Hello there"))
 {
-	globalThis.test = true;
-	
-	imgui.text("Clicked");
+	globalThis.test = !globalThis.test;
 }
 
-imgui.text("hello " + globalThis.test);
+if(globalThis.test)
+{
+	imgui.text("Stinky");	
+}
+
+imgui.text(exec("hello") + globalThis.test);
