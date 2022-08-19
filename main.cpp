@@ -12,6 +12,7 @@
 #include <quickjs_cpp/quickjs_cpp.hpp>
 #include <js_imgui/js_imgui.hpp>
 #include <networking/serialisable_msgpack.hpp>
+#include <cpp_lmdb/cpp_lmdb.hpp>
 
 namespace js = js_quickjs;
 
@@ -302,6 +303,62 @@ js::value in_script_eval(js::value_context* vctx, std::string val)
     return js::eval(*vctx, s.contents);
 }
 
+js::value db_read(js::value_context* vctx, js::value js_db_id, js::value js_key)
+{
+    js::value ret(*vctx);
+
+    int db_id = (int)js_db_id;
+    std::string key = (std::string)js_key;
+
+    js::value called_on = js::get_this(*vctx);
+
+    if(!called_on.has_hidden("db_transaction"))
+        return js::make_value(*vctx, "No hidden variable for db_read transaction");
+
+    js::value hidden = called_on.get_hidden("db_transaction");
+
+    db::read_tx* base = hidden.get_ptr<db::read_tx>();
+
+    if(base == nullptr)
+        return js::make_value(*vctx, "Critical error in db_read, nullptr pointer");
+
+    std::optional<db::data> dat = base->read(db_id, key);
+
+    if(dat.has_value())
+    {
+        std::string nullterm = (std::string)dat.value().data_view;
+
+        ret.from_json(nullterm);
+    }
+
+    return ret;
+}
+
+js::value start_transaction(js::value_context& vctx, bool is_read_write)
+{
+    db::read_tx* base = nullptr;
+
+    if(is_read_write)
+        base = new db::read_write_tx;
+    else
+        base = new db::read_tx;
+
+    js::value hidden_ptr(vctx);
+    hidden_ptr.set_ptr(base);
+
+    js::value ret(vctx);
+    ret.add_hidden_value("db_transaction", hidden_ptr);
+
+    js::add_key_value(ret, "read", js::function<db_read>);
+
+    return ret;
+}
+
+void system_global(js::value_context& vctx)
+{
+    js::value glob = js::get_global(vctx);
+}
+
 void client_ui_thread(std::shared_ptr<client_state> state)
 {
     int script_id = 0;
@@ -315,6 +372,7 @@ void client_ui_thread(std::shared_ptr<client_state> state)
     glob["exec"] = js::function<in_script_eval>;
 
     js_ui::startup_state(vctx, &shared, script_id);
+    system_global(vctx);
 
     uint32_t sequence_id = 0;
 
@@ -372,6 +430,7 @@ int main()
     {
         sandbox sand;
         js::value_context vctx(nullptr, &sand);
+        system_global(vctx);
 
         js::eval(vctx, s.contents);
     }
