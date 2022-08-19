@@ -12,3 +12,5 @@ if(globalThis.test)
 }
 
 imgui.text(exec("hello") + globalThis.test);
+
+imgui.text(exec("get_system_contents"));
