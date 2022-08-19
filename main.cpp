@@ -227,6 +227,15 @@ struct script
     std::string contents;
 };
 
+script load_script(std::filesystem::path name)
+{
+    script s;
+    s.title = name.stem().string();
+    s.contents = file::read(name.string(), file::mode::TEXT);
+
+    return s;
+}
+
 std::vector<script> get_scripts()
 {
     std::vector<script> scripts;
@@ -237,11 +246,7 @@ std::vector<script> get_scripts()
 
         if(name.extension().string() == ".js")
         {
-            script s;
-            s.title = name.stem().string();
-            s.contents = file::read(name.string(), file::mode::TEXT);
-
-            scripts.push_back(s);
+            scripts.push_back(load_script(name));
         }
     }
 
@@ -303,14 +308,24 @@ void client_ui_thread(std::shared_ptr<client_state> state)
 
     uint32_t sequence_id = 0;
 
+    script ui_script = load_script("./scripts/ui.js");
+
+    std::cout << "Started script\n";
+
     while(!state->is_disconnected)
     {
+        std::cout << "Exec\n";
+
         js_ui::pre_exec(&shared, script_id);
+
+        js::eval(vctx, ui_script.contents);
 
         std::optional data_opt = js_ui::post_exec(vctx, &shared, script_id, sequence_id);
 
         if(data_opt.has_value())
         {
+            std::cout << "Pushing data\n";
+
             state->to_client.push(data_opt.value());
         }
 
