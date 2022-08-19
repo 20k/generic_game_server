@@ -318,7 +318,9 @@ void client_ui_thread(std::shared_ptr<client_state> state)
 
         js_ui::pre_exec(&shared, script_id);
 
-        js::eval(vctx, ui_script.contents);
+        js::value result = js::eval(vctx, ui_script.contents);
+
+        std::cout << (std::string)result << std::endl;
 
         std::optional data_opt = js_ui::post_exec(vctx, &shared, script_id, sequence_id);
 
