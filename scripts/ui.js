@@ -8,9 +8,9 @@ if(imgui.button("Hello there"))
 
 if(globalThis.test)
 {
-	imgui.text("Stinky");	
+	//imgui.text("Stinky");	
 }
 
-imgui.text(exec("hello") + globalThis.test);
+imgui.text(exec("hello") + " " + globalThis.test);
 
 imgui.text(exec("get_system_contents"));

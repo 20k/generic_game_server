@@ -434,7 +434,7 @@ int main()
 
                     double elapsed = state[id]->clk.getElapsedTime().asMicroseconds() / 1000.;
 
-                    std::cout << "Elapsed ms " << elapsed << std::endl;
+                    //std::cout << "Elapsed ms " << elapsed << std::endl;
 
                     send.write_to_websocket(dat);
                 }
