@@ -65,6 +65,14 @@
 			<Add option="-l:libmsgpackc.a" />
 			<Add directory="deps/liblmdb" />
 		</Linker>
+		<Unit filename="deps/js_imgui/js_imgui.cpp" />
+		<Unit filename="deps/js_imgui/js_imgui.hpp" />
+		<Unit filename="deps/js_imgui/js_imgui_client.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="deps/js_imgui/js_imgui_client.hpp" />
 		<Unit filename="deps/networking/beast_compilation_unit.cpp" />
 		<Unit filename="deps/networking/networking.cpp" />
 		<Unit filename="deps/networking/networking.hpp" />
@@ -73,6 +81,25 @@
 		<Unit filename="deps/networking/serialisable_fwd.hpp" />
 		<Unit filename="deps/networking/serialisable_msgpack.hpp" />
 		<Unit filename="deps/networking/serialisable_msgpack_fwd.hpp" />
+		<Unit filename="deps/quickjs/cutils.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="deps/quickjs/libbf.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="deps/quickjs/libregexp.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="deps/quickjs/libunicode.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="deps/quickjs/quickjs.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="deps/quickjs_cpp/quickjs_cpp.cpp" />
+		<Unit filename="deps/quickjs_cpp/quickjs_cpp.hpp" />
+		<Unit filename="deps/toolkit/fs_helpers.cpp" />
+		<Unit filename="deps/toolkit/fs_helpers.hpp" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
