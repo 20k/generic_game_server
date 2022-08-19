@@ -8,6 +8,10 @@
 #include <atomic>
 #include <deque>
 #include <SFML/System/Clock.hpp>
+#include <toolkit/fs_helpers.hpp>
+#include <quickjs_cpp/quickjs_cpp.hpp>
+
+namespace js = js_quickjs;
 
 #define SCRIPT_THREADS 3
 
@@ -215,6 +219,38 @@ struct client_state
     async_queue<nlohmann::json> to_client;
 };
 
+struct script
+{
+    std::string title;
+    std::string contents;
+};
+
+std::vector<script> get_scripts()
+{
+    std::vector<script> scripts;
+
+    for(const auto& entry : std::filesystem::directory_iterator{"./scripts"})
+    {
+        std::filesystem::path name = entry.path();
+
+        if(name.extension().string() == ".js")
+        {
+            script s;
+            s.title = name.stem().string();
+            s.contents = file::read(name.string(), file::mode::TEXT);
+
+            scripts.push_back(s);
+        }
+    }
+
+    return scripts;
+}
+
+struct sandbox
+{
+
+};
+
 void execute_client_logic(std::shared_ptr<client_state> state, nlohmann::json client_msg)
 {
     if(client_msg.count("type") == 0)
@@ -223,11 +259,28 @@ void execute_client_logic(std::shared_ptr<client_state> state, nlohmann::json cl
     if(client_msg.count("msg") == 0)
         return;
 
+    std::vector<script> scripts = get_scripts();
+
     std::string msg = client_msg["msg"];
+
+    std::string result = "No script found";
+
+    for(script& s : scripts)
+    {
+        if(s.title != msg)
+            continue;
+
+        sandbox sand;
+        js::value_context vctx(nullptr, &sand);
+
+        js::value found = js::eval(vctx, s.contents);
+
+        result = (std::string)found;
+    }
 
     nlohmann::json response;
     response["type"] = 0;
-    response["msg"] = msg;
+    response["msg"] = result;
 
     state->to_client.push(response);
 }
