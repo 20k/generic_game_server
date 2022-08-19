@@ -10,6 +10,7 @@
 #include <SFML/System/Clock.hpp>
 #include <toolkit/fs_helpers.hpp>
 #include <quickjs_cpp/quickjs_cpp.hpp>
+#include <js_imgui/js_imgui.hpp>
 
 namespace js = js_quickjs;
 
@@ -217,6 +218,7 @@ struct client_state
     sf::Clock clk;
 
     async_queue<nlohmann::json> to_client;
+    std::atomic_bool is_disconnected{false};
 };
 
 struct script
@@ -259,6 +261,9 @@ void execute_client_logic(std::shared_ptr<client_state> state, nlohmann::json cl
     if(client_msg.count("msg") == 0)
         return;
 
+    if(client_msg["type"] == "client_ui_element")
+        return;
+
     std::vector<script> scripts = get_scripts();
 
     std::string msg = client_msg["msg"];
@@ -283,6 +288,34 @@ void execute_client_logic(std::shared_ptr<client_state> state, nlohmann::json cl
     response["msg"] = result;
 
     state->to_client.push(response);
+}
+
+void client_ui_thread(std::shared_ptr<client_state> state)
+{
+    int script_id = 0;
+
+    shared_ui_state_base shared;
+
+    sandbox sand;
+    js::value_context vctx(nullptr, &sand);
+
+    js_ui::startup_state(vctx, &shared, script_id);
+
+    uint32_t sequence_id = 0;
+
+    while(!state->is_disconnected)
+    {
+        js_ui::pre_exec(&shared, script_id);
+
+        std::optional data_opt = js_ui::post_exec(vctx, &shared, script_id, sequence_id);
+
+        if(data_opt.has_value())
+        {
+            state->to_client.push(data_opt.value());
+        }
+
+        boost::this_fiber::sleep_for(std::chrono::milliseconds(16));
+    }
 }
 
 int main()
@@ -310,6 +343,8 @@ int main()
         for(auto i : recv.new_clients)
         {
             state[i] = std::make_shared<client_state>();
+
+            get_global_fiber_queue().add(client_ui_thread, state[i]);
 
             std::cout << "client" << std::endl;
         }
