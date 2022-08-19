@@ -219,6 +219,8 @@ struct client_state
 
     async_queue<nlohmann::json> to_client;
     std::atomic_bool is_disconnected{false};
+
+    async_queue<nlohmann::json> client_ui_messages;
 };
 
 struct script
@@ -314,20 +316,23 @@ void client_ui_thread(std::shared_ptr<client_state> state)
 
     while(!state->is_disconnected)
     {
-        std::cout << "Exec\n";
+        while(state->client_ui_messages.has_front())
+        {
+            nlohmann::json val = state->client_ui_messages.pop_front();
+
+            js_ui::process(val, &shared);
+        }
 
         js_ui::pre_exec(&shared, script_id);
 
         js::value result = js::eval(vctx, ui_script.contents);
 
-        std::cout << (std::string)result << std::endl;
+        //std::cout << (std::string)result << std::endl;
 
         std::optional data_opt = js_ui::post_exec(vctx, &shared, script_id, sequence_id);
 
         if(data_opt.has_value())
         {
-            std::cout << "Pushing data\n";
-
             state->to_client.push(data_opt.value());
         }
 
@@ -384,9 +389,18 @@ int main()
                 {
                     nlohmann::json data = nlohmann::json::parse(network_data.data);
 
-                    state[id]->clk.restart();
+                    if(data["type"] == "client_ui_element")
+                    {
 
-                    get_global_fiber_queue().add(execute_client_logic, state[id], data);
+                        state[id]->client_ui_messages.push(data);
+                    }
+                    else
+                    {
+                        state[id]->clk.restart();
+
+                        get_global_fiber_queue().add(execute_client_logic, state[id], data);
+                    }
+
                 }
             }
             catch(...)
