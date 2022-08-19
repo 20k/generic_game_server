@@ -269,9 +269,6 @@ void execute_client_logic(std::shared_ptr<client_state> state, nlohmann::json cl
     if(client_msg.count("msg") == 0)
         return;
 
-    if(client_msg["type"] == "client_ui_element")
-        return;
-
     std::vector<script> scripts = get_scripts("./scripts");
 
     std::string msg = client_msg["msg"];
