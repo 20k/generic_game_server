@@ -19,3 +19,6 @@
 [submodule "deps/js_imgui"]
 	path = deps/js_imgui
 	url = git@github.com:20k/js_imgui.git
+[submodule "deps/cpp_lmdb"]
+	path = deps/cpp_lmdb
+	url = git@github.com:20k/cpp_lmdb.git

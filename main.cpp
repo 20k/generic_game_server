@@ -11,6 +11,7 @@
 #include <toolkit/fs_helpers.hpp>
 #include <quickjs_cpp/quickjs_cpp.hpp>
 #include <js_imgui/js_imgui.hpp>
+#include <networking/serialisable_msgpack.hpp>
 
 namespace js = js_quickjs;
 
@@ -238,11 +239,11 @@ script load_script(std::filesystem::path name)
     return s;
 }
 
-std::vector<script> get_scripts()
+std::vector<script> get_scripts(const std::string& dir)
 {
     std::vector<script> scripts;
 
-    for(const auto& entry : std::filesystem::directory_iterator{"./scripts"})
+    for(const auto& entry : std::filesystem::directory_iterator{dir})
     {
         std::filesystem::path name = entry.path();
 
@@ -271,7 +272,7 @@ void execute_client_logic(std::shared_ptr<client_state> state, nlohmann::json cl
     if(client_msg["type"] == "client_ui_element")
         return;
 
-    std::vector<script> scripts = get_scripts();
+    std::vector<script> scripts = get_scripts("./scripts");
 
     std::string msg = client_msg["msg"];
 
@@ -367,6 +368,16 @@ int main()
     std::map<uint64_t, std::shared_ptr<client_state>> state;
 
     sf::Clock time_since_last_message;
+
+    std::vector<script> scripts = get_scripts("./scripts/on_startup");
+
+    for(const script& s : scripts)
+    {
+        sandbox sand;
+        js::value_context vctx(nullptr, &sand);
+
+        js::eval(vctx, s.contents);
+    }
 
     while(1)
     {
