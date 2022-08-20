@@ -90,7 +90,7 @@ function make_warp_gate(src_sys, dest_sys)
 	var obj = make_object_with_position([0, 0]);
 	obj.name = "Warp Gate";
 	obj.type = "warpgate";
-	obj.nickname = "Gate To " + dest_sys.system_name;
+	obj.nickname = dest_sys.system_name;
 	obj.dest_uid = dest_sys.uid;
 	obj.src_uid = src_sys.uid;
 	
@@ -107,7 +107,7 @@ function connect_systems(sys1, sys2)
 	
 	var n_dir = [direction[0] / length, direction[1] / length]
 	
-	var pos_in_1 = [n_dir[0] * warp_boundary, n_dir[1] * warp_boundary];
+	var pos_in_1 = [Math.round(n_dir[0] * warp_boundary), Math.round(n_dir[1] * warp_boundary)];	
 	var pos_in_2 = [-pos_in_1[0], -pos_in_1[1]]
 	
 	var poi_1 = make_poi("Gate to " + sys2.system_name, "warpgate", pos_in_1);
@@ -186,7 +186,7 @@ function format_poi_contents(poi)
 
 function format_poi_name(poi)
 {
-	return "PoI    : " + poi.poi_name + " " + format_position(poi.position)
+	return poi.poi_name + " " + format_position(poi.position)
 }
 
 function make_system(system_name, position, uid)
@@ -348,7 +348,7 @@ add_to_poi(poi, make_station([5, 223], "Owo station"));
 add_to_poi(poi, make_station([10, 9], "Stationary"));
 
 var sys1 = make_system("Alpha Blenturi", [10, 10], 0);
-var sys2 = make_system("Barnard's Star", [15, 13], 1);
+var sys2 = make_system("Barnard's Spire", [15, 13], 1);
 
 connect_systems(sys1, sys2);
 
