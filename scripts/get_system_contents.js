@@ -79,13 +79,13 @@ function format(arr)
 	return result
 }
 
-function array_concat(a1, a2)
+function array_concat(a1, a2, sep)
 {
 	var r = [];
 	
 	for(var i=0; i < a1.length; i++)
 	{
-		r.push(a1[i] + a2[i]);
+		r.push(a1[i] + sep + a2[i]);
 	}
 	
 	return r;
@@ -110,24 +110,28 @@ for(var e of objs)
 	
 	if(e.type == "ship")
 	{
-		names.push(" (\"" + e.nickname + "\")");
+		names.push("(\"" + e.nickname + "\")");
 	}
 	else if(e.type == "asteroid")
 	{
-		names.push(" (" + e.asteroid_type + ")");
+		names.push("(" + e.asteroid_type + ")");
 	}
 	else if(e.type == "station")
 	{
-		names.push(" (\"" + e.nickname + "\")");
+		names.push("(\"" + e.nickname + "\")");
 	}
 	
-	positions.push(" [" + e.position[0] + ", " + e.position[1] + "]");
+	positions.push("[" + e.position[0] + ", " + e.position[1] + "]");
 }
+
+types.unshift("Name");
+names.unshift("Nickname");
+positions.unshift("Position");
 
 var fmt_1 = format(types);
 var fmt_2 = format(names);
 var fmt_3 = format(positions);
 
-var merged = array_concat(array_concat(fmt_1, fmt_2), fmt_3);
+var merged = array_concat(array_concat(fmt_1, fmt_2, ' '), fmt_3, ' ');
 
 merged.join('\n');
