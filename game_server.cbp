@@ -60,7 +60,6 @@
 			<Add option="-lboost_system-mt" />
 			<Add option="-lmswsock" />
 			<Add option="-lole32" />
-			<Add option="-lboost_filesystem-mt" />
 			<Add option="-ldbgeng" />
 			<Add option="-lcrypto" />
 			<Add option="-lssl" />

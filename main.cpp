@@ -459,6 +459,10 @@ void client_ui_thread(std::shared_ptr<client_state> state)
 
     while(!state->is_disconnected)
     {
+        /*JSMemoryUsage usg;
+        JS_ComputeMemoryUsage(JS_GetRuntime(vctx.ctx), &usg);
+        printf("Malloc size %i malloc limit %i atom count %i atom count %i\n", usg.malloc_size, usg.malloc_limit, usg.atom_count, usg.atom_size);*/
+
         while(state->client_ui_messages.has_front())
         {
             nlohmann::json val = state->client_ui_messages.pop_front();
@@ -468,7 +472,9 @@ void client_ui_thread(std::shared_ptr<client_state> state)
 
         js_ui::pre_exec(&shared, script_id);
 
-        js::value result = js::eval(vctx, ui_script.contents);
+        js::eval(vctx, ui_script.contents);
+
+        vctx.compact_heap_stash();
 
         //std::cout << (std::string)result << std::endl;
 
