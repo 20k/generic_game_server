@@ -6,6 +6,11 @@ function make_object_with_position(position)
 	return obj;
 }
 
+function format_position(position)
+{
+	return "[" + position[0] + ", " + position[1] + "]";
+}
+
 function make_item(name, subtype)
 {
 	var obj = {};
@@ -134,7 +139,7 @@ function format_poi_contents(poi)
 
 	var merged = array_concat(array_concat(fmt_1, fmt_2, ' | '), fmt_3, ' | ');
 
-	return "PoI    : " + poi.poi_name + "\n" + merged.join('\n');
+	return "PoI    : " + poi.poi_name + " " + format_position(poi.position) + "\n" + merged.join('\n');
 }
 
 function make_system(system_name, position)
@@ -195,8 +200,9 @@ function array_concat(a1, a2, sep)
 
 function format_sys_contents(sys)
 {
-	var res = "System : " + sys.system_name + "\n";
-	
+	//format_position(sys.position) 	
+	var res = "System : " + sys.system_name + " " + format_position(sys.position) + "\n";
+		
 	for(var poi of sys.contents)
 	{
 		var str = format_poi_contents(poi);
@@ -216,7 +222,7 @@ add_to_poi(poi, make_asteroid([300, 10]));
 add_to_poi(poi, make_station([5, 223], "Owo station"));
 add_to_poi(poi, make_station([10, 9], "Stationary"));
 
-var sys = make_system("Alpha Blenturi");
+var sys = make_system("Alpha Blenturi", [10, 10]);
 
 add_poi_to_system(sys, poi);
 
