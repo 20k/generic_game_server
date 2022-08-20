@@ -18,7 +18,8 @@ function make_item(name, subtype)
 
 function fill_asteroid(asteroid, ore_name, ore_type, ore_amount)
 {
-	var item = make_item(ore_name, "ore");
+	var item = make_item("Ore", "ore");
+	item.ore_name = ore_name;
 	item.ore_type = ore_type;
 	item.ore_amount = ore_amount;
 	
@@ -56,7 +57,7 @@ function get_asteroid_description(asteroid)
 	
 	var largest_ore = asteroid.ores[largest_ore_index];
 	
-	return largest_ore.name + " (" + largest_ore.ore_amount + ")";
+	return largest_ore.ore_name + " (" + largest_ore.ore_amount + ")";
 }
 
 function make_ship(position, ship_name)
@@ -77,6 +78,63 @@ function make_station(position, station_name)
 	obj.nickname = station_name;
 	
 	return obj;
+}
+
+function make_poi(poi_name, poi_type, position)
+{
+	var obj = make_object_with_position(position);
+	obj.name = "PoI";
+	obj.type = "poi";
+	obj.poi_name = poi_name;
+	obj.poi_type = poi_type;
+	obj.contents = [];
+	
+	return obj;
+}
+
+function add_to_poi(poi, obj)
+{
+	poi.contents.push(obj);
+}
+
+function format_poi_contents(poi)
+{
+	var types = [];
+	var names = [];
+	var positions = [];
+
+	for(var e of poi.contents)
+	{
+		types.push(e.name);
+		
+		if(e.type == "ship")
+		{
+			names.push("(\"" + e.nickname + "\")");
+		}
+		else if(e.type == "asteroid")
+		{
+			names.push(get_asteroid_description(e));
+			//names.push("(" + e.asteroid_type + ")");
+		}
+		else if(e.type == "station")
+		{
+			names.push("(\"" + e.nickname + "\")");
+		}
+		
+		positions.push("[" + e.position[0] + ", " + e.position[1] + "]");
+	}
+
+	types.unshift("Name");
+	names.unshift("Nickname");
+	positions.unshift("Position");
+
+	var fmt_1 = format(types);
+	var fmt_2 = format(names);
+	var fmt_3 = format(positions);
+
+	var merged = array_concat(array_concat(fmt_1, fmt_2, ' | '), fmt_3, ' | ');
+
+	return merged.join('\n');
 }
 
 ///takes a 1d array, pads to longest
@@ -116,48 +174,13 @@ function array_concat(a1, a2, sep)
 	return r;
 }
 
-var objs = [
-	make_ship([50, 40], "Stinky Names"),
-	make_ship([100, 20], "Also A Ship"),
-	make_asteroid([150, 10]),
-	make_asteroid([300, 10]),
-	make_station([5, 223], "Owo station"),
-	make_station([10, 9], "Stationary")
-];
+var poi = make_poi("Asteroid Belt", "asteroidbelt", [20, 30]);
 
-var types = [];
-var names = [];
-var positions = [];
+add_to_poi(poi, make_ship([50, 40], "Stinky Names"));
+add_to_poi(poi, make_ship([100, 20], "Also A Ship"));
+add_to_poi(poi, make_asteroid([150, 10]));
+add_to_poi(poi, make_asteroid([300, 10]));
+add_to_poi(poi, make_station([5, 223], "Owo station"));
+add_to_poi(poi, make_station([10, 9], "Stationary"));
 
-for(var e of objs)
-{
-	types.push(e.name);
-	
-	if(e.type == "ship")
-	{
-		names.push("(\"" + e.nickname + "\")");
-	}
-	else if(e.type == "asteroid")
-	{
-		names.push(get_asteroid_description(e));
-		//names.push("(" + e.asteroid_type + ")");
-	}
-	else if(e.type == "station")
-	{
-		names.push("(\"" + e.nickname + "\")");
-	}
-	
-	positions.push("[" + e.position[0] + ", " + e.position[1] + "]");
-}
-
-types.unshift("Name");
-names.unshift("Nickname");
-positions.unshift("Position");
-
-var fmt_1 = format(types);
-var fmt_2 = format(names);
-var fmt_3 = format(positions);
-
-var merged = array_concat(array_concat(fmt_1, fmt_2, ' | '), fmt_3, ' | ');
-
-merged.join('\n');
+format_poi_contents(poi);
