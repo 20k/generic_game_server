@@ -226,7 +226,7 @@ function interactive_sys_contents(sys, player_view)
 	imgui.pushstylecolor(21, 0, 0, 0, 0); 
 	imgui.pushstylecolor(22, 0, 0, 0, 0); 
 	imgui.pushstylecolor(23, 0, 0, 0, 0); 
-	
+
 	if(player_view.is_sys_open[sys.uid] == undefined)
 		player_view.is_sys_open[sys.uid] = 1;
 	
@@ -276,7 +276,6 @@ function interactive_sys_contents(sys, player_view)
 			player_view.is_poi_open[poi.uid] = is_open;
 		}
 		
-				
 		imgui.sameline();
 				
 		imgui.text(title);
