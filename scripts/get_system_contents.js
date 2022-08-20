@@ -134,7 +134,26 @@ function format_poi_contents(poi)
 
 	var merged = array_concat(array_concat(fmt_1, fmt_2, ' | '), fmt_3, ' | ');
 
-	return merged.join('\n');
+	return "PoI    : " + poi.poi_name + "\n" + merged.join('\n');
+}
+
+function make_system(system_name, position)
+{
+	var obj = make_object_with_position(position);
+	obj.name = "System";
+	obj.type = "system";
+	obj.system_name = system_name;
+	obj.contents = [];
+	obj.gid = 0;
+	
+	return obj;
+}
+
+function add_poi_to_system(sys, poi)
+{
+	poi.uid = sys.gid++;
+	
+	sys.contents.push(poi);
 }
 
 ///takes a 1d array, pads to longest
@@ -174,6 +193,20 @@ function array_concat(a1, a2, sep)
 	return r;
 }
 
+function format_sys_contents(sys)
+{
+	var res = "System : " + sys.system_name + "\n";
+	
+	for(var poi of sys.contents)
+	{
+		var str = format_poi_contents(poi);
+		
+		res += str + "\n";
+	}
+	
+	return res;
+}
+
 var poi = make_poi("Asteroid Belt", "asteroidbelt", [20, 30]);
 
 add_to_poi(poi, make_ship([50, 40], "Stinky Names"));
@@ -183,4 +216,8 @@ add_to_poi(poi, make_asteroid([300, 10]));
 add_to_poi(poi, make_station([5, 223], "Owo station"));
 add_to_poi(poi, make_station([10, 9], "Stationary"));
 
-format_poi_contents(poi);
+var sys = make_system("Alpha Blenturi");
+
+add_poi_to_system(sys, poi);
+
+format_sys_contents(sys);
