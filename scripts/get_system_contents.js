@@ -208,12 +208,12 @@ function interactive_sys_contents(sys, player_view)
 
 var poi = make_poi("Asteroid Belt", "asteroidbelt", [20, 30]);
 
-add_to_poi(poi, make_ship([50, 40], "Stinky Names"));
-add_to_poi(poi, make_ship([100, 20], "Also A Ship"));
-add_to_poi(poi, make_asteroid([150, 10]));
-add_to_poi(poi, make_asteroid([300, 10]));
-add_to_poi(poi, make_station([5, 223], "Owo station"));
-add_to_poi(poi, make_station([10, 9], "Stationary"));
+poi.take_ownership(make_ship([50, 40], "Stinky Names"));
+poi.take_ownership(make_ship([100, 20], "Also A Ship"));
+poi.take_ownership(make_asteroid([150, 10]));
+poi.take_ownership(make_asteroid([300, 10]));
+poi.take_ownership(make_station([5, 223], "Owo station"));
+poi.take_ownership(make_station([10, 9], "Stationary"));
 
 var sys1 = make_system("Alpha Blenturi", [10, 10], 0);
 var sys2 = make_system("Barnard's Spire", [15, 13], 1);

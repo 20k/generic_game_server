@@ -37,8 +37,8 @@ function connect_systems(sys1, sys2)
 	var gate_1 = make_warp_gate(sys1, sys2);
 	var gate_2 = make_warp_gate(sys2, sys1);
 	
-	add_to_poi(poi_1, gate_1);
-	add_to_poi(poi_2, gate_2);
+	poi_1.take_ownership(gate_1);
+	poi_2.take_ownership(gate_2);
 	
 	add_poi_to_system(sys1, poi_1);
 	add_poi_to_system(sys2, poi_2);

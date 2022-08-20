@@ -7,7 +7,7 @@ function make_player(uid)
 		uid: uid,
 		
 		take_ownership(obj) {
-			obj.uid = uid;
+			obj.uid = this.uid;
 		}
 	}
 	

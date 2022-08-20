@@ -307,6 +307,8 @@ js::value in_script_eval(js::value_context* vctx, std::string val)
     if(result.is_error() || result.is_exception())
     {
         result = result.to_error_message();
+
+        std::cout << "Result " << (std::string)result << std::endl;
     }
 
     return result;
