@@ -19,6 +19,6 @@ var t2 = start_transaction(false);
 
 var value = t2.read(0, "hello");
 
-close_transaction(t2);
+t2.close();
 
 imgui.text("DB val " + value);

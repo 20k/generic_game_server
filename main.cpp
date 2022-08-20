@@ -366,28 +366,7 @@ js::value db_write(js::value_context* vctx, js::value js_db_id, js::value js_key
     return none;
 }
 
-js::value start_transaction(js::value_context* vctx, bool is_read_write)
-{
-    db::read_tx* base = nullptr;
-
-    if(is_read_write)
-        base = new db::read_write_tx;
-    else
-        base = new db::read_tx;
-
-    js::value hidden_ptr(*vctx);
-    hidden_ptr.set_ptr(base);
-
-    js::value ret(*vctx);
-    ret.add_hidden_value("db_transaction", hidden_ptr);
-
-    js::add_key_value(ret, "read", js::function<db_read>);
-    js::add_key_value(ret, "write", js::function<db_write>);
-
-    return ret;
-}
-
-js::value close_transaction(js::value_context* vctx, js::value called_on)
+js::value close_transaction_free(js::value_context* vctx, js::value called_on)
 {
     if(!called_on.has_hidden("db_transaction"))
         return js::make_value(*vctx, "No hidden variable for transaction");
@@ -409,11 +388,38 @@ js::value close_transaction(js::value_context* vctx, js::value called_on)
     return none;
 }
 
+js::value close_transaction(js::value_context* vctx)
+{
+    return close_transaction_free(vctx, js::get_this(*vctx));
+}
+
+js::value start_transaction(js::value_context* vctx, bool is_read_write)
+{
+    db::read_tx* base = nullptr;
+
+    if(is_read_write)
+        base = new db::read_write_tx;
+    else
+        base = new db::read_tx;
+
+    js::value hidden_ptr(*vctx);
+    hidden_ptr.set_ptr(base);
+
+    js::value ret(*vctx);
+    ret.add_hidden_value("db_transaction", hidden_ptr);
+
+    js::add_key_value(ret, "read", js::function<db_read>);
+    js::add_key_value(ret, "write", js::function<db_write>);
+    js::add_key_value(ret, "close", js::function<close_transaction>);
+
+    return ret;
+}
+
+
 void system_global(js::value_context& vctx)
 {
     js::value glob = js::get_global(vctx);
     js::add_key_value(glob, "start_transaction", js::function<start_transaction>);
-    js::add_key_value(glob, "close_transaction", js::function<close_transaction>);
 }
 
 void client_ui_thread(std::shared_ptr<client_state> state)
