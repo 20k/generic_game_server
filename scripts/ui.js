@@ -13,7 +13,9 @@ if(globalThis.test)
 
 imgui.text(exec("hello") + " " + globalThis.test);
 
-imgui.text(exec("get_system_contents"));
+//imgui.text(exec("get_system_contents"));
+
+exec("get_system_contents");
 
 var t2 = db.read_only();
 

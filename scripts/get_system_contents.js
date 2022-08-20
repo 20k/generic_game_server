@@ -139,7 +139,12 @@ function format_poi_contents(poi)
 
 	var merged = array_concat(array_concat(fmt_1, fmt_2, ' | '), fmt_3, ' | ');
 
-	return "PoI    : " + poi.poi_name + " " + format_position(poi.position) + "\n" + merged.join('\n');
+	return format_poi_name(poi) + "\n" + merged.join('\n');
+}
+
+function format_poi_name(poi)
+{
+	return "PoI    : " + poi.poi_name + " " + format_position(poi.position)
 }
 
 function make_system(system_name, position)
@@ -198,20 +203,92 @@ function array_concat(a1, a2, sep)
 	return r;
 }
 
+function make_player_view()
+{
+	var obj = {};
+	
+	obj.is_open_ref = {};
+	obj.is_open = new Map();
+	
+	return obj;
+}
+
+function player_open(obj, poi)
+{
+	obj.is_open.set(poi.uid, true);
+}
+
+function player_close(obj, poi)
+{
+	obj.is_open.set(poi.uid, false);
+}
+
+function player_set_open(obj, poi, val)
+{
+	obj.is_open.set(poi.uid, val);
+}
+
+function player_is_open(obj, poi)
+{
+	if(!obj.is_open.has(poi.uid))
+		return false;
+	
+	return obj.is_open.get(poi.uid);
+}
+
 function format_sys_contents(sys)
 {
 	//format_position(sys.position) 	
 	var res = "System : " + sys.system_name + " " + format_position(sys.position) + "\n";
-		
+
 	for(var poi of sys.contents)
 	{
 		var str = format_poi_contents(poi);
-		
+
 		res += str + "\n";
 	}
-	
+
 	return res;
 }
+
+function interactive_sys_contents(sys, player_view)
+{
+	imgui.text("System : " + sys.system_name + " " + format_position(sys.position) + "\n");
+	
+	for(var poi of sys.contents)
+	{
+		var title = format_poi_name(poi);
+		
+		imgui.text(title);
+		
+		imgui.sameline();
+		
+		//var is_selected = player_is_open(player_view, poi);
+		
+		//var selected_ref = imgui.ref(is_selected);
+		
+		//if(imgui.arrowbutton("<--"))
+					
+		if(player_view.is_open_ref[poi.uid] == undefined)
+		{
+			var ref = imgui.ref(0);
+			player_view.is_open_ref[poi.uid] = ref;
+		}
+		
+		var is_open_ref = player_view.is_open_ref[poi.uid];
+			
+		if(imgui.selectable("Open?", is_open_ref))
+		{
+			player_set_open(player_view, poi);
+			
+			imgui.text(format_poi_contents(poi));
+		}
+		
+		//player_set_open(player_view, poi, imgui.get(selected_ref));
+	}
+}
+
+var view = make_player_view();
 
 var poi = make_poi("Asteroid Belt", "asteroidbelt", [20, 30]);
 
@@ -226,4 +303,6 @@ var sys = make_system("Alpha Blenturi", [10, 10]);
 
 add_poi_to_system(sys, poi);
 
-format_sys_contents(sys);
+interactive_sys_contents(sys, view);
+
+//format_sys_contents(sys);
