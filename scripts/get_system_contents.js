@@ -6,12 +6,34 @@ function make_object(position)
 	return obj;
 }
 
+function make_item(name, subtype)
+{
+	var obj = {};
+	obj.name = name;
+	obj.type = "item";
+	obj.subtype = subtype;
+	
+	return obj;
+}
+
+function fill_asteroid(asteroid, ore_name, ore_type, ore_amount)
+{
+	var item = make_item(ore_name, "ore");
+	item.ore_type = ore_type;
+	item.ore_amount = ore_amount;
+	
+	asteroid.ores.push(item);
+}
+
 function make_asteroid(position, type)
 {
 	var obj = make_object(position);
 	obj.name = "Asteroid";
 	obj.type = "asteroid";
 	obj.asteroid_type = type;
+	obj.ores = [];
+	
+	fill_asteroid(obj, "Titanium", "titanium", 15);
 	
 	return obj;
 }
