@@ -60,5 +60,3 @@ function player_is_open(obj, poi)
 	
 	return obj.is_open.get(poi.uid);
 }*/
-
-make_player_view();

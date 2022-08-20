@@ -222,7 +222,7 @@ connect_systems(sys1, sys2);
 
 add_poi_to_system(sys1, poi);
 
-interactive_sys_contents(sys1, view);
-interactive_sys_contents(sys2, view);
+interactive_sys_contents(sys1, player.view);
+interactive_sys_contents(sys2, player.view);
 
 //format_sys_contents(sys);

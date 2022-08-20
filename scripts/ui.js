@@ -1,9 +1,11 @@
 if(globalThis.test == undefined)
 	globalThis.test = false;
 
-if(globalThis.view == undefined)
+if(globalThis.player == undefined)
 {
-	globalThis.view = exec("make_view");
+	exec("player");
+	
+	globalThis.player = make_player(0);
 }
 
 if(imgui.button("Hello there"))
