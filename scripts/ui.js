@@ -15,7 +15,7 @@ imgui.text(exec("hello") + " " + globalThis.test);
 
 imgui.text(exec("get_system_contents"));
 
-var t2 = start_transaction(false);
+var t2 = db.read_only();
 
 var value = t2.read(0, "hello");
 

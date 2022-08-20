@@ -415,11 +415,25 @@ js::value start_transaction(js::value_context* vctx, bool is_read_write)
     return ret;
 }
 
+js::value start_read_transaction(js::value_context* vctx)
+{
+    return start_transaction(vctx, false);
+}
+
+js::value start_read_write_transaction(js::value_context* vctx)
+{
+    return start_transaction(vctx, true);
+}
 
 void system_global(js::value_context& vctx)
 {
     js::value glob = js::get_global(vctx);
-    js::add_key_value(glob, "start_transaction", js::function<start_transaction>);
+
+    js::value db(vctx);
+    js::add_key_value(db, "read_only", js::function<start_read_transaction>);
+    js::add_key_value(db, "read_write", js::function<start_read_write_transaction>);
+
+    glob["db"] = db;
 }
 
 void client_ui_thread(std::shared_ptr<client_state> state)

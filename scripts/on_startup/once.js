@@ -1,4 +1,4 @@
-var transact = start_transaction(true);
+var transact = db.read_write();
 
 transact.write(0, "hello", "something fun");
 
