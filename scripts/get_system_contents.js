@@ -101,7 +101,8 @@ var objs = [
 ];
 
 var types = [];
-var secondary = [];
+var names = [];
+var positions = [];
 
 for(var e of objs)
 {
@@ -109,21 +110,24 @@ for(var e of objs)
 	
 	if(e.type == "ship")
 	{
-		secondary.push(" (\"" + e.friendly_name + "\")");
+		names.push(" (\"" + e.nickname + "\")");
 	}
 	else if(e.type == "asteroid")
 	{
-		secondary.push(" (" + e.asteroid_type + ")");
+		names.push(" (" + e.asteroid_type + ")");
 	}
 	else if(e.type == "station")
 	{
-		secondary.push(" (\"" + e.friendly_name + "\")");
+		names.push(" (\"" + e.nickname + "\")");
 	}
+	
+	positions.push(" [" + e.position[0] + ", " + e.position[1] + "]");
 }
 
 var fmt_1 = format(types);
-var fmt_2 = format(secondary);
+var fmt_2 = format(names);
+var fmt_3 = format(positions);
 
-var merged = array_concat(fmt_1, fmt_2);
+var merged = array_concat(array_concat(fmt_1, fmt_2), fmt_3);
 
 merged.join('\n');
