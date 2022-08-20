@@ -1,6 +1,14 @@
-function make_asteroid(type)
+function make_object(position)
 {
 	var obj = {};
+	obj.position = position;
+	
+	return obj;
+}
+
+function make_asteroid(position, type)
+{
+	var obj = make_object(position);
 	obj.name = "Asteroid";
 	obj.type = "asteroid";
 	obj.asteroid_type = type;
@@ -8,22 +16,22 @@ function make_asteroid(type)
 	return obj;
 }
 
-function make_ship(ship_name)
+function make_ship(position, ship_name)
 {
-	var obj = {};
+	var obj = make_object(position);
 	obj.name = "Ship";
 	obj.type = "ship";
-	obj.friendly_name = ship_name;
+	obj.nickname = ship_name;
 	
 	return obj;
 }
 
-function make_station(station_name)
+function make_station(position, station_name)
 {
-	var obj = {};
+	var obj = make_object(position);
 	obj.name = "Station";
 	obj.type = "station";
-	obj.friendly_name = station_name;
+	obj.nickname = station_name;
 	
 	return obj;
 }
@@ -32,7 +40,7 @@ function format_entity(e)
 {
 	if(e.type == "ship")
 	{
-		return e.name + " (\"" + e.friendly_name + "\")";
+		return e.name + " (\"" + e.nickname + "\")";
 	}
 	else if(e.type == "asteroid")
 	{
@@ -40,7 +48,7 @@ function format_entity(e)
 	}
 	else if(e.type == "station")
 	{
-		return e.name + " (\"" + e.friendly_name + "\")";
+		return e.name + " (\"" + e.nickname + "\")";
 	}
 	
 	return "Error";
@@ -84,25 +92,15 @@ function array_concat(a1, a2)
 }
 
 var objs = [
-	make_ship("Stinky Names"),
-	make_ship("Also A Ship"),
-	make_asteroid("Ironing"),
-	make_asteroid("Flytanium"),
-	make_station("Owo station"),
-	make_station("Stationary")
+	make_ship([50, 40], "Stinky Names"),
+	make_ship([100, 20], "Also A Ship"),
+	make_asteroid([150, 10], "Ironing"),
+	make_asteroid([300, 10], "Flytanium"),
+	make_station([5, 223], "Owo station"),
+	make_station([10, 9], "Stationary")
 ];
 
-/*var result = "";
-
-for(var v of objs)
-{
-	result += format_entity(v) + "\n";
-}
-
-result*/
-
 var types = [];
-
 var secondary = [];
 
 for(var e of objs)
