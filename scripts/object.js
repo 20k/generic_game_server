@@ -32,6 +32,7 @@ function make_asteroid(position)
 	obj.name = "Asteroid";
 	obj.type = "asteroid";
 	obj.ores = [];
+	obj.owner = -1;
 	
 	fill_asteroid(obj, "Titanium", "titanium", 15);
 	
@@ -44,6 +45,7 @@ function make_station(position, station_name)
 	obj.name = "Station";
 	obj.type = "station";
 	obj.nickname = station_name;
+	obj.owner = -1;
 	
 	return obj;
 }
@@ -56,6 +58,7 @@ function make_warp_gate(src_sys, dest_sys)
 	obj.nickname = dest_sys.system_name;
 	obj.dest_uid = dest_sys.uid;
 	obj.src_uid = src_sys.uid;
+	obj.owner = -1;
 	
 	return obj;
 }
@@ -66,6 +69,7 @@ function make_ship(position, ship_name)
 	obj.name = "Ship";
 	obj.type = "ship";
 	obj.nickname = ship_name;
+	obj.owner = -1;
 	
 	return obj;
 }
