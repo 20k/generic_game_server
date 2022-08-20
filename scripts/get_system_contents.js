@@ -155,6 +155,7 @@ function make_system(system_name, position)
 	obj.system_name = system_name;
 	obj.contents = [];
 	obj.gid = 0;
+	obj.uid = 0;
 	
 	return obj;
 }
@@ -220,27 +221,54 @@ function format_sys_contents(sys)
 
 function interactive_sys_contents(sys, player_view)
 {
+	var render_id = 0;
+	
+	imgui.pushstylecolor(21, 0, 0, 0, 0); 
+	imgui.pushstylecolor(22, 0, 0, 0, 0); 
+	imgui.pushstylecolor(23, 0, 0, 0, 0); 
+	
+	if(player_view.is_sys_open[sys.uid] == undefined)
+		player_view.is_sys_open[sys.uid] = 1;
+	
+	var is_sys_open = player_view.is_sys_open[sys.uid];
+	
+	var sys_str = "+";
+	
+	if(is_sys_open)
+		sys_str = "-";
+	
+	sys_str += "###" + render_id++;
+	
+	if(imgui.button(sys_str))
+	{
+		is_sys_open = !is_sys_open;
+		player_view.is_sys_open[sys.uid] = is_sys_open;
+	}
+	
+	imgui.sameline();
+	
 	imgui.text("System : " + sys.system_name + " " + format_position(sys.position) + "\n");
+	
+	if(!is_sys_open)
+		return;
+	
+	imgui.indent();
 	
 	for(var poi of sys.contents)
 	{
 		var title = format_poi_name(poi);
 				
 		if(player_view.is_poi_open[poi.uid] == undefined)
-		{
 			player_view.is_poi_open[poi.uid] = 0;
-		}
 		
 		var is_open = player_view.is_poi_open[poi.uid];
 			
-		var str = "+###" + poi.uid;
+		var str = "+";
 		
 		if(is_open)
-			str = "-###" + poi.uid;
-				
-		imgui.pushstylecolor(21, 0, 0, 0, 0); 
-		imgui.pushstylecolor(22, 0, 0, 0, 0); 
-		imgui.pushstylecolor(23, 0, 0, 0, 0); 
+			str = "-";
+		
+		str += "###" + render_id++;			
 				
 		if(imgui.button(str))
 		{
@@ -248,7 +276,6 @@ function interactive_sys_contents(sys, player_view)
 			player_view.is_poi_open[poi.uid] = is_open;
 		}
 		
-		imgui.popstylecolor(3);
 				
 		imgui.sameline();
 				
@@ -263,6 +290,10 @@ function interactive_sys_contents(sys, player_view)
 			imgui.unindent();
 		}
 	}
+	
+	imgui.unindent();
+	
+	imgui.popstylecolor(3);
 }
 
 
