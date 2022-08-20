@@ -203,39 +203,6 @@ function array_concat(a1, a2, sep)
 	return r;
 }
 
-function make_player_view()
-{
-	var obj = {};
-	
-	obj.is_open_ref = {};
-	obj.is_open = new Map();
-	
-	return obj;
-}
-
-function player_open(obj, poi)
-{
-	obj.is_open.set(poi.uid, true);
-}
-
-function player_close(obj, poi)
-{
-	obj.is_open.set(poi.uid, false);
-}
-
-function player_set_open(obj, poi, val)
-{
-	obj.is_open.set(poi.uid, val);
-}
-
-function player_is_open(obj, poi)
-{
-	if(!obj.is_open.has(poi.uid))
-		return false;
-	
-	return obj.is_open.get(poi.uid);
-}
-
 function format_sys_contents(sys)
 {
 	//format_position(sys.position) 	
@@ -263,12 +230,6 @@ function interactive_sys_contents(sys, player_view)
 		
 		imgui.sameline();
 		
-		//var is_selected = player_is_open(player_view, poi);
-		
-		//var selected_ref = imgui.ref(is_selected);
-		
-		//if(imgui.arrowbutton("<--"))
-					
 		if(player_view.is_open_ref[poi.uid] == undefined)
 		{
 			var ref = imgui.ref(0);
@@ -278,17 +239,18 @@ function interactive_sys_contents(sys, player_view)
 		var is_open_ref = player_view.is_open_ref[poi.uid];
 			
 		if(imgui.selectable("Open?", is_open_ref))
-		{
-			player_set_open(player_view, poi);
-			
+		{			
+			imgui.text(imgui.get(is_open_ref));
+	
 			imgui.text(format_poi_contents(poi));
 		}
 		
+		imgui.text(imgui.get(is_open_ref));
+				
 		//player_set_open(player_view, poi, imgui.get(selected_ref));
 	}
 }
 
-var view = make_player_view();
 
 var poi = make_poi("Asteroid Belt", "asteroidbelt", [20, 30]);
 

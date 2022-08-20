@@ -1,6 +1,11 @@
 if(globalThis.test == undefined)
 	globalThis.test = false;
 
+if(globalThis.view == undefined)
+{
+	globalThis.view = exec("make_view");
+}
+
 if(imgui.button("Hello there"))
 {
 	globalThis.test = !globalThis.test;
