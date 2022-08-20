@@ -1,21 +1,22 @@
 function make_system(system_name, position, uid)
 {
-	var obj = make_object_with_position(position);
-	obj.name = "System";
-	obj.type = "system";
-	obj.system_name = system_name;
-	obj.contents = [];
-	obj.gid = 0;
-	obj.uid = uid;
+	var obj = {
+		position:position,
+		name:"System",
+		type:"system",
+		system_name:system_name,
+		contents:[],
+		gid:0, //for local system content
+		uid:uid,
+		
+		take_poi_ownership(poi) {
+			poi.uid = this.gid++;
+	
+			this.contents.push(poi);
+		}
+	};
 	
 	return obj;
-}
-
-function add_poi_to_system(sys, poi)
-{
-	poi.uid = sys.gid++;
-	
-	sys.contents.push(poi);
 }
 
 function connect_systems(sys1, sys2)
@@ -40,6 +41,6 @@ function connect_systems(sys1, sys2)
 	poi_1.take_ownership(gate_1);
 	poi_2.take_ownership(gate_2);
 	
-	add_poi_to_system(sys1, poi_1);
-	add_poi_to_system(sys2, poi_2);
+	sys1.take_poi_ownership(poi_1);
+	sys2.take_poi_ownership(poi_2);
 }

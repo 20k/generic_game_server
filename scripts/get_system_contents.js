@@ -220,7 +220,7 @@ var sys2 = make_system("Barnard's Spire", [15, 13], 1);
 
 connect_systems(sys1, sys2);
 
-add_poi_to_system(sys1, poi);
+sys1.take_poi_ownership(poi);
 
 interactive_sys_contents(sys1, player.view);
 interactive_sys_contents(sys2, player.view);
