@@ -85,6 +85,44 @@ function make_station(position, station_name)
 	return obj;
 }
 
+function make_warp_gate(src_sys, dest_sys)
+{
+	var obj = make_object_with_position([0, 0]);
+	obj.name = "Warp Gate";
+	obj.type = "warpgate";
+	obj.nickname = "Gate To " + dest_sys.system_name;
+	obj.dest_uid = dest_sys.uid;
+	obj.src_uid = src_sys.uid;
+	
+	return obj;
+}
+
+function connect_systems(sys1, sys2)
+{
+	var warp_boundary = 100;
+	
+	var direction = [sys2.position[0] - sys1.position[0], sys2.position[1] - sys1.position[0]]
+	
+	var length = Math.sqrt(direction[0] * direction[0] + direction[1] * direction[1]);
+	
+	var n_dir = [direction[0] / length, direction[1] / length]
+	
+	var pos_in_1 = [n_dir[0] * warp_boundary, n_dir[1] * warp_boundary];
+	var pos_in_2 = [-pos_in_1[0], -pos_in_1[1]]
+	
+	var poi_1 = make_poi("Gate to " + sys2.system_name, "warpgate", pos_in_1);
+	var poi_2 = make_poi("Gate to " + sys1.system_name, "warpgate", pos_in_2);
+	
+	var gate_1 = make_warp_gate(sys1, sys2);
+	var gate_2 = make_warp_gate(sys2, sys1);
+	
+	add_to_poi(poi_1, gate_1);
+	add_to_poi(poi_2, gate_2);
+	
+	add_poi_to_system(sys1, poi_1);
+	add_poi_to_system(sys2, poi_2);
+}
+
 function make_poi(poi_name, poi_type, position)
 {
 	var obj = make_object_with_position(position);
@@ -125,6 +163,10 @@ function format_poi_contents(poi)
 		{
 			names.push("(\"" + e.nickname + "\")");
 		}
+		else if(e.type == "warpgate")
+		{
+			names.push(e.nickname);
+		}
 		
 		positions.push("[" + e.position[0] + ", " + e.position[1] + "]");
 	}
@@ -147,7 +189,7 @@ function format_poi_name(poi)
 	return "PoI    : " + poi.poi_name + " " + format_position(poi.position)
 }
 
-function make_system(system_name, position)
+function make_system(system_name, position, uid)
 {
 	var obj = make_object_with_position(position);
 	obj.name = "System";
@@ -155,7 +197,7 @@ function make_system(system_name, position)
 	obj.system_name = system_name;
 	obj.contents = [];
 	obj.gid = 0;
-	obj.uid = 0;
+	obj.uid = uid;
 	
 	return obj;
 }
@@ -219,9 +261,12 @@ function format_sys_contents(sys)
 	return res;
 }
 
+var render_id = 0;
+
 function interactive_sys_contents(sys, player_view)
 {
-	var render_id = 0;
+	///hacky
+	//var render_id = sys.uid * 129;
 	
 	imgui.pushstylecolor(21, 0, 0, 0, 0); 
 	imgui.pushstylecolor(22, 0, 0, 0, 0); 
@@ -257,11 +302,8 @@ function interactive_sys_contents(sys, player_view)
 	for(var poi of sys.contents)
 	{
 		var title = format_poi_name(poi);
-				
-		if(player_view.is_poi_open[poi.uid] == undefined)
-			player_view.is_poi_open[poi.uid] = 0;
-		
-		var is_open = player_view.is_poi_open[poi.uid];
+					
+		var is_open = view_is_poi_open(player_view, sys, poi);
 			
 		var str = "+";
 		
@@ -273,7 +315,7 @@ function interactive_sys_contents(sys, player_view)
 		if(imgui.button(str))
 		{
 			is_open = !is_open;
-			player_view.is_poi_open[poi.uid] = is_open;
+			view_set_is_poi_open(player_view, sys, poi, is_open);
 		}
 		
 		imgui.sameline();
@@ -305,10 +347,14 @@ add_to_poi(poi, make_asteroid([300, 10]));
 add_to_poi(poi, make_station([5, 223], "Owo station"));
 add_to_poi(poi, make_station([10, 9], "Stationary"));
 
-var sys = make_system("Alpha Blenturi", [10, 10]);
+var sys1 = make_system("Alpha Blenturi", [10, 10], 0);
+var sys2 = make_system("Barnard's Star", [15, 13], 1);
 
-add_poi_to_system(sys, poi);
+connect_systems(sys1, sys2);
 
-interactive_sys_contents(sys, view);
+add_poi_to_system(sys1, poi);
+
+interactive_sys_contents(sys1, view);
+interactive_sys_contents(sys2, view);
 
 //format_sys_contents(sys);
