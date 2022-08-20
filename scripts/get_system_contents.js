@@ -337,7 +337,6 @@ function interactive_sys_contents(sys, player_view)
 	imgui.popstylecolor(3);
 }
 
-
 var poi = make_poi("Asteroid Belt", "asteroidbelt", [20, 30]);
 
 add_to_poi(poi, make_ship([50, 40], "Stinky Names"));
