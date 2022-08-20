@@ -118,7 +118,7 @@ function array_concat(a1, a2, sep)
 function format_sys_contents(sys)
 {
 	//format_position(sys.position) 	
-	var res = "System : " + sys.system_name + " " + format_position(sys.position) + "\n";
+	var res = "System: " + sys.system_name + " " + format_position(sys.position) + "\n";
 
 	for(var poi of sys.contents)
 	{
@@ -161,7 +161,7 @@ function interactive_sys_contents(sys, player_view)
 	
 	imgui.sameline();
 	
-	imgui.text("System : " + sys.system_name + " " + format_position(sys.position) + "\n");
+	imgui.text("System: " + sys.system_name + " " + format_position(sys.position) + "\n");
 	
 	if(!is_sys_open)
 		return;
