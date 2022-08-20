@@ -1,3 +1,16 @@
+{
+	var rstx = db.read_write();
+	
+	var should_reset = rstx.read(0, "reset");
+	rstx.write(0, "reset", 0);
+	rstx.close();
+	
+	if(should_reset === 1)
+	{
+		globalThis.player = undefined;
+	}
+}
+
 if(globalThis.test == undefined)
 	globalThis.test = false;
 
@@ -8,14 +21,10 @@ if(globalThis.player == undefined)
 	globalThis.player = make_player(0);
 }
 
+
 if(imgui.button("Hello there"))
 {
 	globalThis.test = !globalThis.test;
-}
-
-if(globalThis.test)
-{
-	//imgui.text("Stinky");	
 }
 
 imgui.text(exec("hello") + " " + globalThis.test);

@@ -262,6 +262,8 @@ struct sandbox
 
 };
 
+void system_global(js::value_context& vctx);
+
 void execute_client_logic(std::shared_ptr<client_state> state, nlohmann::json client_msg)
 {
     if(client_msg.count("type") == 0)
@@ -283,6 +285,7 @@ void execute_client_logic(std::shared_ptr<client_state> state, nlohmann::json cl
 
         sandbox sand;
         js::value_context vctx(nullptr, &sand);
+        system_global(vctx); ///temporary
 
         js::value found = js::eval(vctx, s.contents);
 
