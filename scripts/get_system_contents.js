@@ -25,17 +25,38 @@ function fill_asteroid(asteroid, ore_name, ore_type, ore_amount)
 	asteroid.ores.push(item);
 }
 
-function make_asteroid(position, type)
+function make_asteroid(position)
 {
 	var obj = make_object(position);
 	obj.name = "Asteroid";
 	obj.type = "asteroid";
-	obj.asteroid_type = type;
 	obj.ores = [];
 	
 	fill_asteroid(obj, "Titanium", "titanium", 15);
 	
 	return obj;
+}
+
+function get_asteroid_description(asteroid)
+{
+	var largest_ore_amount = 0;
+	var largest_ore_index = 0;
+	
+	if(asteroid.ores.length == 0)
+		return "Barren";
+	
+	for(var i=0; i < asteroid.ores.length; i++)
+	{
+		if(asteroid.ores[i].ore_amount >= largest_ore_amount)
+		{
+			largest_ore_amount = asteroid.ores[i].ore_amount;
+			largest_ore_index = i;
+		}
+	}
+	
+	var largest_ore = asteroid.ores[largest_ore_index];
+	
+	return largest_ore.name + " (" + largest_ore.ore_amount + ")";
 }
 
 function make_ship(position, ship_name)
@@ -116,8 +137,8 @@ function array_concat(a1, a2, sep)
 var objs = [
 	make_ship([50, 40], "Stinky Names"),
 	make_ship([100, 20], "Also A Ship"),
-	make_asteroid([150, 10], "Ironing"),
-	make_asteroid([300, 10], "Flytanium"),
+	make_asteroid([150, 10]),
+	make_asteroid([300, 10]),
 	make_station([5, 223], "Owo station"),
 	make_station([10, 9], "Stationary")
 ];
@@ -136,7 +157,8 @@ for(var e of objs)
 	}
 	else if(e.type == "asteroid")
 	{
-		names.push("(" + e.asteroid_type + ")");
+		names.push(get_asteroid_description(e));
+		//names.push("(" + e.asteroid_type + ")");
 	}
 	else if(e.type == "station")
 	{
@@ -154,6 +176,6 @@ var fmt_1 = format(types);
 var fmt_2 = format(names);
 var fmt_3 = format(positions);
 
-var merged = array_concat(array_concat(fmt_1, fmt_2, ' '), fmt_3, ' ');
+var merged = array_concat(array_concat(fmt_1, fmt_2, ' | '), fmt_3, ' | ');
 
 merged.join('\n');
