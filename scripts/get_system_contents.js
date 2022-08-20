@@ -1,4 +1,4 @@
-function make_object(position)
+function make_object_with_position(position)
 {
 	var obj = {};
 	obj.position = position;
@@ -27,7 +27,7 @@ function fill_asteroid(asteroid, ore_name, ore_type, ore_amount)
 
 function make_asteroid(position)
 {
-	var obj = make_object(position);
+	var obj = make_object_with_position(position);
 	obj.name = "Asteroid";
 	obj.type = "asteroid";
 	obj.ores = [];
@@ -61,7 +61,7 @@ function get_asteroid_description(asteroid)
 
 function make_ship(position, ship_name)
 {
-	var obj = make_object(position);
+	var obj = make_object_with_position(position);
 	obj.name = "Ship";
 	obj.type = "ship";
 	obj.nickname = ship_name;
@@ -71,7 +71,7 @@ function make_ship(position, ship_name)
 
 function make_station(position, station_name)
 {
-	var obj = make_object(position);
+	var obj = make_object_with_position(position);
 	obj.name = "Station";
 	obj.type = "station";
 	obj.nickname = station_name;
