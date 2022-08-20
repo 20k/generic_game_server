@@ -303,6 +303,21 @@ js::value in_script_eval(js::value_context* vctx, std::string val)
     return js::eval(*vctx, s.contents);
 }
 
+std::optional<db::read_tx*> fetch_db_tx(js::value db_object)
+{
+    if(!db_object.has_hidden("db_transaction"))
+        return std::nullopt;
+
+    js::value hidden = db_object.get_hidden("db_transaction");
+
+    db::read_tx* base = hidden.get_ptr<db::read_tx>();
+
+    if(base == nullptr)
+        return std::nullopt;
+
+    return base;
+}
+
 js::value db_read(js::value_context* vctx, js::value js_db_id, js::value js_key)
 {
     js::value ret(*vctx);
@@ -310,19 +325,12 @@ js::value db_read(js::value_context* vctx, js::value js_db_id, js::value js_key)
     int db_id = (int)js_db_id;
     std::string key = (std::string)js_key;
 
-    js::value called_on = js::get_this(*vctx);
+    std::optional tx_opt = fetch_db_tx(js::get_this(*vctx));
 
-    if(!called_on.has_hidden("db_transaction"))
-        return js::make_value(*vctx, "No hidden variable for db_read transaction");
+    if(!tx_opt.has_value())
+        return js::make_value(*vctx, "No transaction in db_read");
 
-    js::value hidden = called_on.get_hidden("db_transaction");
-
-    db::read_tx* base = hidden.get_ptr<db::read_tx>();
-
-    if(base == nullptr)
-        return js::make_value(*vctx, "Critical error in db_read, nullptr pointer");
-
-    std::optional<db::data> dat = base->read(db_id, key);
+    std::optional<db::data> dat = tx_opt.value()->read(db_id, key);
 
     if(dat.has_value())
     {
@@ -340,22 +348,15 @@ js::value db_write(js::value_context* vctx, js::value js_db_id, js::value js_key
     std::string key = (std::string)js_key;
     std::string data = js_value.to_json();
 
-    js::value called_on = js::get_this(*vctx);
+    std::optional tx_opt = fetch_db_tx(js::get_this(*vctx));
 
-    if(!called_on.has_hidden("db_transaction"))
-        return js::make_value(*vctx, "No hidden variable for db_read transaction");
+    if(!tx_opt.has_value())
+        return js::make_value(*vctx, "No transaction in db_write");
 
-    js::value hidden = called_on.get_hidden("db_transaction");
-
-    db::read_tx* base = hidden.get_ptr<db::read_tx>();
-
-    if(base == nullptr)
-        return js::make_value(*vctx, "Critical error in db_read, nullptr pointer");
-
-    if(!base->is_read_write)
+    if(!tx_opt.value()->is_read_write)
         return js::make_value(*vctx, "Tried to write on read only tx");
 
-    db::read_write_tx* rwtx = dynamic_cast<db::read_write_tx*>(base);
+    db::read_write_tx* rwtx = dynamic_cast<db::read_write_tx*>(tx_opt.value());
 
     assert(rwtx);
 
