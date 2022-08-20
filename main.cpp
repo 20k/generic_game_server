@@ -300,7 +300,11 @@ js::value in_script_eval(js::value_context* vctx, std::string val)
 {
     script s = load_script("./scripts/" + val + ".js");
 
-    return js::eval(*vctx, s.contents);
+    js::value result = js::eval(*vctx, s.contents);
+
+    vctx->compact_heap_stash();
+
+    return result;
 }
 
 std::optional<db::read_tx*> fetch_db_tx(js::value db_object)
