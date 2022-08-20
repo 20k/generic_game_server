@@ -79,24 +79,6 @@ function make_station(position, station_name)
 	return obj;
 }
 
-function format_entity(e)
-{
-	if(e.type == "ship")
-	{
-		return e.name + " (\"" + e.nickname + "\")";
-	}
-	else if(e.type == "asteroid")
-	{
-		return e.name + " (" + e.asteroid_type + ")";
-	}
-	else if(e.type == "station")
-	{
-		return e.name + " (\"" + e.nickname + "\")";
-	}
-	
-	return "Error";
-}
-
 ///takes a 1d array, pads to longest
 function format(arr)
 {
