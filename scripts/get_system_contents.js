@@ -73,6 +73,75 @@ function format_poi_contents(poi)
 	return merged.join('\n');
 }
 
+function interactive_poi_contents(poi)
+{
+	var types = [];
+	var names = [];
+	var positions = [];
+
+	for(var e of poi.contents)
+	{
+		types.push(e.name);
+		
+		if(e.type == "ship")
+		{
+			names.push("(\"" + e.nickname + "\")");
+		}
+		else if(e.type == "asteroid")
+		{
+			names.push(get_asteroid_description(e));
+			//names.push("(" + e.asteroid_type + ")");
+		}
+		else if(e.type == "station")
+		{
+			names.push("(\"" + e.nickname + "\")");
+		}
+		else if(e.type == "warpgate")
+		{
+			names.push(e.nickname);
+		}
+		else
+		{
+			names.push("No Name");
+		}
+		
+		positions.push("[" + e.position[0] + ", " + e.position[1] + "]");
+	}
+
+	//types.unshift("Name");
+	//names.unshift("Nickname");
+	//positions.unshift("Position");
+
+	var fmt_1 = format(types);
+	var fmt_2 = format(names);
+	var fmt_3 = format(positions);
+
+	/*var merged = array_concat(array_concat(fmt_1, fmt_2, ' | '), fmt_3, ' | ');
+
+	imgui.text(merged.join("\n"))*/
+	
+	for(var i=0; i < poi.contents.length; i++)
+	{
+		var e = poi.contents[i];
+		
+		var formatted_type = fmt_1[i];
+		var formatted_name = fmt_2[i];
+		var formatted_position = fmt_3[i];
+		
+		imgui.text(formatted_type + " | " + formatted_name + " | " + formatted_position);
+				
+		if(e.type == "ship" && e.owner == player.uid && player.controlling != e.uid) 
+		{
+			imgui.sameline();
+
+			if(imgui.smallbutton("Control ")) 
+			{			
+				player.take_control(e);
+			}
+		}
+	}
+}
+
 function format_poi_name(poi)
 {
 	return poi.poi_name + " " + format_position(poi.position)
@@ -188,14 +257,14 @@ function interactive_sys_contents(sys, player_view)
 		}
 		
 		imgui.sameline();
-				
+
 		imgui.text(title);
 		
 		if(is_open)
 		{			
 			imgui.indent();
 			imgui.indent();
-			imgui.text(format_poi_contents(poi));
+			interactive_poi_contents(poi);
 			imgui.unindent();
 			imgui.unindent();
 		}
@@ -208,19 +277,23 @@ function interactive_sys_contents(sys, player_view)
 
 var poi = make_poi("Asteroid Belt", "asteroidbelt", [20, 30]);
 
-poi.take_ownership(make_ship([50, 40], "Stinky Names"));
-poi.take_ownership(make_ship([100, 20], "Also A Ship"));
-poi.take_ownership(make_asteroid([150, 10]));
-poi.take_ownership(make_asteroid([300, 10]));
-poi.take_ownership(make_station([5, 223], "Owo station"));
-poi.take_ownership(make_station([10, 9], "Stationary"));
+var owned_ship = make_ship([50, 40], "Stinky Names");
+
+player.take_ownership(owned_ship);
+
+poi.take(owned_ship);
+poi.take(make_ship([100, 20], "Also A Ship"));
+poi.take(make_asteroid([150, 10]));
+poi.take(make_asteroid([300, 10]));
+poi.take(make_station([5, 223], "Owo station"));
+poi.take(make_station([10, 9], "Stationary"));
 
 var sys1 = make_system("Alpha Blenturi", [10, 10], 0);
 var sys2 = make_system("Barnard's Spire", [15, 13], 1);
 
 connect_systems(sys1, sys2);
 
-sys1.take_poi_ownership(poi);
+sys1.take_poi(poi);
 
 interactive_sys_contents(sys1, player.view);
 interactive_sys_contents(sys2, player.view);

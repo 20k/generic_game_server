@@ -9,7 +9,7 @@ function make_system(system_name, position, uid)
 		gid:0, //for local system content
 		uid:uid,
 		
-		take_poi_ownership(poi) {
+		take_poi(poi) {
 			poi.uid = this.gid++;
 	
 			this.contents.push(poi);
@@ -38,9 +38,9 @@ function connect_systems(sys1, sys2)
 	var gate_1 = make_warp_gate(sys1, sys2);
 	var gate_2 = make_warp_gate(sys2, sys1);
 	
-	poi_1.take_ownership(gate_1);
-	poi_2.take_ownership(gate_2);
+	poi_1.take(gate_1);
+	poi_2.take(gate_2);
 	
-	sys1.take_poi_ownership(poi_1);
-	sys2.take_poi_ownership(poi_2);
+	sys1.take_poi(poi_1);
+	sys2.take_poi(poi_2);
 }

@@ -8,7 +8,7 @@ function make_poi(poi_name, poi_type, position)
 		poi_type:poi_type,
 		contents:[],
 		
-		take_ownership(obj) {
+		take(obj) {
 			this.contents.push(obj);			
 		}
 	};
