@@ -139,7 +139,7 @@ function format_poi_contents(poi)
 
 	var merged = array_concat(array_concat(fmt_1, fmt_2, ' | '), fmt_3, ' | ');
 
-	return format_poi_name(poi) + "\n" + merged.join('\n');
+	return merged.join('\n');
 }
 
 function format_poi_name(poi)
@@ -225,29 +225,43 @@ function interactive_sys_contents(sys, player_view)
 	for(var poi of sys.contents)
 	{
 		var title = format_poi_name(poi);
+				
+		if(player_view.is_poi_open[poi.uid] == undefined)
+		{
+			player_view.is_poi_open[poi.uid] = 0;
+		}
 		
+		var is_open = player_view.is_poi_open[poi.uid];
+			
+		var str = "+###" + poi.uid;
+		
+		if(is_open)
+			str = "-###" + poi.uid;
+				
+		imgui.pushstylecolor(21, 0, 0, 0, 0); 
+		imgui.pushstylecolor(22, 0, 0, 0, 0); 
+		imgui.pushstylecolor(23, 0, 0, 0, 0); 
+				
+		if(imgui.button(str))
+		{
+			is_open = !is_open;
+			player_view.is_poi_open[poi.uid] = is_open;
+		}
+		
+		imgui.popstylecolor(3);
+				
+		imgui.sameline();
+				
 		imgui.text(title);
 		
-		imgui.sameline();
-		
-		if(player_view.is_open_ref[poi.uid] == undefined)
-		{
-			var ref = imgui.ref(0);
-			player_view.is_open_ref[poi.uid] = ref;
-		}
-		
-		var is_open_ref = player_view.is_open_ref[poi.uid];
-			
-		if(imgui.selectable("Open?", is_open_ref))
+		if(is_open)
 		{			
-			imgui.text(imgui.get(is_open_ref));
-	
+			imgui.indent();
+			imgui.indent();
 			imgui.text(format_poi_contents(poi));
+			imgui.unindent();
+			imgui.unindent();
 		}
-		
-		imgui.text(imgui.get(is_open_ref));
-				
-		//player_set_open(player_view, poi, imgui.get(selected_ref));
 	}
 }
 

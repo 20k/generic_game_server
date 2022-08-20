@@ -2,13 +2,13 @@ function make_player_view()
 {
 	var obj = {};
 	
-	obj.is_open_ref = {};
-	obj.is_open = new Map();
+	obj.is_poi_open = {};
+	obj.is_sys_open = {};
 	
 	return obj;
 }
 
-function player_open(obj, poi)
+/*function player_open(obj, poi)
 {
 	obj.is_open.set(poi.uid, true);
 }
@@ -29,6 +29,6 @@ function player_is_open(obj, poi)
 		return false;
 	
 	return obj.is_open.get(poi.uid);
-}
+}*/
 
 make_player_view();
