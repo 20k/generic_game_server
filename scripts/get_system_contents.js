@@ -174,6 +174,22 @@ function interactive_poi_contents(poi)
 					controlled.clear_actions();
 					controlled.add_action(act);
 				}
+				
+				if(e.type == "asteroid") 
+				{
+					if(poi.distance(controlled, e) < 1)
+					{
+						imgui.sameline();
+						
+						if(imgui.smallbutton("[mine]##" + render_id++))
+						{						
+							var act = make_mine_action(controlled, e);
+							
+							controlled.clear_actions();
+							controlled.add_action(act);
+						}
+					}
+				}
 			}
 		}
 	}

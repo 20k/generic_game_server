@@ -40,6 +40,28 @@ function make_move_action(e, finish_position, elapsed_time_s)
 	return obj;
 }
 
+function make_mine_action(e, target)
+{
+	var total_ore = target.get_total_ore();
+	
+	var time_to_mine = 0;
+	
+	var mine_power = e.get_mining_power();
+	
+	if(total_ore > 0.0001 && mine_power > 0.0001)
+	{
+		time_to_mine = total_ore / mine_power;
+	}
+	
+	var obj = make_action();
+	
+	obj.subtype = "mine";
+	obj.subobject = {}; //crap, need the asteroid object
+	obj.finish_elapsed = time_to_mine;
+	
+	return obj;
+}
+
 function make_entity_actionable(obj)
 {	
 	obj.actions = [];

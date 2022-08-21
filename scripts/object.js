@@ -52,8 +52,7 @@ function make_asteroid(position)
 	
 	fill_asteroid(obj, "Titanium", "titanium", 15);
 	
-	///1 power removes 1 ore
-	obj.mine = function(total_power) {
+	obj.get_total_ore = function() {
 		var total_ore = 0;
 		
 		for(var e of this.ores) {
@@ -61,6 +60,16 @@ function make_asteroid(position)
 		}
 		
 		if(total_ore < 0.0001)
+			return 0;
+		
+		return total_ore;
+	}
+	
+	///1 power removes 1 ore
+	obj.mine = function(total_power) {
+		var total_ore = this.get_total_ore();
+		
+		if(total_ore <= 0)
 			return [];
 		
 		var result = [];
