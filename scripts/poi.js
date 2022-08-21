@@ -1,4 +1,5 @@
 import {execute_action} from "action";
+import {load_object, to_uids, load_uids} from "api"
 
 exec("get_unique_id");
 
@@ -13,6 +14,24 @@ export class Poi
 		this.poi_type = "error type"
 		this.contents = [];
 		this.uid = get_unique_id();
+	}
+	
+	store()
+	{
+		var contents_uid = to_uids(this.contents);
+		
+		return {position:this.position, name:this.name, type:this.type, poi_name:this.poi_name, poi_type:this.poi_type, contents_uid, uid:this.uid}
+	}
+	
+	load(obj)
+	{
+		this.position = obj.position;
+		this.name = obj.name;
+		this.type = obj.type;
+		this.poi_name = obj.poi_name
+		this.poi_type = obj.poi_type
+		this.contents = load_uids(obj.contents_uid);
+		this.uid = obj.uid;		
 	}
 	
 	take(obj) {

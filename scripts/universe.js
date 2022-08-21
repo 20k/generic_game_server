@@ -1,5 +1,6 @@
 exec("get_unique_id")
-exec("api");
+
+import {load_object, to_uids, load_uids} from "api"
 
 export class Universe
 {
@@ -21,6 +22,19 @@ export class Universe
 		{
 			sys.tick(this, delta_time_s);
 		}
+	}
+	
+	store()
+	{
+		var contents_uid = to_uids(this.contents);
+				
+		return {type:this.type, uid:this.uid, contents_uid}
+	}
+	
+	load(obj)
+	{		
+		this.uid = obj.uid;		
+		this.contents = load_uids(obj.contents_uid)
 	}
 }
 

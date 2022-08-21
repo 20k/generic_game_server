@@ -22,6 +22,16 @@ export class Player
 	release_control(obj) {
 		this.controlling = -1;
 	}
+	
+	store()
+	{
+		return this;
+	}
+	
+	load(obj)
+	{	
+		Object.assign(this, obj);
+	}
 }
 
 export function make_player()

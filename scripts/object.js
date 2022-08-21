@@ -1,4 +1,6 @@
 import {make_entity_actionable} from "action" 
+import {set_debug} from "debug"
+import {fix_class_array} from "api"
 
 exec("get_unique_id");
 
@@ -58,6 +60,20 @@ export class Asteroid
 		make_entity_actionable(this);
 	}
 	
+	store()
+	{
+		return this;
+	}
+	
+	load(obj)
+	{
+		make_entity_actionable(this);
+		
+		Object.assign(this, obj);
+		
+		fix_class_array(this.actions);
+	}
+	
 	get_total_ore() {
 		var total_ore = 0;
 		
@@ -103,6 +119,20 @@ export class Station
 		
 		make_entity_actionable(this);
 	}
+	
+	store()
+	{
+		return this;
+	}
+	
+	load(obj)
+	{
+		make_entity_actionable(this);
+		
+		Object.assign(this, obj);
+		
+		fix_class_array(this.actions);
+	}	
 }
 
 export class Warpgate
@@ -120,6 +150,20 @@ export class Warpgate
 		
 		make_entity_actionable(this);
 	}
+	
+	store()
+	{
+		return this;
+	}
+	
+	load(obj)
+	{
+		make_entity_actionable(this);
+		
+		Object.assign(this, obj);
+		
+		fix_class_array(this.actions);
+	}
 }
 
 export class Ship
@@ -134,6 +178,25 @@ export class Ship
 		this.uid = get_unique_id();
 		
 		make_entity_actionable(this);
+	}
+	
+	store()
+	{
+		return this;
+	}
+	
+	load(obj)
+	{
+		make_entity_actionable(this);
+		
+		Object.assign(this, obj);
+		
+		fix_class_array(this.actions);
+		
+		/*if(this.add_action_time == undefined)
+		{
+			set_debug("I am sad");
+		}*/
 	}
 
 	get_speed() {

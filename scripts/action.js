@@ -7,26 +7,30 @@ function make_move_subobject(e, finish_position)
 	};
 }
 
+export class Action
+{
+	constructor()
+	{
+		this.type = "action";
+		this.subtype = "";
+		this.subobject = {};
+		
+		this.current_elapsed = 0;
+		this.finish_elapsed = 0;
+	}
+	
+	remaining_time() {
+		return this.finish_elapsed - this.current_elapsed;
+	}
+	
+	finished() {
+		return this.current_elapsed >= this.finish_elapsed - 0.000001;
+	}
+}
+
 function make_action()
 {
-	var obj = {
-		type: "action",
-		subtype: "",
-		subobject: {},
-		
-		current_elapsed: 0,
-		finish_elapsed: 0,
-		
-		remaining_time() {
-			return this.finish_elapsed - this.current_elapsed;
-		},
-		
-		finished() {
-			return this.current_elapsed >= this.finish_elapsed - 0.000001;
-		}
-	};
-	
-	return obj;
+	return new Action();
 }
 
 export function make_move_action(e, finish_position, elapsed_time_s)

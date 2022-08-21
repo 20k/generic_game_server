@@ -1,5 +1,7 @@
 import {make_poi} from "poi";
 import {make_warp_gate} from "object"
+import {load_object, to_uids, load_uids} from "api"
+import {set_debug} from "debug"
 
 export class System
 {
@@ -23,6 +25,23 @@ export class System
 		for(var poi of this.contents) {
 			poi.tick(universe, this, elapsed_time_s);
 		}
+	}
+	
+	store()
+	{		
+		var contents_uid = to_uids(this.contents);
+		
+		return {position:this.position, name:this.name, type:this.type, system_name:this.system_name, contents_uid:contents_uid, uid:this.uid}
+	}
+	
+	load(obj)
+	{			
+		this.position = obj.position;
+		this.name = obj.name;
+		this.type = obj.type;
+		this.system_name = obj.system_name
+		this.contents = load_uids(obj.contents_uid);
+		this.uid = obj.uid;		
 	}
 }
 

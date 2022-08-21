@@ -1,9 +1,10 @@
 //mexec("universe");
 //import {default as _} from "universe.js"
-import {make_universe} from "universe"
+import {make_universe, Universe} from "universe"
 import {generate_universe} from "generate_universe"
 import {render_universe_contents} from "get_system_contents"
 import {make_player} from "player"
+import {get_debug} from "debug"
 
 {
 	var rstx = db.read_write();
@@ -65,7 +66,18 @@ if(imgui.button("Reset Universe"))
 	globalThis.universe = generate_universe(globalThis.player);
 }
 
-if(globalThis.last_debug != undefined)
+//if(globalThis.last_debug != undefined)
+
+//if(get_debug() != undefined)
 {
-	imgui.text(globalThis.last_debug);
+	imgui.text("Dbg: " + get_debug());
+}
+
+if(imgui.button("TestSaveLoad"))
+{
+	var universe_flattened = globalThis.universe.store();
+		
+	globalThis.universe = new Universe();
+	
+	globalThis.universe.load(universe_flattened);
 }
