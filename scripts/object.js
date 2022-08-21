@@ -1,3 +1,5 @@
+exec("action");
+
 function make_object_with_position(position)
 {
 	var obj = {};
@@ -34,6 +36,8 @@ function make_asteroid(position)
 	obj.ores = [];
 	obj.owner = -1;
 	
+	make_entity_actionable(obj);
+	
 	fill_asteroid(obj, "Titanium", "titanium", 15);
 	
 	return obj;
@@ -46,6 +50,8 @@ function make_station(position, station_name)
 	obj.type = "station";
 	obj.nickname = station_name;
 	obj.owner = -1;
+	
+	make_entity_actionable(obj);
 	
 	return obj;
 }
@@ -60,6 +66,8 @@ function make_warp_gate(src_sys, dest_sys)
 	obj.src_uid = src_sys.uid;
 	obj.owner = -1;
 	
+	make_entity_actionable(obj);
+	
 	return obj;
 }
 
@@ -70,6 +78,8 @@ function make_ship(position, ship_name)
 	obj.type = "ship";
 	obj.nickname = ship_name;
 	obj.owner = -1;
+	
+	make_entity_actionable(obj);
 	
 	return obj;
 }

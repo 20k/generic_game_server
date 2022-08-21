@@ -303,7 +303,7 @@ js::value in_script_eval(js::value_context* vctx, std::string val)
 {
     script s = load_script("./scripts/" + val + ".js");
 
-    js::value result = js::eval(*vctx, s.contents);
+    js::value result = js::eval(*vctx, s.contents, s.title);
 
     vctx->compact_heap_stash();
 
@@ -491,7 +491,7 @@ void client_ui_thread(std::shared_ptr<client_state> state)
 
         try
         {
-            js::eval(vctx, ui_script.contents);
+            js::eval(vctx, ui_script.contents, ui_script.title);
         }
         catch(std::exception& e)
         {
