@@ -21,28 +21,29 @@ function make_item(name, subtype)
 	};
 }
 
+function take_ore_amount(item, amount)
+{	
+	if(amount > item.ore_amount) {
+		amount = this.ore_amount;
+	}
+	
+	var result = make_item("Ore", "ore");
+	result.ore_name = item.ore_name;
+	result.ore_type = item.ore_type;
+	result.ore_amount = amount;
+	
+	item.ore_amount -= amount;
+	
+	return result;
+}
+
 function fill_asteroid(asteroid, ore_name, ore_type, ore_amount)
 {
 	var item = make_item("Ore", "ore");
 	item.ore_name = ore_name;
 	item.ore_type = ore_type;
 	item.ore_amount = ore_amount;
-	
-	item.take_ore_amount = function(amount) {		
-		if(amount > this.ore_amount) {
-			amount = this.ore_amount;
-		}
 		
-		var result = make_item("Ore", "ore");
-		result.ore_name = this.ore_name;
-		result.ore_type = this.ore_type;
-		result.ore_amount = amount;
-		
-		this.ore_amount -= amount;
-		
-		return result;
-	}
-	
 	asteroid.ores.push(item);
 }
 
@@ -99,7 +100,7 @@ export class Asteroid
 		var depleted_frac = total_power / total_ore;
 		
 		for(var item of this.ores) {
-			result.push(item.take_ore_amount(depleted_frac * item.ore_amount));
+			result.push(take_ore_amount(item, depleted_frac * item.ore_amount));
 		}
 		
 		return result;
