@@ -511,6 +511,7 @@ int js_module_set_import_meta(JSContext *ctx, JSValueConst func_val,
     return 0;
 }
 
+
 JSModuleDef *js_module_loader(JSContext *ctx,
                               const char *module_name, void *opaque)
 {
@@ -570,6 +571,13 @@ void client_ui_thread(std::shared_ptr<client_state> state)
         /*JSMemoryUsage usg;
         JS_ComputeMemoryUsage(JS_GetRuntime(vctx.ctx), &usg);
         printf("Malloc size %i malloc limit %i atom count %i atom count %i\n", usg.malloc_size, usg.malloc_limit, usg.atom_count, usg.atom_size);*/
+
+        /*for(JSModuleDef* m : opaque.mods)
+        {
+            JS_UnResolveModule(m);
+        }*/
+
+        JS_FreeModules(vctx.ctx);
 
         while(state->client_ui_messages.has_front())
         {
