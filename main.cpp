@@ -233,6 +233,9 @@ struct script
 
 script load_script(std::filesystem::path name)
 {
+    if(!file::exists(name.string()))
+        throw std::runtime_error("No such file " + name.string());
+
     script s;
     s.title = name.stem().string();
     s.contents = file::read(name.string(), file::mode::TEXT);

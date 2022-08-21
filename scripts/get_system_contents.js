@@ -210,11 +210,8 @@ function interactive_sys_contents(sys, player_view)
 	imgui.pushstylecolor(21, 0, 0, 0, 0); 
 	imgui.pushstylecolor(22, 0, 0, 0, 0); 
 	imgui.pushstylecolor(23, 0, 0, 0, 0); 
-
-	if(player_view.is_sys_open[sys.uid] == undefined)
-		player_view.is_sys_open[sys.uid] = 1;
 	
-	var is_sys_open = player_view.is_sys_open[sys.uid];
+	var is_sys_open = player_view.is_sys_open(sys);
 	
 	var sys_str = "+";
 	
@@ -226,7 +223,7 @@ function interactive_sys_contents(sys, player_view)
 	if(imgui.button(sys_str))
 	{
 		is_sys_open = !is_sys_open;
-		player_view.is_sys_open[sys.uid] = is_sys_open;
+		player_view.set_is_sys_open(sys, is_sys_open);
 	}
 	
 	imgui.sameline();
@@ -242,7 +239,7 @@ function interactive_sys_contents(sys, player_view)
 	{
 		var title = format_poi_name(poi);
 					
-		var is_open = view_is_poi_open(player_view, sys, poi);
+		var is_open = player_view.is_poi_open(sys, poi);
 			
 		var str = "+";
 		
@@ -254,7 +251,7 @@ function interactive_sys_contents(sys, player_view)
 		if(imgui.button(str))
 		{
 			is_open = !is_open;
-			view_set_is_poi_open(player_view, sys, poi, is_open);
+			player_view.set_is_poi_open(sys, poi, is_open);
 		}
 		
 		imgui.sameline();
@@ -276,38 +273,12 @@ function interactive_sys_contents(sys, player_view)
 	imgui.popstylecolor(3);
 }
 
-var poi = make_poi("Asteroid Belt", "asteroidbelt", [20, 30]);
-
-var owned_ship = make_ship([50, 40], "Stinky Names");
-
-player.take_ownership(owned_ship);
-
-poi.take(owned_ship);
-poi.take(make_ship([100, 20], "Also A Ship"));
-poi.take(make_asteroid([150, 10]));
-poi.take(make_asteroid([300, 10]));
-poi.take(make_station([5, 223], "Owo station"));
-poi.take(make_station([10, 9], "Stationary"));
-
-var sys1 = make_system("Alpha Blenturi", [10, 10], 0);
-var sys2 = make_system("Barnard's Spire", [15, 13], 1);
-
-connect_systems(sys1, sys2);
-
-sys1.take_poi(poi);
-
-var universe = make_universe();
-universe.take(sys1);
-universe.take(sys2);
-
-for(var sys of universe.contents)
+function render_universe_contents(universe)
 {
-	interactive_sys_contents(sys, player.view);
-}
-
-for(var sys of universe.contents)
-{
-	sys.tick(universe, 1.);
+	for(var sys of universe.contents)
+	{
+		interactive_sys_contents(sys, player.view);
+	}
 }
 
 //format_sys_contents(sys);

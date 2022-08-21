@@ -21,6 +21,12 @@ if(globalThis.player == undefined)
 	globalThis.player = make_player(0);
 }
 
+if(globalThis.universe == undefined)
+{
+	exec("universe");
+	exec("generate_universe");
+	globalThis.universe = generate_universe();
+}
 
 if(imgui.button("Hello there"))
 {
@@ -33,6 +39,8 @@ imgui.text(exec("hello") + " " + globalThis.test);
 
 exec("get_system_contents");
 
+render_universe_contents(globalThis.universe);
+
 var t2 = db.read_only();
 
 var value = t2.read(0, "hello");
@@ -40,3 +48,15 @@ var value = t2.read(0, "hello");
 t2.close();
 
 imgui.text("DB val " + value);
+
+if(imgui.button("Tick"))
+{
+	globalThis.universe.tick(1.)
+}
+
+if(imgui.button("Reset Universe"))
+{
+	exec("universe");
+	exec("generate_universe");
+	globalThis.universe = generate_universe();
+}
