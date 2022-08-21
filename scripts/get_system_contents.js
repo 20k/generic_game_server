@@ -1,5 +1,6 @@
 import {make_universe} from "universe"
 import {make_system, connect_systems} from "system"
+import {make_move_action, make_mine_action} from "action"
 
 function format_position(position)
 {
