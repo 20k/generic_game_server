@@ -1,3 +1,8 @@
+//mexec("universe");
+//import {default as _} from "universe.js"
+import {make_universe} from "universe"
+import {generate_universe} from "generate_universe"
+
 {
 	var rstx = db.read_write();
 	
@@ -28,8 +33,6 @@ if(globalThis.player == undefined)
 
 if(globalThis.universe == undefined)
 {
-	exec("universe");
-	exec("generate_universe");
 	globalThis.universe = generate_universe();
 }
 
@@ -61,8 +64,6 @@ if(imgui.button("Tick"))
 
 if(imgui.button("Reset Universe"))
 {
-	exec("universe");
-	exec("generate_universe");
 	globalThis.universe = generate_universe();
 }
 

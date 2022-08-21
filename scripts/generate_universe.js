@@ -1,10 +1,12 @@
 exec("object")
 exec("system")
 exec("poi")
-exec("universe")
+//mexec("universe")
 exec("api");
 
-function generate_universe()
+import {make_universe} from "universe"
+
+export function generate_universe()
 {
 	var poi = make_poi("Asteroid Belt", "asteroidbelt", [20, 30]);
 

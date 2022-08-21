@@ -1,7 +1,7 @@
 exec("get_unique_id")
 exec("api");
 
-function make_universe()
+export function make_universe()
 {
 	return {
 		contents:[],

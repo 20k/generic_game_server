@@ -1,7 +1,6 @@
 exec("system");
 exec("poi");
 exec("object");
-exec("universe");
 exec("action");
 
 function format_position(position)
