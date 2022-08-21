@@ -298,4 +298,12 @@ sys1.take_poi(poi);
 interactive_sys_contents(sys1, player.view);
 interactive_sys_contents(sys2, player.view);
 
+var world = {}
+world.systems = [sys1, sys2];
+
+for(var sys of world.systems)
+{
+	sys.tick(world, 1.);
+}
+
 //format_sys_contents(sys);

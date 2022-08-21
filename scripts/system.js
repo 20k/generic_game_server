@@ -13,6 +13,12 @@ function make_system(system_name, position, uid)
 			poi.uid = this.gid++;
 	
 			this.contents.push(poi);
+		},
+		
+		tick(world, elapsed_time_s) {
+			for(var poi of this.contents) {
+				poi.tick(world, this, elapsed_time_s);
+			}
 		}
 	};
 	

@@ -1,4 +1,4 @@
-function make_move(e, finish_position, elased_time_s)
+function make_move_subobject(e, finish_position)
 {
 	return {
 		object_uid: e.uid,
@@ -15,7 +15,7 @@ function make_action()
 		subobject: {},
 		
 		current_elapsed: 0,
-		finish_elapsed: elapsed_time_s,
+		finish_elapsed: 0,
 		
 		remaining_time() {
 			return this.elapsed_time_s - this.current_elapsed;
@@ -24,13 +24,19 @@ function make_action()
 		finished() {
 			return this.current_elapsed >= this.elapsed_time_s - 0.000001;
 		}
-		
-		/*move_entity(e, finish_position, elased_time_s) {
-			this.subtype = "move";
-			subobject = make_move(e, finish_position, elased_time_s);
-		}*/
 	};
 	
+	return obj;
+}
+
+function make_move_action(e, finish_position, elapsed_time_s)
+{
+	var obj = make_action();
+	
+	obj.subtype = "move";
+	obj.subobject = make_move_subobject(e, finish_position, elapsed_time_s);
+	obj.finish_elapsed = elapsed_time_s;
+
 	return obj;
 }
 
@@ -45,20 +51,26 @@ function make_entity_actionable(obj)
 	obj.add_action_time = function(delta_time_s, action_executor) {
 		var remaining = delta_time_s;
 		
-		while(actions.length > 0 && remaining > 0)
+		while(this.actions.length > 0 && remaining > 0)
 		{		
-			var consumable = Math.min(actions[0].remaining_time(), remaining);
+			var consumable = Math.min(this.actions[0].remaining_time(), remaining);
 			
-			action_executor(actions[0], consumable);
+			action_executor(this.actions[0], consumable);
 			
-			actions[0].current_elapsed += consumable;
+			this.actions[0].current_elapsed += consumable;
 			
 			remaining -= consumable;
 			
-			if(actions[0].finished())
+			if(this.actions[0].finished())
 			{
-				actions.shift();
+				this.actions.shift();
 			}
 		}
 	}
+}
+
+
+function execute_action(world, sys, poi, en, act, real_time_s)
+{
+	
 }
