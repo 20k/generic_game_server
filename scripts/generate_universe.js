@@ -2,6 +2,7 @@ exec("object")
 exec("system")
 exec("poi")
 exec("universe")
+exec("api");
 
 function generate_universe()
 {
