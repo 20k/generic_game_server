@@ -49,6 +49,16 @@ function make_poi(poi_name, poi_type, position)
 				return dist / my_speed;
 			
 			return 0;
+		},
+		
+		lookup_slow_opt(id) {
+			for(var e of this.contents)
+			{
+				if(e.uid == id)
+					return e;
+			}
+			
+			return null;
 		}
 	};
 	

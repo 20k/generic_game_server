@@ -56,7 +56,7 @@ function make_mine_action(e, target)
 	var obj = make_action();
 	
 	obj.subtype = "mine";
-	obj.subobject = {}; //crap, need the asteroid object
+	obj.subobject = {target_uid:target.uid}; //crap, need the asteroid object
 	obj.finish_elapsed = time_to_mine;
 	
 	return obj;
@@ -124,5 +124,22 @@ function execute_action(universe, sys, poi, en, act, real_time_s)
 		analytic_pos[1] = Math.round(analytic_pos[1] * 100) / 100;
 		
 		en.position = analytic_pos;		
+	}
+	
+	if(act.subtype == "mine")
+	{
+		//globalThis.last_debug = "mine"
+		
+		var object = poi.lookup_slow_opt(act.subobject.target_uid);
+		
+		if(object == null)
+			return;
+		
+		var returned_items = object.mine(en.get_mining_power() * real_time_s);
+		
+		if(returned_items.length == 0)
+			return;
+		
+		//globalThis.last_debug = "Mined " + returned_items[0].ore_amount;
 	}
 }

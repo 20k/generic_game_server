@@ -7,7 +7,7 @@ function generate_universe()
 {
 	var poi = make_poi("Asteroid Belt", "asteroidbelt", [20, 30]);
 
-	var owned_ship = make_ship([50, 40], "Stinky Names");
+	var owned_ship = make_ship([150, 10.1], "Stinky Names");
 
 	///aint great
 	//player.take_ownership(owned_ship);

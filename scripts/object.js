@@ -32,7 +32,9 @@ function fill_asteroid(asteroid, ore_name, ore_type, ore_amount)
 		var result = make_item("Ore", "ore");
 		result.ore_name = this.ore_name;
 		result.ore_type = this.ore_type;
-		result.ore_amount = this.ore_amount - amount;
+		result.ore_amount = amount;
+		
+		this.ore_amount -= amount;
 		
 		return result;
 	}
