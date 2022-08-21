@@ -9,9 +9,14 @@ function make_poi(poi_name, poi_type, position)
 		poi_name:poi_name,
 		poi_type:poi_type,
 		contents:[],
+		gid:0,
 		
 		take(obj) {
-			this.contents.push(obj);			
+			obj.uid = this.gid++;
+			
+			this.contents.push(obj);
+			
+			return obj;
 		},
 		
 		tick(universe, sys, elapsed_time_s) {

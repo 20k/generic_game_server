@@ -1,4 +1,4 @@
-function make_system(system_name, position, uid)
+function make_system(system_name, position)
 {
 	var obj = {
 		position:position,
@@ -7,12 +7,14 @@ function make_system(system_name, position, uid)
 		system_name:system_name,
 		contents:[],
 		gid:0, //for local system content
-		uid:uid,
+		uid:-1,
 		
 		take_poi(poi) {
 			poi.uid = this.gid++;
 	
 			this.contents.push(poi);
+			
+			return poi;
 		},
 		
 		tick(universe, elapsed_time_s) {

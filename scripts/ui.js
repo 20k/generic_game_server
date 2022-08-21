@@ -9,6 +9,11 @@
 	{
 		globalThis.player = undefined;
 	}
+	
+	if(imgui.button("Reset Player View"))
+	{
+		globalThis.player = undefined;
+	}
 }
 
 if(globalThis.test == undefined)
@@ -39,7 +44,7 @@ imgui.text(exec("hello") + " " + globalThis.test);
 
 exec("get_system_contents");
 
-render_universe_contents(globalThis.universe);
+//render_universe_contents(globalThis.universe);
 
 var t2 = db.read_only();
 

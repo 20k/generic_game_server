@@ -130,9 +130,13 @@ function interactive_poi_contents(poi)
 		var formatted_position = fmt_3[i];
 		
 		imgui.text(formatted_type + " | " + formatted_name + " | " + formatted_position);
-				
+										
 		if(e.type == "ship" && e.owner == player.uid && player.controlling != e.uid) 
 		{
+			/*imgui.sameline();
+			
+			imgui.text("hi" + e.uid);*/
+			
 			imgui.sameline();
 
 			if(imgui.smallbutton("Control ")) 
@@ -230,24 +234,27 @@ function interactive_sys_contents(sys, player_view)
 	
 	imgui.text("System: " + sys.system_name + " " + format_position(sys.position) + "\n");
 	
-	if(!is_sys_open)
+	if(!is_sys_open)	
+	{
+		imgui.popstylecolor(3);
 		return;
+	}
 	
 	imgui.indent();
 	
 	for(var poi of sys.contents)
 	{
 		var title = format_poi_name(poi);
-					
+
 		var is_open = player_view.is_poi_open(sys, poi);
-			
+		
 		var str = "+";
 		
 		if(is_open)
 			str = "-";
 		
 		str += "###" + render_id++;			
-				
+
 		if(imgui.button(str))
 		{
 			is_open = !is_open;
@@ -280,5 +287,7 @@ function render_universe_contents(universe)
 		interactive_sys_contents(sys, player.view);
 	}
 }
+
+render_universe_contents(universe);
 
 //format_sys_contents(sys);
