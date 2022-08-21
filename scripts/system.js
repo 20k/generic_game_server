@@ -15,9 +15,9 @@ function make_system(system_name, position, uid)
 			this.contents.push(poi);
 		},
 		
-		tick(world, elapsed_time_s) {
+		tick(universe, elapsed_time_s) {
 			for(var poi of this.contents) {
-				poi.tick(world, this, elapsed_time_s);
+				poi.tick(universe, this, elapsed_time_s);
 			}
 		}
 	};

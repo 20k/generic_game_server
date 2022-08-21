@@ -1,6 +1,7 @@
 exec("system");
 exec("poi");
 exec("object");
+exec("universe");
 
 function format_position(position)
 {
@@ -295,15 +296,18 @@ connect_systems(sys1, sys2);
 
 sys1.take_poi(poi);
 
-interactive_sys_contents(sys1, player.view);
-interactive_sys_contents(sys2, player.view);
+var universe = make_universe();
+universe.take(sys1);
+universe.take(sys2);
 
-var world = {}
-world.systems = [sys1, sys2];
-
-for(var sys of world.systems)
+for(var sys of universe.contents)
 {
-	sys.tick(world, 1.);
+	interactive_sys_contents(sys, player.view);
+}
+
+for(var sys of universe.contents)
+{
+	sys.tick(universe, 1.);
 }
 
 //format_sys_contents(sys);

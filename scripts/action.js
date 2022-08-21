@@ -69,7 +69,7 @@ function make_entity_actionable(obj)
 	}
 }
 
-function execute_action(world, sys, poi, en, act, real_time_s)
+function execute_action(universe, sys, poi, en, act, real_time_s)
 {
 	if(act.subtype == "move")
 	{
