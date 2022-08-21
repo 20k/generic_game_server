@@ -44,20 +44,21 @@ function fill_asteroid(asteroid, ore_name, ore_type, ore_amount)
 	asteroid.ores.push(item);
 }
 
-export function make_asteroid(position)
+export class Asteroid
 {
-	var obj = make_object_with_position(position);
-	obj.name = "Asteroid";
-	obj.type = "asteroid";
-	obj.ores = [];
-	obj.owner = -1;
-	obj.uid = get_unique_id();
+	constructor()
+	{
+		this.position = [0,0];
+		this.name = "Asteroid";
+		this.type = "asteroid";
+		this.ores = [];
+		this.owner = -1;
+		this.uid = get_unique_id();
+		
+		make_entity_actionable(this);
+	}
 	
-	make_entity_actionable(obj);
-	
-	fill_asteroid(obj, "Titanium", "titanium", 15);
-	
-	obj.get_total_ore = function() {
+	get_total_ore() {
 		var total_ore = 0;
 		
 		for(var e of this.ores) {
@@ -71,7 +72,7 @@ export function make_asteroid(position)
 	}
 	
 	///1 power removes 1 ore
-	obj.mine = function(total_power) {
+	mine(total_power) {
 		var total_ore = this.get_total_ore();
 		
 		if(total_ore <= 0)
@@ -87,59 +88,100 @@ export function make_asteroid(position)
 		
 		return result;
 	}
+}
+
+export class Station
+{
+	constructor()
+	{
+		this.position = [0,0];
+		this.name = "Station";
+		this.type = "station";
+		this.nickname = "Error nick";
+		this.owner = -1;
+		this.uid = get_unique_id();
+		
+		make_entity_actionable(this);
+	}
+}
+
+export class Warpgate
+{
+	constructor()
+	{
+		this.position = [0,0];
+		this.name = "Warp Gate";
+		this.type = "warpgate";
+		this.nickname = "Bad Dest Name";
+		this.dest_uid = -1;
+		this.src_uid = -1;
+		this.owner = -1;
+		this.uid = get_unique_id();
+		
+		make_entity_actionable(this);
+	}
+}
+
+export class Ship
+{
+	constructor()
+	{
+		this.position = [0,0];
+		this.name = "Ship";
+		this.type = "ship";
+		this.nickname = "No Nick";
+		this.owner = -1;
+		this.uid = get_unique_id();
+		
+		make_entity_actionable(this);
+	}
+
+	get_speed() {
+		return 1.;
+	}
+	
+	///per second
+	get_mining_power() {
+		return 1;
+	}
+}
+
+export function make_asteroid(position)
+{
+	//var obj = make_object_with_position(position);
+	var obj = new Asteroid();
+	obj.position = position;	
+	
+	fill_asteroid(obj, "Titanium", "titanium", 15);
 	
 	return obj;
 }
 
 export function make_station(position, station_name)
 {
-	var obj = make_object_with_position(position);
-	obj.name = "Station";
-	obj.type = "station";
+	var obj = new Station();
 	obj.nickname = station_name;
-	obj.owner = -1;
-	obj.uid = get_unique_id();
-	
-	make_entity_actionable(obj);
+	obj.position = position;
 	
 	return obj;
 }
 
 export function make_warp_gate(src_sys, dest_sys)
 {
-	var obj = make_object_with_position([0, 0]);
-	obj.name = "Warp Gate";
-	obj.type = "warpgate";
+	var obj = new Warpgate();
+	
 	obj.nickname = dest_sys.system_name;
 	obj.dest_uid = dest_sys.uid;
 	obj.src_uid = src_sys.uid;
-	obj.owner = -1;
-	obj.uid = get_unique_id();
-	
-	make_entity_actionable(obj);
-	
+		
 	return obj;
 }
 
 export function make_ship(position, ship_name)
 {
-	var obj = make_object_with_position(position);
-	obj.name = "Ship";
-	obj.type = "ship";
+	var obj = new Ship();
+	obj.position = position;
 	obj.nickname = ship_name;
-	obj.owner = -1;
-	obj.uid = get_unique_id();
-	
-	obj.get_speed = function() {
-		return 1.;
-	}
-	
-	///per second
-	obj.get_mining_power = function() {
-		return 1;
-	}
-	
-	make_entity_actionable(obj);
 	
 	return obj;
 }
