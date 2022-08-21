@@ -3,6 +3,7 @@
 import {make_universe} from "universe"
 import {generate_universe} from "generate_universe"
 import {render_universe_contents} from "get_system_contents"
+import {make_player} from "player"
 
 {
 	var rstx = db.read_write();
@@ -26,9 +27,7 @@ if(globalThis.test == undefined)
 	globalThis.test = false;
 
 if(globalThis.player == undefined)
-{
-	exec("player");
-	
+{	
 	globalThis.player = make_player();
 }
 

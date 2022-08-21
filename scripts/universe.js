@@ -7,6 +7,7 @@ export class Universe
 	{
 		this.contents = [];
 		this.uid = get_unique_id();
+		this.type = "universe";
 	}
 	
 	take(sys) {

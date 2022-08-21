@@ -1,25 +1,32 @@
 exec("player_view");
 exec("get_unique_id");
 
-function make_player()
+export class Player
 {
-	var player = {
-		view: make_player_view(),
-		uid: get_unique_id(),
-		controlling:-1,
-		
-		take_ownership(obj) {
-			obj.owner = this.uid;
-		},
-		
-		take_control(obj) {
-			this.controlling = obj.uid;
-		},
-		
-		release_control(obj) {
-			this.controlling = -1;
-		}
+	constructor()
+	{
+		this.view = make_player_view();
+		this.type = "player";
+		this.uid = get_unique_id();
+		this.controlling = -1;
 	}
+	
+	take_ownership(obj) {
+		obj.owner = this.uid;
+	}
+	
+	take_control(obj) {
+		this.controlling = obj.uid;
+	}
+	
+	release_control(obj) {
+		this.controlling = -1;
+	}
+}
+
+export function make_player()
+{
+	var player = new Player();
 	
 	return player
 }
