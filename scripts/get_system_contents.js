@@ -2,6 +2,7 @@ exec("system");
 exec("poi");
 exec("object");
 exec("universe");
+exec("action");
 
 function format_position(position)
 {
@@ -74,6 +75,8 @@ function format_poi_contents(poi)
 	return merged.join('\n');
 }
 
+var render_id = 0;
+
 function interactive_poi_contents(poi)
 {
 	var types = [];
@@ -120,6 +123,17 @@ function interactive_poi_contents(poi)
 	/*var merged = array_concat(array_concat(fmt_1, fmt_2, ' | '), fmt_3, ' | ');
 
 	imgui.text(merged.join("\n"))*/
+	
+	var controlled = null;
+	
+	for(var e of poi.contents) 
+	{
+		if(player.controlling == e.uid)
+		{
+			controlled = e;
+			break;
+		}
+	}
 
 	for(var i=0; i < poi.contents.length; i++)
 	{
@@ -139,9 +153,25 @@ function interactive_poi_contents(poi)
 
 			imgui.sameline();
 
-			if(imgui.smallbutton("Control "))
+			if(imgui.smallbutton("[control]##" + render_id++))
 			{
 				player.take_control(e);
+			}
+		}
+		 
+		if(controlled != null)
+		{
+			if(e.uid != controlled.uid)
+			{
+				imgui.sameline();
+				
+				if(imgui.smallbutton("[move]##" + render_id++))
+				{
+					var act = make_move_action(controlled, e.position, 10.);
+					
+					controlled.clear_actions();
+					controlled.add_action(act);
+				}
 			}
 		}
 	}
@@ -203,8 +233,6 @@ function format_sys_contents(sys)
 
 	return res;
 }
-
-var render_id = 0;
 
 function interactive_sys_contents(sys, player_view)
 {

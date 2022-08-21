@@ -18,11 +18,11 @@ function make_action()
 		finish_elapsed: 0,
 		
 		remaining_time() {
-			return this.elapsed_time_s - this.current_elapsed;
+			return this.finish_elapsed - this.current_elapsed;
 		},
 		
 		finished() {
-			return this.current_elapsed >= this.elapsed_time_s - 0.000001;
+			return this.current_elapsed >= this.finish_elapsed - 0.000001;
 		}
 	};
 	
@@ -48,13 +48,17 @@ function make_entity_actionable(obj)
 		this.actions.push(a);
 	}
 	
+	obj.clear_actions = function() {
+		this.actions.length = 0;
+	}
+	
 	obj.add_action_time = function(delta_time_s, action_executor) {
 		var remaining = delta_time_s;
 		
 		while(this.actions.length > 0 && remaining > 0)
 		{		
 			var consumable = Math.min(this.actions[0].remaining_time(), remaining);
-			
+
 			action_executor(this.actions[0], consumable);
 			
 			this.actions[0].current_elapsed += consumable;
@@ -63,7 +67,12 @@ function make_entity_actionable(obj)
 			
 			if(this.actions[0].finished())
 			{
+				//var clen = this.actions.length;
+								
 				this.actions.shift();
+				
+				//var dlen = this.actions.length;
+				//globalThis.last_debug = clen + "hi" + dlen;
 			}
 		}
 	}
@@ -72,19 +81,22 @@ function make_entity_actionable(obj)
 function execute_action(universe, sys, poi, en, act, real_time_s)
 {
 	if(act.subtype == "move")
-	{
+	{	
 		var move_object = act.subobject;
 		
 		var start_pos = move_object.start;
 		var finish_pos = move_object.finish;
 		
 		var delta = [finish_pos[0] - start_pos[0], finish_pos[1] - start_pos[1]]
-		
-		//var real_delta = [real_time_s * delta[0]/act.finish_elapsed_s, real_time_s * delta[1]/act.finish_elapsed_s]
-		
+					
 		var current_time = act.current_elapsed + real_time_s;
 		
-		var analytic_pos = [delta[0] * current_time / act.finish_elapsed_s, delta[1] * current_time / act.finish_elapsed_s]
+		globalThis.last_debug = current_time + "Rtime";
+		
+		var analytic_pos = [start_pos[0] + delta[0] * current_time / act.finish_elapsed, start_pos[1] + delta[1] * current_time / act.finish_elapsed]
+		
+		analytic_pos[0] = Math.round(analytic_pos[0] * 100) / 100;
+		analytic_pos[1] = Math.round(analytic_pos[1] * 100) / 100;
 		
 		en.position = analytic_pos;		
 	}

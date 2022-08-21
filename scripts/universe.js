@@ -15,7 +15,7 @@ function make_universe()
 		tick(delta_time_s) {
 			for(var sys of this.contents)
 			{
-				sys.tick(this, 1.);
+				sys.tick(this, delta_time_s);
 			}
 		}
 	};

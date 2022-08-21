@@ -65,3 +65,8 @@ if(imgui.button("Reset Universe"))
 	exec("generate_universe");
 	globalThis.universe = generate_universe();
 }
+
+if(globalThis.last_debug != undefined)
+{
+	imgui.text(globalThis.last_debug);
+}
