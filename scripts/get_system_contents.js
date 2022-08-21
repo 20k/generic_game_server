@@ -1,7 +1,5 @@
-exec("system");
-exec("poi");
-exec("object");
-exec("action");
+import {make_universe} from "universe"
+import {make_system, connect_systems} from "system"
 
 function format_position(position)
 {
@@ -76,7 +74,7 @@ function format_poi_contents(poi)
 
 var render_id = 0;
 
-function interactive_poi_contents(poi)
+function interactive_poi_contents(poi, player)
 {
 	var types = [];
 	var names = [];
@@ -251,11 +249,11 @@ function format_sys_contents(sys)
 	return res;
 }
 
-function interactive_sys_contents(sys, player_view)
+function interactive_sys_contents(sys, player_view, player)
 {
 	///hacky
 	//var render_id = sys.uid * 129;
-
+	
 	imgui.pushstylecolor(21, 0, 0, 0, 0);
 	imgui.pushstylecolor(22, 0, 0, 0, 0);
 	imgui.pushstylecolor(23, 0, 0, 0, 0);
@@ -301,7 +299,7 @@ function interactive_sys_contents(sys, player_view)
 		str += "###" + render_id++;
 
 		if(imgui.button(str))
-		{
+		{			
 			is_open = !is_open;
 			player_view.set_is_poi_open(sys, poi, is_open);
 		}
@@ -314,7 +312,7 @@ function interactive_sys_contents(sys, player_view)
 		{
 			imgui.indent();
 			imgui.indent();
-			interactive_poi_contents(poi);
+			interactive_poi_contents(poi, player);
 			imgui.unindent();
 			imgui.unindent();
 		}
@@ -325,14 +323,14 @@ function interactive_sys_contents(sys, player_view)
 	imgui.popstylecolor(3);
 }
 
-function render_universe_contents(universe)
+export function render_universe_contents(universe, player)
 {
+	render_id = 0;
+	
 	for(var sys of universe.contents)
 	{
-		interactive_sys_contents(sys, player.view);
+		interactive_sys_contents(sys, player.view, player);
 	}
 }
-
-render_universe_contents(universe);
 
 //format_sys_contents(sys);

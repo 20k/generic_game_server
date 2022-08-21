@@ -1,7 +1,8 @@
-exec("action");
+import {execute_action} from "action";
+
 exec("get_unique_id");
 
-function make_poi(poi_name, poi_type, position)
+export function make_poi(poi_name, poi_type, position)
 {
 	var obj = {
 		position:position,

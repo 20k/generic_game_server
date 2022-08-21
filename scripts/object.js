@@ -1,4 +1,5 @@
-exec("action");
+import {make_entity_actionable} from "action" 
+
 exec("get_unique_id");
 
 function make_object_with_position(position)
@@ -43,7 +44,7 @@ function fill_asteroid(asteroid, ore_name, ore_type, ore_amount)
 	asteroid.ores.push(item);
 }
 
-function make_asteroid(position)
+export function make_asteroid(position)
 {
 	var obj = make_object_with_position(position);
 	obj.name = "Asteroid";
@@ -90,7 +91,7 @@ function make_asteroid(position)
 	return obj;
 }
 
-function make_station(position, station_name)
+export function make_station(position, station_name)
 {
 	var obj = make_object_with_position(position);
 	obj.name = "Station";
@@ -104,7 +105,7 @@ function make_station(position, station_name)
 	return obj;
 }
 
-function make_warp_gate(src_sys, dest_sys)
+export function make_warp_gate(src_sys, dest_sys)
 {
 	var obj = make_object_with_position([0, 0]);
 	obj.name = "Warp Gate";
@@ -120,7 +121,7 @@ function make_warp_gate(src_sys, dest_sys)
 	return obj;
 }
 
-function make_ship(position, ship_name)
+export function make_ship(position, ship_name)
 {
 	var obj = make_object_with_position(position);
 	obj.name = "Ship";

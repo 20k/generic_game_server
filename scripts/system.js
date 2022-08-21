@@ -1,4 +1,7 @@
-function make_system(system_name, position)
+import {make_poi} from "poi";
+import {make_warp_gate} from "object"
+
+export function make_system(system_name, position)
 {
 	var obj = {
 		position:position,
@@ -24,7 +27,7 @@ function make_system(system_name, position)
 	return obj;
 }
 
-function connect_systems(sys1, sys2)
+export function connect_systems(sys1, sys2)
 {
 	var warp_boundary = 100;
 	

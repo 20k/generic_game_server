@@ -1,12 +1,12 @@
-exec("object")
-exec("system")
-exec("poi")
 //mexec("universe")
 exec("api");
 
+import {make_poi} from "poi"
+import {make_asteroid, make_station, make_warp_gate, make_ship} from "object";
 import {make_universe} from "universe"
+import {make_system, connect_systems} from "system"
 
-export function generate_universe()
+export function generate_universe(player)
 {
 	var poi = make_poi("Asteroid Belt", "asteroidbelt", [20, 30]);
 

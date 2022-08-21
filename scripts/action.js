@@ -29,7 +29,7 @@ function make_action()
 	return obj;
 }
 
-function make_move_action(e, finish_position, elapsed_time_s)
+export function make_move_action(e, finish_position, elapsed_time_s)
 {
 	var obj = make_action();
 	
@@ -40,7 +40,7 @@ function make_move_action(e, finish_position, elapsed_time_s)
 	return obj;
 }
 
-function make_mine_action(e, target)
+export function make_mine_action(e, target)
 {
 	var total_ore = target.get_total_ore();
 	
@@ -62,7 +62,7 @@ function make_mine_action(e, target)
 	return obj;
 }
 
-function make_entity_actionable(obj)
+export function make_entity_actionable(obj)
 {	
 	obj.actions = [];
 	
@@ -100,7 +100,7 @@ function make_entity_actionable(obj)
 	}
 }
 
-function execute_action(universe, sys, poi, en, act, real_time_s)
+export function execute_action(universe, sys, poi, en, act, real_time_s)
 {
 	if(act.subtype == "move")
 	{	

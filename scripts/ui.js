@@ -2,6 +2,7 @@
 //import {default as _} from "universe.js"
 import {make_universe} from "universe"
 import {generate_universe} from "generate_universe"
+import {render_universe_contents} from "get_system_contents"
 
 {
 	var rstx = db.read_write();
@@ -33,7 +34,7 @@ if(globalThis.player == undefined)
 
 if(globalThis.universe == undefined)
 {
-	globalThis.universe = generate_universe();
+	globalThis.universe = generate_universe(globalThis.player);
 }
 
 if(imgui.button("Hello there"))
@@ -45,9 +46,7 @@ imgui.text(exec("hello") + " " + globalThis.test);
 
 //imgui.text(exec("get_system_contents"));
 
-exec("get_system_contents");
-
-//render_universe_contents(globalThis.universe);
+render_universe_contents(globalThis.universe, globalThis.player);
 
 var t2 = db.read_only();
 
@@ -64,7 +63,7 @@ if(imgui.button("Tick"))
 
 if(imgui.button("Reset Universe"))
 {
-	globalThis.universe = generate_universe();
+	globalThis.universe = generate_universe(globalThis.player);
 }
 
 if(globalThis.last_debug != undefined)
