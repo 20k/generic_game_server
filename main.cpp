@@ -489,7 +489,18 @@ void client_ui_thread(std::shared_ptr<client_state> state)
 
         js_ui::pre_exec(&shared, script_id);
 
-        js::eval(vctx, ui_script.contents);
+        try
+        {
+            js::eval(vctx, ui_script.contents);
+        }
+        catch(std::exception& e)
+        {
+            std::cout << "Exception " << e.what() << " in eval for ui" << std::endl;
+        }
+        catch(...)
+        {
+            std::cout << "Exception in eval for ui" << std::endl;
+        }
 
         vctx.compact_heap_stash();
 
