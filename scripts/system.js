@@ -1,28 +1,36 @@
 import {make_poi} from "poi";
 import {make_warp_gate} from "object"
 
+export class System
+{
+	constructor()
+	{
+		this.position = [0, 0]
+		this.name = "System";
+		this.type = "system";
+		this.system_name = "Err;"
+		this.contents = [];
+		this.uid = get_unique_id();
+	}
+	
+	take_poi(poi) {
+		this.contents.push(poi);
+		
+		return poi;
+	}
+	
+	tick(universe, elapsed_time_s) {
+		for(var poi of this.contents) {
+			poi.tick(universe, this, elapsed_time_s);
+		}
+	}
+}
+
 export function make_system(system_name, position)
 {
-	var obj = {
-		position:position,
-		name:"System",
-		type:"system",
-		system_name:system_name,
-		contents:[],
-		uid:get_unique_id(),
-		
-		take_poi(poi) {
-			this.contents.push(poi);
-			
-			return poi;
-		},
-		
-		tick(universe, elapsed_time_s) {
-			for(var poi of this.contents) {
-				poi.tick(universe, this, elapsed_time_s);
-			}
-		}
-	};
+	var obj = new System();
+	obj.position = position;
+	obj.system_name = system_name;
 	
 	return obj;
 }
