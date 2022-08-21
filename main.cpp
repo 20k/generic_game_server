@@ -323,6 +323,27 @@ js::value in_script_eval(js::value_context* vctx, std::string val)
     return result;
 }
 
+js::value module_exec(js::value_context* vctx, std::string val)
+{
+    script s = load_script("./scripts/" + val + ".js");
+
+    js::value result = js::eval_module(*vctx, s.contents, s.title);
+
+    vctx->compact_heap_stash();
+
+    if(result.is_error() || result.is_exception())
+    {
+        if(result.is_exception())
+            throw std::runtime_error("Exception: " + result.to_error_message());
+
+        result = result.to_error_message();
+
+        std::cout << "Result " << (std::string)result << std::endl;
+    }
+
+    return result;
+}
+
 std::optional<db::read_tx*> fetch_db_tx(js::value db_object)
 {
     if(!db_object.has_hidden("db_transaction"))
@@ -456,6 +477,70 @@ void system_global(js::value_context& vctx)
     glob["db"] = db;
 }
 
+int js_module_set_import_meta(JSContext *ctx, JSValueConst func_val,
+                              JS_BOOL use_realpath, JS_BOOL is_main)
+{
+    JSModuleDef *m;
+    JSValue meta_obj;
+    JSAtom module_name_atom;
+    const char *module_name;
+
+    assert(JS_VALUE_GET_TAG(func_val) == JS_TAG_MODULE);
+    m = (JSModuleDef*)JS_VALUE_GET_PTR(func_val);
+
+    module_name_atom = JS_GetModuleName(ctx, m);
+    module_name = JS_AtomToCString(ctx, module_name_atom);
+    JS_FreeAtom(ctx, module_name_atom);
+    if (!module_name)
+        return -1;
+
+    std::string mod_name(module_name);
+
+    JS_FreeCString(ctx, module_name);
+
+    meta_obj = JS_GetImportMeta(ctx, m);
+    if (JS_IsException(meta_obj))
+        return -1;
+    JS_DefinePropertyValueStr(ctx, meta_obj, "url",
+                              JS_NewString(ctx, mod_name.c_str()),
+                              JS_PROP_C_W_E);
+    JS_DefinePropertyValueStr(ctx, meta_obj, "main",
+                              JS_NewBool(ctx, is_main),
+                              JS_PROP_C_W_E);
+    JS_FreeValue(ctx, meta_obj);
+    return 0;
+}
+
+JSModuleDef *js_module_loader(JSContext *ctx,
+                              const char *module_name, void *opaque)
+{
+    JSModuleDef *m;
+
+    JSValue func_val;
+
+    if(module_name == nullptr)
+        return NULL;
+
+    int name_len = strlen(module_name);
+
+    std::string name = std::string(module_name, name_len) + ".js";
+
+    std::string buf = file::read("./scripts/" + name, file::mode::TEXT);
+
+    /* compile the module */
+    func_val = JS_Eval(ctx, (char *)buf.c_str(), buf.size(), module_name,
+                       JS_EVAL_TYPE_MODULE | JS_EVAL_FLAG_COMPILE_ONLY);
+    if (JS_IsException(func_val))
+        return NULL;
+
+    js_module_set_import_meta(ctx, func_val, TRUE, FALSE);
+
+    m = (JSModuleDef*)JS_VALUE_GET_PTR(func_val);
+    JS_FreeValue(ctx, func_val);
+
+    return m;
+}
+
 void client_ui_thread(std::shared_ptr<client_state> state)
 {
     int script_id = 0;
@@ -467,6 +552,9 @@ void client_ui_thread(std::shared_ptr<client_state> state)
 
     js::value glob = js::get_global(vctx);
     glob["exec"] = js::function<in_script_eval>;
+    glob["mexec"] = js::function<module_exec>;
+
+    JS_SetModuleLoaderFunc(JS_GetRuntime(vctx.ctx), nullptr, js_module_loader, nullptr);
 
     js_ui::startup_state(vctx, &shared, script_id);
     system_global(vctx);
@@ -494,7 +582,7 @@ void client_ui_thread(std::shared_ptr<client_state> state)
 
         try
         {
-            js::eval(vctx, ui_script.contents, ui_script.title + ".js");
+            js::eval_module(vctx, ui_script.contents, ui_script.title + ".js");
         }
         catch(std::exception& e)
         {
