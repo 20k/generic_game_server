@@ -23,7 +23,7 @@ if(globalThis.player == undefined)
 {
 	exec("player");
 	
-	globalThis.player = make_player(0);
+	globalThis.player = make_player();
 }
 
 if(globalThis.universe == undefined)

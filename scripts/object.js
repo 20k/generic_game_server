@@ -1,4 +1,5 @@
 exec("action");
+exec("get_unique_id");
 
 function make_object_with_position(position)
 {
@@ -49,6 +50,7 @@ function make_asteroid(position)
 	obj.type = "asteroid";
 	obj.ores = [];
 	obj.owner = -1;
+	obj.uid = get_unique_id();
 	
 	make_entity_actionable(obj);
 	
@@ -95,6 +97,7 @@ function make_station(position, station_name)
 	obj.type = "station";
 	obj.nickname = station_name;
 	obj.owner = -1;
+	obj.uid = get_unique_id();
 	
 	make_entity_actionable(obj);
 	
@@ -110,6 +113,7 @@ function make_warp_gate(src_sys, dest_sys)
 	obj.dest_uid = dest_sys.uid;
 	obj.src_uid = src_sys.uid;
 	obj.owner = -1;
+	obj.uid = get_unique_id();
 	
 	make_entity_actionable(obj);
 	
@@ -123,6 +127,7 @@ function make_ship(position, ship_name)
 	obj.type = "ship";
 	obj.nickname = ship_name;
 	obj.owner = -1;
+	obj.uid = get_unique_id();
 	
 	obj.get_speed = function() {
 		return 1.;

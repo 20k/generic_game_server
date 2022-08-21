@@ -1,12 +1,12 @@
+exec("get_unique_id")
+
 function make_universe()
 {
 	return {
 		contents:[],
-		gid:0,
+		uid:get_unique_id(),
 		
-		take(sys) {
-			sys.uid = this.gid++;
-			
+		take(sys) {			
 			this.contents.push(sys);
 			
 			return sys;

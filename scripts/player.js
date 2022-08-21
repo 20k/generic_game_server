@@ -1,10 +1,11 @@
 exec("player_view");
+exec("get_unique_id");
 
-function make_player(uid)
+function make_player()
 {
 	var player = {
 		view: make_player_view(),
-		uid: uid,
+		uid: get_unique_id(),
 		controlling:-1,
 		
 		take_ownership(obj) {

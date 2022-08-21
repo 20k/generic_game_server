@@ -1,4 +1,5 @@
 exec("action");
+exec("get_unique_id");
 
 function make_poi(poi_name, poi_type, position)
 {
@@ -9,11 +10,9 @@ function make_poi(poi_name, poi_type, position)
 		poi_name:poi_name,
 		poi_type:poi_type,
 		contents:[],
-		gid:0,
+		uid:get_unique_id(),
 		
 		take(obj) {
-			obj.uid = this.gid++;
-
 			this.contents.push(obj);
 
 			return obj;

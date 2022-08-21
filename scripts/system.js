@@ -6,12 +6,9 @@ function make_system(system_name, position)
 		type:"system",
 		system_name:system_name,
 		contents:[],
-		gid:0, //for local system content
-		uid:-1,
+		uid:get_unique_id(),
 		
 		take_poi(poi) {
-			poi.uid = this.gid++;
-	
 			this.contents.push(poi);
 			
 			return poi;
