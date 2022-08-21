@@ -82,6 +82,9 @@ function execute_action(universe, sys, poi, en, act, real_time_s)
 {
 	if(act.subtype == "move")
 	{	
+		if(act.finish_elapsed == 0)
+			return;
+
 		var move_object = act.subobject;
 		
 		var start_pos = move_object.start;

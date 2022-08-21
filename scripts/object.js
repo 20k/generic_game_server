@@ -79,6 +79,10 @@ function make_ship(position, ship_name)
 	obj.nickname = ship_name;
 	obj.owner = -1;
 	
+	obj.get_speed = function() {
+		return 1.;
+	}
+	
 	make_entity_actionable(obj);
 	
 	return obj;

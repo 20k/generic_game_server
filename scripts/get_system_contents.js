@@ -158,7 +158,7 @@ function interactive_poi_contents(poi)
 				player.take_control(e);
 			}
 		}
-		 
+		
 		if(controlled != null)
 		{
 			if(e.uid != controlled.uid)
@@ -167,7 +167,9 @@ function interactive_poi_contents(poi)
 				
 				if(imgui.smallbutton("[move]##" + render_id++))
 				{
-					var act = make_move_action(controlled, e.position, 10.);
+					var time_to_target = poi.time_to_target(controlled, e);
+					
+					var act = make_move_action(controlled, e.position, time_to_target);
 					
 					controlled.clear_actions();
 					controlled.add_action(act);
