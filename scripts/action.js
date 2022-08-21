@@ -1,7 +1,7 @@
 function make_move_subobject(e, finish_position)
 {
 	return {
-		object_uid: e.uid,
+		//object_uid: e.uid,
 		start: e.position,
 		finish: finish_position
 	};
@@ -69,8 +69,23 @@ function make_entity_actionable(obj)
 	}
 }
 
-
 function execute_action(world, sys, poi, en, act, real_time_s)
 {
-	
+	if(act.subtype == "move")
+	{
+		var move_object = act.subobject;
+		
+		var start_pos = move_object.start;
+		var finish_pos = move_object.finish;
+		
+		var delta = [finish_pos[0] - start_pos[0], finish_pos[1] - start_pos[1]]
+		
+		//var real_delta = [real_time_s * delta[0]/act.finish_elapsed_s, real_time_s * delta[1]/act.finish_elapsed_s]
+		
+		var current_time = act.current_elapsed + real_time_s;
+		
+		var analytic_pos = [delta[0] * current_time / act.finish_elapsed_s, delta[1] * current_time / act.finish_elapsed_s]
+		
+		en.position = analytic_pos;		
+	}
 }
