@@ -1,6 +1,5 @@
-import {make_universe} from "universe"
-import {make_system, connect_systems} from "system"
-import {make_move_action, make_mine_action} from "action"
+import {PendingAction} from "action"
+import {clear_actions_for, add_pending_action} from "user_facing_api"
 
 function format_position(position)
 {
@@ -166,12 +165,13 @@ function interactive_poi_contents(sys, poi, player)
 				///will need to validate actions
 				if(imgui.smallbutton("[move]##" + render_id++))
 				{
-					var time_to_target = poi.time_to_target(controlled, e);
-					
-					var act = make_move_action(controlled, e.position, time_to_target);
-					
-					sys.clear_actions_for(controlled.uid);
-					sys.add_action(act);
+					//var time_to_target = poi.time_to_target(controlled, e);
+
+					var pending = new PendingAction();
+					pending.build_move(player.controlling, e.position);
+
+					clear_actions_for(e.uid);
+					add_pending_action(pending);
 				}
 				
 				if(e.type == "asteroid") 
@@ -182,10 +182,11 @@ function interactive_poi_contents(sys, poi, player)
 						
 						if(imgui.smallbutton("[mine]##" + render_id++))
 						{						
-							var act = make_mine_action(controlled, e);
-							
-							sys.clear_actions_for(controlled.uid);
-							sys.add_action(act);
+							var pending = new PendingAction();
+							pending.build_mine(player.controlling, e.uid);
+
+							clear_actions_for(player.controlling);
+							add_pending_action(pending);
 						}
 					}
 				}

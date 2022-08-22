@@ -27,7 +27,7 @@ export class Universe
 	store()
 	{
 		var contents_uid = save_uids(this.contents);
-				
+
 		return {type:this.type, uid:this.uid, contents_uid}
 	}
 	
