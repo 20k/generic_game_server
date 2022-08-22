@@ -229,8 +229,6 @@ export class ActionMan
 
 		this.actions.length = 0;
 
-		//for(var o of actions_by_entity) {
-
 		for(const k in actions_by_entity) {
 			var o = actions_by_entity[k];
 

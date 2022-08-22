@@ -27,19 +27,6 @@ function set_current_actions(acts) {
 ///currently racey, must not be run in parallel with server
 ///this actually isn't clearing actions, need to push a stop action
 export function clear_actions_for(e_uid) {
-    /*var current_actions = get_current_actions();
-
-    for(var i=0; i < current_actions.length; i++)
-    {
-        if(current_actions[i].source_uid == e_uid)
-        {
-            current_actions.splice(i, 1);
-            i--;
-        }
-    }
-
-    set_current_actions(current_actions);*/
-
     var pending = new PendingAction();
     pending.build_interrupt(e_uid);
 
