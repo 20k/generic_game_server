@@ -560,6 +560,13 @@ void print(js::value_context* vctx, js::value val)
     std::cout << "Js: " << (std::string)val << std::endl;
 }
 
+js::value get_client_id(js::value_context* vctx)
+{
+     int id = js::get_global(*vctx).get_hidden("client_id");
+
+     return js::make_value(*vctx, id);
+}
+
 void system_global(js::value_context& vctx)
 {
     js::value glob = js::get_global(vctx);
@@ -651,6 +658,7 @@ void client_ui_thread(std::shared_ptr<client_state> state)
     glob["exec"] = js::function<in_script_eval>;
     glob["mexec"] = js::function<module_exec>;
     glob.add_hidden("client_id", (int)state->client_id);
+    glob["get_client_id"] = js::function<get_client_id>;
 
     JS_SetModuleLoaderFunc(JS_GetRuntime(vctx.ctx), nullptr, js_module_loader, nullptr);
 
