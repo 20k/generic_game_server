@@ -3,6 +3,7 @@ import {make_warp_gate} from "object"
 import {store_object, load_object, save_uids, load_uids} from "api"
 import {set_debug} from "debug"
 import {ActionMan, execute_action} from "action"
+import {get_unique_id} from "get_unique_id"
 
 export class System
 {

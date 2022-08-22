@@ -378,7 +378,7 @@ js::value db_read(js::value_context* vctx, js::value js_db_id, js::value js_key)
 
     std::optional<db::data> dat = tx_opt.value()->read(db_id, key);
 
-    if(dat.has_value())
+    if(dat.has_value() && dat.value().data_view.size() != 0)
     {
         std::string nullterm = (std::string)dat.value().data_view;
 

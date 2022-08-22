@@ -1,10 +1,11 @@
 //mexec("universe");
 //import {default as _} from "universe.js"
-import {make_universe, Universe} from "universe"
+import {Universe} from "universe"
 import {generate_universe} from "generate_universe"
 import {render_universe_contents} from "get_system_contents"
 import {make_player} from "player"
 import {get_debug} from "debug"
+import {store_object, load_object} from "api"
 
 {
 	var rstx = db.read_write();
@@ -80,4 +81,23 @@ if(imgui.button("TestSaveLoad"))
 	globalThis.universe = new Universe();
 	
 	globalThis.universe.load(universe_flattened);
+}
+
+if(imgui.button("Save"))
+{
+	//var universe_flattened = globalThis.universe.store();
+	var uid = store_object(globalThis.universe);
+
+	var t = db.read_write();
+	t.write(3, 0, uid);
+	t.close();
+}
+
+if(imgui.button("Load")) 
+{
+	var t = db.read_only();
+	var uni_uid = t.read(3, 0);
+	t.close();
+
+	globalThis.universe = load_object(uni_uid);
 }

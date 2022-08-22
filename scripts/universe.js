@@ -1,5 +1,4 @@
-exec("get_unique_id")
-
+import {get_unique_id} from "get_unique_id"
 import {load_object, save_uids, load_uids} from "api"
 
 export class Universe

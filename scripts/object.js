@@ -1,6 +1,5 @@
 import {set_debug} from "debug"
-
-exec("get_unique_id");
+import {get_unique_id} from "get_unique_id"
 
 function make_object_with_position(position)
 {

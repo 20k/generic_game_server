@@ -1,4 +1,4 @@
-exec("get_unique_id");
+import {get_unique_id} from "get_unique_id"
 
 export class PlayerView
 {

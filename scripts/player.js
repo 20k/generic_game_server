@@ -1,5 +1,4 @@
-exec("get_unique_id");
-
+import {get_unique_id} from "get_unique_id"
 import {make_player_view} from "player_view"
 import {load_object, store_object} from "api";
 

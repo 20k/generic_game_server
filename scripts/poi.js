@@ -1,7 +1,6 @@
 import {execute_action} from "action";
 import {save_uids, load_uids} from "api"
-
-exec("get_unique_id");
+import {get_unique_id} from "get_unique_id"
 
 export class Poi
 {
