@@ -1,4 +1,5 @@
 import {get_unique_id} from "get_unique_id";
+import {save_uids, load_uids} from "api"
 
 export class Item {
     constructor() {
@@ -26,6 +27,32 @@ export class Item {
 
     load(obj) {
         Object.assign(this, obj);
+    }
+}
+
+export class ItemMan {
+    constructor() {
+        this.uid = get_unique_id();
+        this.type = "itemman";
+
+        this.name = "Cargo";
+        this.storage = 0;
+        this.stored = [];
+    }
+
+    store() {
+        var cargo_ids = save_uids(this.stored);
+
+        return {uid:this.uid, type:this.type, storage:this.storage, s_uids:cargo_ids};
+    }
+
+    load(obj) {
+        var cargo = load_uids(obj.s_uids);
+
+        ///think uid here is unnecssary
+        this.uid = obj.uid;
+        this.storage = obj.storage;
+        this.stored = cargo;
     }
 }
 

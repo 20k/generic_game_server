@@ -7,7 +7,7 @@ import {set_debug} from "debug"
 import {Action, ActionMan} from "action";
 import {PlayerView} from "player_view";
 import {set_defer_uids} from "get_unique_id";
-import {Item} from "item";
+import {Item, ItemMan} from "item";
 
 export function get_by_key(uid)
 {
@@ -137,8 +137,14 @@ function allocate_class(type)
 		return new PlayerView();
 	}
 
-	if(type == "item") {
+	if(type == "item")
+	{
 		return new Item();
+	}
+
+	if(type == "itemman")
+	{
+		return new ItemMan();
 	}
 
 	print("Bad type " + type);
