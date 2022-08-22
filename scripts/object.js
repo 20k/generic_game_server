@@ -68,8 +68,6 @@ export class Asteroid
 	
 	load(obj)
 	{
-		make_entity_actionable(this);
-		
 		Object.assign(this, obj);
 		
 		fix_class_array(this.actions);
@@ -128,8 +126,6 @@ export class Station
 	
 	load(obj)
 	{
-		make_entity_actionable(this);
-		
 		Object.assign(this, obj);
 		
 		fix_class_array(this.actions);
@@ -159,8 +155,6 @@ export class Warpgate
 	
 	load(obj)
 	{
-		make_entity_actionable(this);
-		
 		Object.assign(this, obj);
 		
 		fix_class_array(this.actions);
@@ -188,16 +182,9 @@ export class Ship
 	
 	load(obj)
 	{
-		make_entity_actionable(this);
-		
 		Object.assign(this, obj);
 		
 		fix_class_array(this.actions);
-		
-		/*if(this.add_action_time == undefined)
-		{
-			set_debug("I am sad");
-		}*/
 	}
 
 	get_speed() {
