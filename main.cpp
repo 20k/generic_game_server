@@ -366,6 +366,9 @@ js::value db_read(js::value_context* vctx, js::value js_db_id, js::value js_key)
     int db_id = (int)js_db_id;
     std::string key = (std::string)js_key;
 
+    if(key.size() == 0)
+        throw std::runtime_error("Bad key, null?");
+
     std::optional tx_opt = fetch_db_tx(js::get_this(*vctx));
 
     if(!tx_opt.has_value())
@@ -405,12 +408,16 @@ js::value db_read_all(js::value_context* vctx, js::value js_db_id)
         js::value key_value(*vctx);
         key_value.from_json((std::string)kv.key_view);
 
+        //std::cout << "Data " << kv.data_view << std::endl;
+
         js::value data_value(*vctx);
         data_value.from_json((std::string)kv.data_view);
 
+        //std::cout << "Parsed " << data_value.to_json() << std::endl;
+
         js::value js_kv(*vctx);
         js_kv["k"] = key_value;
-        js_kv["d"] = data_value;
+        js_kv["v"] = data_value;
 
         ret.emplace_back(js_kv);
     }
@@ -424,6 +431,9 @@ js::value db_del(js::value_context* vctx, js::value js_db_id, js::value js_key)
 
     int db_id = (int)js_db_id;
     std::string key = (std::string)js_key;
+
+    if(key.size() == 0)
+        throw std::runtime_error("Bad key, null?");
 
     std::optional tx_opt = fetch_db_tx(js::get_this(*vctx));
 
@@ -530,6 +540,11 @@ js::value start_read_write_transaction(js::value_context* vctx)
     return start_transaction(vctx, true);
 }
 
+void print(js::value_context* vctx, js::value val)
+{
+    std::cout << "Js: " << (std::string)val << std::endl;
+}
+
 void system_global(js::value_context& vctx)
 {
     js::value glob = js::get_global(vctx);
@@ -539,6 +554,7 @@ void system_global(js::value_context& vctx)
     js::add_key_value(db, "read_write", js::function<start_read_write_transaction>);
 
     glob["db"] = db;
+    glob["print"] = js::function<print>;
 }
 
 int js_module_set_import_meta(JSContext *ctx, JSValueConst func_val,

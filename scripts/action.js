@@ -154,26 +154,33 @@ export class ActionMan
 		var t = db.read_write();
 		var all_reads = t.read_all(2);
 
+		var pending_action_list = [];
+
 		for(var i=0; i < all_reads.length; i++)
 		{
-			var lookup = universe.lookup_slow_opt(pending.source_uid);
+			let all_pending = all_reads[i].v;
 
-			if(lookup == null)
+			for(var pending of all_pending)
 			{
-				t.delete(all_reads[i].k);
-				continue;			
+				var lookup = universe.lookup_slow_opt(pending.source_uid);
+
+				if(lookup == null)
+				{
+					t.del(2, all_reads[i].k);
+					continue;			
+				}
+
+				if(lookup.sys != my_sys)
+					continue;
+
+				t.del(2, all_reads[i].k);
+
+				pending_action_list.push(pending);
 			}
-
-			if(lookup.sys != my_sys)
-				continue;
-
-			t.delete(all_reads[i].k);
 		}
 
-		for(var i=0; i < all_reads.length; i++)
+		for(var pending of pending_action_list)
 		{
-			var pending = all_reads[i].v;
-
 			var lookup = my_sys.lookup_slow_opt(pending.source_uid);
 
 			var act = pending_action_to_action(my_sys, lookup.poi, lookup.en, pending);
