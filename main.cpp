@@ -379,6 +379,10 @@ js::value db_read(js::value_context* vctx, js::value js_db_id, js::value js_key)
 
         ret.from_json(nullterm);
     }
+    else
+    {
+        ret = js::null;
+    }
 
     return ret;
 }

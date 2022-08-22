@@ -41,6 +41,29 @@ export class Action
 	}
 }
 
+export class PendingAction {
+	constructor()
+	{
+		///temporary, needs to be a trivial serialise later
+		this.uid = get_unique_id();
+		this.type = "pendingaction";
+		this.pending_action_type = "none";
+		this.source_uid = -1;
+	}
+
+	build_move(e_uid, position) {
+		this.pending_action_type = "move";
+		this.source_uid = e_uid;
+		this.position = position;
+	}
+
+	build_mine(source_uid, target_uid) {
+		this.pending_action_type = "mine";
+		this.source_uid = src_uid;
+		this.target_uid = target_uid;
+	}
+}
+
 export class ActionMan
 {
 	constructor()
