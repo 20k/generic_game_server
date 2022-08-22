@@ -24,11 +24,6 @@ export class System
 	}
 	
 	handle_actions(universe, elapsed_time_s) {
-		if(this.action_man.actions.length > 0)
-		{
-			set_debug("Debug" + this.action_man.actions.length);
-		}
-		
 		var me = this;
 		
 		function curried_action_executor(act, real_delta_time)
@@ -50,8 +45,6 @@ export class System
 	
 	add_action(act) {
 		this.action_man.add_action(act);
-		
-		//set_debug("Added " + this.action_man.actions.length);
 	}
 	
 	tick(universe, elapsed_time_s) {
