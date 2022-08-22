@@ -122,22 +122,33 @@ export class Ship
 {
 	constructor()
 	{
-		this.position = [0,0];
 		this.name = "Ship";
+		this.uid = get_unique_id();
 		this.type = "ship";
 		this.nickname = "No Nick";
 		this.owner = -1;
-		this.uid = get_unique_id();
+		this.position = [0,0];
+
+		this.cargo = new ItemMan();
 	}
 
 	store()
 	{
-		return this;
+		var cargo_uid = store_object(this.cargo);
+
+		return {name:this.name, uid:this.uid, type:this.type, nickname:this.nickname, owner:this.owner, position:this.position, c_uid:cargo_uid};
 	}
 
 	load(obj)
 	{
-		Object.assign(this, obj);
+		var cargo = load_object(obj.c_uid);
+
+		this.uid = obj.uid;
+		this.type = obj.type;
+		this.nickname = obj.nickname;
+		this.owner = obj.owner;
+		this.position = obj.position;
+		this.cargo = cargo;
 	}
 
 	get_speed() {
