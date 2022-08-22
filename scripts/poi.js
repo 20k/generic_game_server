@@ -1,5 +1,5 @@
 import {execute_action} from "action";
-import {load_object, to_uids, load_uids} from "api"
+import {load_object, save_uids, load_uids} from "api"
 
 exec("get_unique_id");
 
@@ -18,7 +18,7 @@ export class Poi
 	
 	store()
 	{
-		var contents_uid = to_uids(this.contents);
+		var contents_uid = save_uids(this.contents);
 		
 		return {position:this.position, name:this.name, type:this.type, poi_name:this.poi_name, poi_type:this.poi_type, contents_uid, uid:this.uid}
 	}

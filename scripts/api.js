@@ -59,7 +59,7 @@ export function load_object(uid)
 	return as_class;
 }
 
-export function to_uids(arr)
+export function save_uids(arr)
 {
 	var arr_uid = [];
 	

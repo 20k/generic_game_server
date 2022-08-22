@@ -1,6 +1,6 @@
 exec("get_unique_id")
 
-import {load_object, to_uids, load_uids} from "api"
+import {load_object, save_uids, load_uids} from "api"
 
 export class Universe
 {
@@ -26,7 +26,7 @@ export class Universe
 	
 	store()
 	{
-		var contents_uid = to_uids(this.contents);
+		var contents_uid = save_uids(this.contents);
 				
 		return {type:this.type, uid:this.uid, contents_uid}
 	}
