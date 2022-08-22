@@ -387,6 +387,37 @@ js::value db_read(js::value_context* vctx, js::value js_db_id, js::value js_key)
     return ret;
 }
 
+js::value db_read_all(js::value_context* vctx, js::value js_db_id)
+{
+    int db_id = (int)js_db_id;
+
+    std::optional tx_opt = fetch_db_tx(js::get_this(*vctx));
+
+    if(!tx_opt.has_value())
+        return js::make_value(*vctx, "No transaction in db_read_all");
+
+    std::vector<db::key_value_data> dat = tx_opt.value()->read_all_with_keys(db_id);
+
+    std::vector<js::value> ret;
+
+    for(db::key_value_data& kv : dat)
+    {
+        js::value key_value(*vctx);
+        key_value.from_json((std::string)kv.key_view);
+
+        js::value data_value(*vctx);
+        data_value.from_json((std::string)kv.data_view);
+
+        js::value js_kv(*vctx);
+        js_kv["k"] = key_value;
+        js_kv["d"] = data_value;
+
+        ret.emplace_back(js_kv);
+    }
+
+    return js::make_value(*vctx, ret);
+}
+
 js::value db_write(js::value_context* vctx, js::value js_db_id, js::value js_key, js::value js_value)
 {
     int db_id = (int)js_db_id;
@@ -457,6 +488,7 @@ js::value start_transaction(js::value_context* vctx, bool is_read_write)
     ret.add_hidden_value("db_transaction", hidden_ptr);
 
     js::add_key_value(ret, "read", js::function<db_read>);
+    js::add_key_value(ret, "read_all", js::function<db_read_all>);
     js::add_key_value(ret, "write", js::function<db_write>);
     js::add_key_value(ret, "close", js::function<close_transaction>);
 

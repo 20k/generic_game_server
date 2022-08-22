@@ -22,7 +22,7 @@ function set_current_actions(acts) {
 ///design
 ///each user needs to be able to only write to a specific db key (?)
 ///which they append actions to
-///currently racey
+///currently racey, must not be run in parallel with server
 export function clear_actions_for(e_uid) {
     var current_actions = get_current_actions();
 
