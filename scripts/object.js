@@ -14,7 +14,8 @@ function make_item(name, subtype)
 	return {
 		name:name,
 		type:"item",
-		subtype:subtype
+		subtype:subtype,
+		volume:0
 	};
 }
 
@@ -25,11 +26,13 @@ function take_ore_amount(item, amount)
 	}
 
 	var result = make_item("Ore", "ore");
+	result.volume = amount;
 	result.ore_name = item.ore_name;
 	result.ore_type = item.ore_type;
 	result.ore_amount = amount;
 
 	item.ore_amount -= amount;
+	item.volume = item.ore_amount;
 
 	return result;
 }
