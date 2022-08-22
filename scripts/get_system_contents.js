@@ -120,10 +120,10 @@ function interactive_poi_contents(sys, poi, player)
 	/*var merged = array_concat(array_concat(fmt_1, fmt_2, ' | '), fmt_3, ' | ');
 
 	imgui.text(merged.join("\n"))*/
-	
+
 	var controlled = null;
-	
-	for(var e of poi.contents) 
+
+	for(var e of poi.contents)
 	{
 		if(player.controlling == e.uid)
 		{
@@ -155,13 +155,13 @@ function interactive_poi_contents(sys, poi, player)
 				player.take_control(e);
 			}
 		}
-		
+
 		if(controlled != null)
 		{
 			if(e.uid != controlled.uid)
 			{
 				imgui.sameline();
-				
+
 				///will need to validate actions
 				if(imgui.smallbutton("[move]##" + render_id++))
 				{
@@ -173,15 +173,15 @@ function interactive_poi_contents(sys, poi, player)
 					clear_actions_for(player.controlling);
 					add_pending_action(pending);
 				}
-				
-				if(e.type == "asteroid") 
+
+				if(e.type == "asteroid")
 				{
 					if(poi.distance(controlled, e) < 1)
 					{
 						imgui.sameline();
-						
+
 						if(imgui.smallbutton("[mine]##" + render_id++))
-						{						
+						{
 							var pending = new PendingAction();
 							pending.build_mine(player.controlling, e.uid);
 
@@ -256,7 +256,7 @@ function interactive_sys_contents(sys, player_view, player)
 {
 	///hacky
 	//var render_id = sys.uid * 129;
-	
+
 	imgui.pushstylecolor(21, 0, 0, 0, 0);
 	imgui.pushstylecolor(22, 0, 0, 0, 0);
 	imgui.pushstylecolor(23, 0, 0, 0, 0);
@@ -302,7 +302,7 @@ function interactive_sys_contents(sys, player_view, player)
 		str += "###" + render_id++;
 
 		if(imgui.button(str))
-		{			
+		{
 			is_open = !is_open;
 			player_view.set_is_poi_open(sys, poi, is_open);
 		}
@@ -329,7 +329,7 @@ function interactive_sys_contents(sys, player_view, player)
 export function render_universe_contents(universe, player)
 {
 	render_id = 0;
-	
+
 	for(var sys of universe.contents)
 	{
 		interactive_sys_contents(sys, player.view, player);

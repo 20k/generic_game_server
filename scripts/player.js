@@ -11,28 +11,28 @@ export class Player
 		this.uid = get_unique_id();
 		this.controlling = -1;
 	}
-	
+
 	take_ownership(obj) {
 		obj.owner = this.uid;
 	}
-	
+
 	take_control(obj) {
 		this.controlling = obj.uid;
 	}
-	
+
 	release_control(obj) {
 		this.controlling = -1;
 	}
-	
+
 	store()
 	{
 		var stored = store_object(this.view);
-		
+
 		return {type:this.type, uid:this.uid, controlling:this.controlling, view_uid:stored};
 	}
-	
+
 	load(obj)
-	{	
+	{
 		this.uid = obj.uid;
 		this.controlling = obj.controlling;
 		this.view = load_object(obj.view_uid);
@@ -42,6 +42,6 @@ export class Player
 export function make_player()
 {
 	var player = new Player();
-	
+
 	return player
 }

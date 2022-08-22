@@ -14,18 +14,18 @@ function make_move_subobject(e, finish_position)
 function distance(e1, e2_position) {
 	var dx = e2_position[0] - e1.position[0];
 	var dy = e2_position[1] - e1.position[1];
-	
+
 	return Math.sqrt(dx * dx + dy * dy);
 }
 
 function time_to_target(source, target_position) {
 	var my_speed = source.get_speed();
-	
+
 	var dist = distance(source, target_position);
-	
+
 	if(my_speed > 0.0001)
 		return dist / my_speed;
-	
+
 	return 0;
 }
 
@@ -39,8 +39,8 @@ function make_move_action(e, finish_position)
 	var elapsed_time_s = time_to_target(e, finish_position);
 
 	var obj = make_action();
-	
-	obj.source_uid = e.uid,	
+
+	obj.source_uid = e.uid,
 	obj.subtype = "move";
 	obj.subobject = make_move_subobject(e, finish_position, elapsed_time_s);
 	obj.finish_elapsed = elapsed_time_s;
@@ -59,23 +59,23 @@ function make_interrupt_action(e_uid) {
 function make_mine_action(e, target)
 {
 	var total_ore = target.get_total_ore();
-	
+
 	var time_to_mine = 0;
-	
+
 	var mine_power = e.get_mining_power();
-	
+
 	if(total_ore > 0.0001 && mine_power > 0.0001)
 	{
 		time_to_mine = total_ore / mine_power;
 	}
-	
+
 	var obj = make_action();
-	
+
 	obj.source_uid = e.uid;
 	obj.subtype = "mine";
 	obj.subobject = {target_uid:target.uid}; //crap, need the asteroid object
 	obj.finish_elapsed = time_to_mine;
-	
+
 	return obj;
 }
 
@@ -136,23 +136,23 @@ export class Action
 		this.type = "action";
 		this.subtype = "";
 		this.subobject = {};
-		
+
 		this.current_elapsed = 0;
 		this.finish_elapsed = 0;
 	}
-	
+
 	remaining_time() {
 		return this.finish_elapsed - this.current_elapsed;
 	}
-	
+
 	finished() {
 		return this.current_elapsed >= this.finish_elapsed - 0.000001;
 	}
-	
+
 	load(obj) {
 		Object.assign(this, obj);
 	}
-	
+
 	store() {
 		return this;
 	}
@@ -185,7 +185,7 @@ export class ActionMan
 				if(lookup == null)
 				{
 					t.del(2, all_reads[i].k);
-					continue;			
+					continue;
 				}
 
 				if(lookup.sys != my_sys)
@@ -196,7 +196,7 @@ export class ActionMan
 				pending_action_list.push(pending);
 			}
 		}
- 
+
 		for(var pending of pending_action_list)
 		{
 			var lookup = my_sys.lookup_slow_opt(pending.source_uid);
@@ -205,13 +205,13 @@ export class ActionMan
 				continue;
 
 			var act = pending_action_to_action(my_sys, lookup.poi, lookup.en, pending);
-			
+
 			if(act == null)
 				continue;
-			
+
 			this.add_action(act);
 		}
-		
+
 		t.close();
 
 		var actions_by_entity = {};
@@ -246,11 +246,11 @@ export class ActionMan
 	add_action(a) {
 		this.actions.push(a);
 	}
-	
+
 	clear_actions() {
 		this.actions.length = 0;
 	}
-	
+
 	clear_actions_for(e_uid) {
 		for(var i=0; i < this.actions.length; i++) {
 			if(this.actions[i].source_uid == e_uid) {
@@ -259,35 +259,35 @@ export class ActionMan
 			}
 		}
 	}
-	
+
 	add_action_time(delta_time_s, action_executor) {
 		var remaining = delta_time_s;
-		
+
 		while(this.actions.length > 0 && remaining > 0)
-		{		
+		{
 			var consumable = Math.min(this.actions[0].remaining_time(), remaining);
 
 			action_executor(this.actions[0], consumable);
-			
+
 			this.actions[0].current_elapsed += consumable;
-			
+
 			remaining -= consumable;
-			
+
 			if(this.actions[0].finished())
-			{							
+			{
 				this.actions.shift();
 			}
 		}
 	}
-	
+
 	load(obj) {
 		this.actions = load_uids(obj.a_uids);
 		this.uid = obj.uid;
 	}
-	
+
 	store() {
 		var actions_uid = save_uids(this.actions);
-		
+
 		return {uid:this.uid, type:this.type, a_uids:actions_uid};
 	}
 }
@@ -295,43 +295,43 @@ export class ActionMan
 export function execute_action(universe, sys, poi, en, act, real_time_s)
 {
 	if(act.subtype == "move")
-	{	
+	{
 		if(act.finish_elapsed == 0)
 			return;
 
 		var move_object = act.subobject;
-		
+
 		var start_pos = move_object.start;
 		var finish_pos = move_object.finish;
-		
+
 		var delta = [finish_pos[0] - start_pos[0], finish_pos[1] - start_pos[1]]
-					
+
 		var current_time = act.current_elapsed + real_time_s;
-		
+
 		globalThis.last_debug = current_time + "Rtime";
-		
+
 		var analytic_pos = [start_pos[0] + delta[0] * current_time / act.finish_elapsed, start_pos[1] + delta[1] * current_time / act.finish_elapsed]
-		
+
 		analytic_pos[0] = Math.round(analytic_pos[0] * 100) / 100;
 		analytic_pos[1] = Math.round(analytic_pos[1] * 100) / 100;
-		
-		en.position = analytic_pos;		
+
+		en.position = analytic_pos;
 	}
-	
+
 	if(act.subtype == "mine")
 	{
 		//globalThis.last_debug = "mine"
-		
+
 		var object = poi.lookup_slow_opt(act.subobject.target_uid);
-		
+
 		if(object == null)
 			return;
-		
+
 		var returned_items = object.mine(en.get_mining_power() * real_time_s);
-		
+
 		if(returned_items.length == 0)
 			return;
-		
+
 		//globalThis.last_debug = "Mined " + returned_items[0].ore_amount;
 	}
 }

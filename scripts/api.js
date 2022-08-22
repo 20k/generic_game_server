@@ -14,16 +14,16 @@ export function get_by_key(uid)
 	var result = transact.read(1, uid);
 
 	transact.close();
-	
+
 	return result;
 }
 
 export function store_key_value(uid, e)
 {
 	var transact = db.read_write();
-	
+
 	transact.write(1, uid, e);
-	
+
 	transact.close();
 }
 
@@ -33,7 +33,7 @@ export function store_object(e)
 	to_store.uid = e.uid;
 
 	store_key_value(e.uid, to_store);
-	
+
 	return e.uid;
 }
 
@@ -43,7 +43,7 @@ export function load_object(uid)
 	var as_class = allocate_class(val.type);
 	as_class.uid = uid;
 	val.uid = uid;
-	
+
 	as_class.load(val);
 	return as_class;
 }
@@ -51,26 +51,26 @@ export function load_object(uid)
 export function save_uids(arr)
 {
 	var arr_uid = [];
-	
+
 	for(var e of arr)
-	{	
+	{
 		store_object(e);
-		
+
 		arr_uid.push(e.uid);
 	}
-	
+
 	return arr_uid;
 }
 
 export function load_uids(arr_uid)
 {
 	var arr = [];
-	
+
 	for(var uid of arr_uid)
 	{
 		arr.push(load_object(uid));
 	}
-	
+
 	return arr;
 }
 
@@ -80,56 +80,56 @@ function allocate_class(type)
 	{
 		return new Universe();
 	}
-	
+
 	if(type == "system")
 	{
 		return new System();
 	}
-	
+
 	if(type == "poi")
 	{
 		return new Poi();
 	}
-	
+
 	if(type == "asteroid")
 	{
 		return new Asteroid();
 	}
-	
+
 	if(type == "station")
 	{
 		return new Station();
 	}
-	
+
 	if(type == "warpgate")
 	{
 		return new Warpgate();
 	}
-	
+
 	if(type == "ship")
 	{
 		return new Ship();
 	}
-	
+
 	if(type == "player")
 	{
 		return new Player();
 	}
-	
+
 	if(type == "action")
 	{
 		return new Action();
 	}
-	
+
 	if(type == "actionman")
 	{
 		return new ActionMan();
 	}
-	
+
 	if(type == "playerview")
 	{
 		return new PlayerView();
 	}
-		
+
 	return null;
 }

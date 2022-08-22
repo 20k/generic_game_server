@@ -9,16 +9,16 @@ import {store_object, load_object} from "api"
 
 {
 	var rstx = db.read_write();
-	
+
 	var should_reset = rstx.read(0, "reset");
 	rstx.write(0, "reset", 0);
 	rstx.close();
-	
+
 	if(should_reset === 1)
 	{
 		globalThis.player = undefined;
 	}
-	
+
 	if(imgui.button("Reset Player View"))
 	{
 		globalThis.player = undefined;
@@ -34,7 +34,7 @@ if(globalThis.test == undefined)
 	globalThis.test = false;
 
 if(globalThis.player == undefined)
-{	
+{
 	globalThis.player = make_player();
 }
 
@@ -77,9 +77,9 @@ if(imgui.button("Tick"))
 if(imgui.button("TestSaveLoad"))
 {
 	var universe_flattened = globalThis.universe.store();
-		
+
 	globalThis.universe = new Universe();
-	
+
 	globalThis.universe.load(universe_flattened);
 }
 
@@ -93,7 +93,7 @@ if(imgui.button("Save"))
 	t.close();
 }
 
-if(imgui.button("Load")) 
+if(imgui.button("Load"))
 {
 	var t = db.read_only();
 	var uni_uid = t.read(3, 0);

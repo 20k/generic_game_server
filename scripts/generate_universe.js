@@ -14,7 +14,7 @@ export function generate_universe(player)
 	//player.take_ownership(owned_ship);
 
 	player.take_ownership(poi.take(owned_ship));
-	
+
 	poi.take(make_ship([100, 20], "Also A Ship"));
 	poi.take(make_asteroid([150, 10]));
 	poi.take(make_asteroid([300, 10]));
@@ -31,7 +31,7 @@ export function generate_universe(player)
 	var universe = make_universe();
 	universe.take(sys1);
 	universe.take(sys2);
-	
+
 	return universe;
 }
 
