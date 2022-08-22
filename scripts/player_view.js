@@ -3,10 +3,22 @@ import {get_unique_id} from "get_unique_id"
 export class PlayerView
 {
 	constructor() {
+		this.uid_open = {};
 		this.poi_open = {};
 		this.sys_open = {};
 		this.type = "playerview";
 		this.uid = get_unique_id();
+	}
+
+	is_uid_open(id) {
+		if(this.uid_open == undefined)
+			return false;
+
+		return this.uid_open[id];
+	}
+
+	set_uid_open(id, is_open) {
+		this.uid_open[id] = is_open;
 	}
 
 	is_poi_open(sys, poi) {

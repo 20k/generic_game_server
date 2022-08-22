@@ -140,6 +140,30 @@ function interactive_poi_contents(sys, poi, player)
 		var formatted_name = fmt_2[i];
 		var formatted_position = fmt_3[i];
 
+		if(e.type == "ship") {
+			if(e.cargo.stored.length != 0) {
+				imgui.unindent();
+
+				var id_open = player.view.is_uid_open(e.uid);
+
+				var str = "+";
+
+				if(id_open) {
+					str = "-";
+				}
+
+				str += "###" + render_id++;
+
+				if(imgui.smallbutton(str)) {
+					id_open = !id_open;
+					player.view.set_uid_open(e.uid, id_open);
+				}
+
+				imgui.sameline();
+				imgui.indent();
+			}
+		}
+
 		imgui.text(formatted_type + " | " + formatted_name + " | " + formatted_position);
 
 		if(e.type == "ship" && e.owner == player.uid && player.controlling != e.uid)
@@ -191,6 +215,16 @@ function interactive_poi_contents(sys, poi, player)
 					}
 				}
 			}
+		}
+
+		if(e.type == "ship" && player.view.is_uid_open(e.uid)) {
+			imgui.indent();
+
+			for(var e of e.cargo.stored) {
+				imgui.text(e.format());
+			}
+
+			imgui.unindent();
 		}
 	}
 }

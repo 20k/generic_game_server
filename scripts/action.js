@@ -329,8 +329,10 @@ export function execute_action(universe, sys, poi, en, act, real_time_s)
 
 		var returned_items = object.mine(en.get_mining_power() * real_time_s);
 
-		if(returned_items.length == 0)
-			return;
+		en.cargo.add_items(returned_items);
+
+		//if(returned_items.length == 0)
+		//	return;
 
 		//globalThis.last_debug = "Mined " + returned_items[0].ore_amount;
 	}

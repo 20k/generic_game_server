@@ -21,6 +21,14 @@ export class Item {
         this.ore_amount = ore_amount;
     }
 
+    format() {
+        if(this.subtype == "ore") {
+            return `${this.ore_name} ore (${this.ore_amount})`
+        }
+
+        return this.name;
+    }
+
     store() {
         return this;
     }
@@ -42,6 +50,10 @@ export class ItemMan {
 
     add_item(item) {
         this.stored.push(item);
+    }
+
+    add_items(items) {
+        this.stored = this.stored.concat(items);
     }
 
     store() {
