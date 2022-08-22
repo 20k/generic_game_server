@@ -38,10 +38,10 @@ if(globalThis.player == undefined)
 	globalThis.player = make_player();
 }
 
-if(globalThis.universe == undefined)
+/*if(globalThis.universe == undefined)
 {
 	globalThis.universe = generate_universe(globalThis.player);
-}
+}*/
 
 if(imgui.button("Hello there"))
 {
@@ -50,9 +50,8 @@ if(imgui.button("Hello there"))
 
 imgui.text(exec("hello") + " " + globalThis.test);
 
-//imgui.text(exec("get_system_contents"));
-
-render_universe_contents(globalThis.universe, globalThis.player);
+if(globalThis.universe != undefined)
+	render_universe_contents(globalThis.universe, globalThis.player);
 
 var t2 = db.read_only();
 
@@ -101,3 +100,9 @@ if(imgui.button("Load"))
 
 	globalThis.universe = load_object(uni_uid);
 }
+
+if(imgui.button("Undef Universe")) {
+	globalThis.universe = undefined;
+}
+
+imgui.text("My Id " + get_client_id());

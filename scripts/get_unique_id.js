@@ -1,7 +1,17 @@
 //globalThis.globally_unique = 0;
 
+var defer_uids = 0;
+
+export function set_defer_uids(val) {
+	defer_uids = val;
+}
+
 export function get_unique_id()
 {
+	if(defer_uids == true) {
+		return -1;
+	}
+
 	var t = db.read_write();
 
 	var gid = t.read(3, 1);

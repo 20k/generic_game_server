@@ -6,6 +6,7 @@ import {Player} from "player"
 import {set_debug} from "debug"
 import {Action, ActionMan} from "action";
 import {PlayerView} from "player_view";
+import {set_defer_uids} from "./get_unique_id";
 
 export function get_by_key(uid)
 {
@@ -40,7 +41,11 @@ export function store_object(e)
 export function load_object(uid)
 {
 	var val = get_by_key(uid);
+
+	set_defer_uids(true);
 	var as_class = allocate_class(val.type);
+	set_defer_uids(false);
+
 	as_class.uid = uid;
 	val.uid = uid;
 

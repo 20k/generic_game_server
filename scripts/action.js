@@ -197,6 +197,8 @@ export class ActionMan
 			}
 		}
 
+		t.close();
+
 		for(var pending of pending_action_list)
 		{
 			var lookup = my_sys.lookup_slow_opt(pending.source_uid);
@@ -211,8 +213,6 @@ export class ActionMan
 
 			this.add_action(act);
 		}
-
-		t.close();
 
 		var actions_by_entity = {};
 
