@@ -11,44 +11,64 @@ function make_move_subobject(e, finish_position)
 	};
 }
 
-export class Action
+function distance(e1, e2_position) {
+	var dx = e2_position[0] - e1.position[0];
+	var dy = e2_position[1] - e1.position[1];
+	
+	return Math.sqrt(dx * dx + dy * dy);
+}
+
+function time_to_target(source, target_position) {
+	var my_speed = source.get_speed();
+	
+	var dist = distance(source, target_position);
+	
+	if(my_speed > 0.0001)
+		return dist / my_speed;
+	
+	return 0;
+}
+
+function make_action()
 {
-	constructor()
+	return new Action();
+}
+
+function make_move_action(e, finish_position)
+{
+	var elapsed_time_s = time_to_target(e, finish_position);
+
+	var obj = make_action();
+	
+	obj.source_uid = e.uid,	
+	obj.subtype = "move";
+	obj.subobject = make_move_subobject(e, finish_position, elapsed_time_s);
+	obj.finish_elapsed = elapsed_time_s;
+
+	return obj;
+}
+
+function make_mine_action(e, target)
+{
+	var total_ore = target.get_total_ore();
+	
+	var time_to_mine = 0;
+	
+	var mine_power = e.get_mining_power();
+	
+	if(total_ore > 0.0001 && mine_power > 0.0001)
 	{
-		this.uid = get_unique_id();
-		this.type = "action";
-		this.subtype = "";
-		this.subobject = {};
-		
-		this.current_elapsed = 0;
-		this.finish_elapsed = 0;
+		time_to_mine = total_ore / mine_power;
 	}
 	
-	remaining_time() {
-		return this.finish_elapsed - this.current_elapsed;
-	}
+	var obj = make_action();
 	
-	finished() {
-		return this.current_elapsed >= this.finish_elapsed - 0.000001;
-	}
-
-	import_from_pending(sys, poi, en, pending) {
-		if(pending.pending_action_type == "move") {
-			
-		}
-
-		if(pending.pending_action_type == "mine") {
-
-		}
-	}
+	obj.source_uid = e.uid;
+	obj.subtype = "mine";
+	obj.subobject = {target_uid:target.uid}; //crap, need the asteroid object
+	obj.finish_elapsed = time_to_mine;
 	
-	load(obj) {
-		Object.assign(this, obj);
-	}
-	
-	store() {
-		return this;
-	}
+	return obj;
 }
 
 export class PendingAction {
@@ -69,8 +89,55 @@ export class PendingAction {
 
 	build_mine(source_uid, target_uid) {
 		this.pending_action_type = "mine";
-		this.source_uid = src_uid;
+		this.source_uid = source_uid;
 		this.target_uid = target_uid;
+	}
+}
+
+function pending_action_to_action(sys, poi, en, pending) {
+	if(pending.pending_action_type == "move") {
+		return make_move_action(en, pending.position);
+	}
+
+	if(pending.pending_action_type == "mine") {
+		var target = poi.lookup_slow_opt(pending.target_uid);
+
+		if(target == null)
+			return null;
+
+		return make_mine_action(en, target);
+	}
+
+	return null;
+}
+
+export class Action
+{
+	constructor()
+	{
+		this.uid = get_unique_id();
+		this.type = "action";
+		this.subtype = "";
+		this.subobject = {};
+		
+		this.current_elapsed = 0;
+		this.finish_elapsed = 0;
+	}
+	
+	remaining_time() {
+		return this.finish_elapsed - this.current_elapsed;
+	}
+	
+	finished() {
+		return this.current_elapsed >= this.finish_elapsed - 0.000001;
+	}
+	
+	load(obj) {
+		Object.assign(this, obj);
+	}
+	
+	store() {
+		return this;
 	}
 }
 
@@ -109,9 +176,7 @@ export class ActionMan
 
 			var lookup = my_sys.lookup_slow_opt(pending.source_uid);
 
-			var act = new Action();
-			act.import_from_pending(my_sys, lookup.poi, lookup.en, pending);
-
+			var act = pending_action_to_action(my_sys, lookup.poi, lookup.en, pending);
 			this.add_action(act);
 		}
 		
@@ -165,46 +230,6 @@ export class ActionMan
 		
 		return {uid:this.uid, type:this.type, a_uids:actions_uid};
 	}
-}
-
-function make_action()
-{
-	return new Action();
-}
-
-export function make_move_action(e, finish_position, elapsed_time_s)
-{
-	var obj = make_action();
-	
-	obj.source_uid = e.uid,	
-	obj.subtype = "move";
-	obj.subobject = make_move_subobject(e, finish_position, elapsed_time_s);
-	obj.finish_elapsed = elapsed_time_s;
-
-	return obj;
-}
-
-export function make_mine_action(e, target)
-{
-	var total_ore = target.get_total_ore();
-	
-	var time_to_mine = 0;
-	
-	var mine_power = e.get_mining_power();
-	
-	if(total_ore > 0.0001 && mine_power > 0.0001)
-	{
-		time_to_mine = total_ore / mine_power;
-	}
-	
-	var obj = make_action();
-	
-	obj.source_uid = e.uid;
-	obj.subtype = "mine";
-	obj.subobject = {target_uid:target.uid}; //crap, need the asteroid object
-	obj.finish_elapsed = time_to_mine;
-	
-	return obj;
 }
 
 export function execute_action(universe, sys, poi, en, act, real_time_s)
