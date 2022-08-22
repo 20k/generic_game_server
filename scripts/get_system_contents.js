@@ -163,6 +163,7 @@ function interactive_poi_contents(sys, poi, player)
 			{
 				imgui.sameline();
 				
+				///will need to validate actions
 				if(imgui.smallbutton("[move]##" + render_id++))
 				{
 					var time_to_target = poi.time_to_target(controlled, e);

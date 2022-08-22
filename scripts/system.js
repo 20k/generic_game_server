@@ -32,7 +32,7 @@ export class System
 			
 			if(lookup == null)
 				return;
-						
+
 			execute_action(universe, me, lookup.poi, lookup.en, act, real_delta_time);
 		}
 
