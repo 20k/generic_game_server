@@ -24,6 +24,11 @@ import {get_debug} from "debug"
 	}
 }
 
+if(imgui.button("Reset Universe"))
+{
+	globalThis.universe = generate_universe(globalThis.player);
+}
+
 if(globalThis.test == undefined)
 	globalThis.test = false;
 
@@ -59,11 +64,6 @@ imgui.text("DB val " + value);
 if(imgui.button("Tick"))
 {
 	globalThis.universe.tick(1.)
-}
-
-if(imgui.button("Reset Universe"))
-{
-	globalThis.universe = generate_universe(globalThis.player);
 }
 
 //if(globalThis.last_debug != undefined)

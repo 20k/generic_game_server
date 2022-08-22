@@ -59,19 +59,13 @@ export class ActionMan
 	}
 	
 	clear_actions_for(e_uid) {
-		//set_debug("Clearing for " + e_uid);
-		
-		var str = "";
 		
 		for(var i=0; i < this.actions.length; i++) {
-			str += "Uid " + this.actions[i].source_uid + "\n";
 			if(this.actions[i].source_uid == e_uid) {
 				this.actions.splice(i, 1);
 				i--;
 			}
 		}
-		
-		set_debug(str);
 	}
 	
 	add_action_time(delta_time_s, action_executor) {
