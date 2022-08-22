@@ -48,6 +48,14 @@ function make_move_action(e, finish_position)
 	return obj;
 }
 
+function make_interrupt_action(e_uid) {
+	var obj = make_action();
+	obj.subtype = "interrupt";
+	obj.source_uid = e_uid;
+
+	return obj;
+}
+
 function make_mine_action(e, target)
 {
 	var total_ore = target.get_total_ore();
@@ -92,6 +100,11 @@ export class PendingAction {
 		this.source_uid = source_uid;
 		this.target_uid = target_uid;
 	}
+
+	build_interrupt(e_uid) {
+		this.pending_action_type = "interrupt";
+		this.source_uid = e_uid;
+	}
 }
 
 function pending_action_to_action(sys, poi, en, pending) {
@@ -106,6 +119,10 @@ function pending_action_to_action(sys, poi, en, pending) {
 			return null;
 
 		return make_mine_action(en, target);
+	}
+
+	if(pending.pending_action_type == "interrupt") {
+		return make_interrupt_action(pending.source_uid);
 	}
 
 	return null;
@@ -162,6 +179,7 @@ export class ActionMan
 
 			for(var pending of all_pending)
 			{
+				///todo: no lookup on interrupt
 				var lookup = universe.lookup_slow_opt(pending.source_uid);
 
 				if(lookup == null)
@@ -178,7 +196,7 @@ export class ActionMan
 				pending_action_list.push(pending);
 			}
 		}
-
+ 
 		for(var pending of pending_action_list)
 		{
 			var lookup = my_sys.lookup_slow_opt(pending.source_uid);
@@ -195,8 +213,38 @@ export class ActionMan
 		}
 		
 		t.close();
+
+		var actions_by_entity = {};
+
+		for(var act of this.actions) {
+			var arr = actions_by_entity[act.source_uid];
+
+			if(arr == undefined || arr == null) {
+				actions_by_entity[act.source_uid] = [];
+				arr = actions_by_entity[act.source_uid];
+			}
+
+			arr.push(act);
+		}
+
+		this.actions.length = 0;
+
+		//for(var o of actions_by_entity) {
+
+		for(const k in actions_by_entity) {
+			var o = actions_by_entity[k];
+
+			for(var i=0; i < o.length; i++) {
+				if(o[i].subtype == "interrupt") {
+					o.splice(0, i + 1);
+					i = -1;
+				}
+			}
+
+			this.actions = this.actions.concat(o);
+		}
 	}
-	
+
 	add_action(a) {
 		this.actions.push(a);
 	}

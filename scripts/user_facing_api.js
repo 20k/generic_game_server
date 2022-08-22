@@ -1,3 +1,5 @@
+import { PendingAction } from "./action";
+
 function get_current_actions() {
     var player_id = globalThis.player.uid;
 
@@ -23,8 +25,9 @@ function set_current_actions(acts) {
 ///each user needs to be able to only write to a specific db key (?)
 ///which they append actions to
 ///currently racey, must not be run in parallel with server
+///this actually isn't clearing actions, need to push a stop action
 export function clear_actions_for(e_uid) {
-    var current_actions = get_current_actions();
+    /*var current_actions = get_current_actions();
 
     for(var i=0; i < current_actions.length; i++)
     {
@@ -35,7 +38,12 @@ export function clear_actions_for(e_uid) {
         }
     }
 
-    set_current_actions(current_actions);
+    set_current_actions(current_actions);*/
+
+    var pending = new PendingAction();
+    pending.build_interrupt(e_uid);
+
+    add_pending_action(pending);
 }
 
 export function add_pending_action(pending_act) {
