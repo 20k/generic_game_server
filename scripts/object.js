@@ -144,7 +144,6 @@ export class Ship
 		var cargo = load_object(obj.c_uid);
 
 		this.uid = obj.uid;
-		this.type = obj.type;
 		this.nickname = obj.nickname;
 		this.owner = obj.owner;
 		this.position = obj.position;
