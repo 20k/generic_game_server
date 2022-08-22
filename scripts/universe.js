@@ -13,7 +13,7 @@ export class Universe
 	
 	take(sys) {
 		this.contents.push(sys);
-		
+
 		return sys;
 	}
 	
@@ -51,6 +51,12 @@ export class Universe
 		}
 		
 		return null;
+	}
+
+	import_all() {
+		for(var sys of this.contents) {
+			sys.action_man.import(this, sys);
+		}
 	}
 }
 

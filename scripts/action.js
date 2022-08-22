@@ -112,7 +112,7 @@ export class ActionMan
 			var act = new Action();
 			act.import_from_pending(my_sys, lookup.poi, lookup.en, pending);
 
-			this.actions.push(act);
+			this.add_action(act);
 		}
 		
 		t.close();
