@@ -18,12 +18,11 @@ export class Item {
 
         this.ore_type = ore_type;
         this.ore_name = ore_name;
-        this.ore_amount = ore_amount;
     }
 
     format() {
         if(this.subtype == "ore") {
-            return `${this.ore_name} ore (${this.ore_amount})`
+            return `${this.ore_name} ore (${this.volume})`
         }
 
         return this.name;
@@ -56,6 +55,21 @@ export class ItemMan {
         this.stored = this.stored.concat(items);
     }
 
+    fill_item(item) {
+        for(var e of this.stored) {
+            if(item_compatible(e, item))
+            {
+
+            }
+        }
+    }
+
+    fill_items(items) {
+        for(var e of items) {
+            this.fill_item(e);
+        }
+    }
+
     store() {
         var cargo_ids = save_uids(this.stored);
 
@@ -73,15 +87,14 @@ export class ItemMan {
 }
 
 export function take_ore_amount(item, amount) {
-    if(amount > item.ore_amount) {
-		amount = this.ore_amount;
+    if(amount > item.volume) {
+		amount = this.volume;
 	}
 
     var result = new Item();
     result.make_ore(item.ore_type, item.ore_name, amount);
 
-	item.ore_amount -= amount;
-	item.volume = item.ore_amount;
+	item.volume -= amount;;
 
 	return result;
 }

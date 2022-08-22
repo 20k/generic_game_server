@@ -42,7 +42,7 @@ export class Asteroid
 		var total_ore = 0;
 
 		for(var e of this.cargo.stored) {
-			total_ore += e.ore_amount;
+			total_ore += e.volume;
 		}
 
 		if(total_ore < 0.0001)
@@ -63,7 +63,7 @@ export class Asteroid
 		var depleted_frac = total_power / total_ore;
 
 		for(var item of this.cargo.stored) {
-			result.push(take_ore_amount(item, depleted_frac * item.ore_amount));
+			result.push(take_ore_amount(item, depleted_frac * item.volume));
 		}
 
 		return result;

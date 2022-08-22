@@ -334,6 +334,6 @@ export function execute_action(universe, sys, poi, en, act, real_time_s)
 		//if(returned_items.length == 0)
 		//	return;
 
-		//globalThis.last_debug = "Mined " + returned_items[0].ore_amount;
+		//globalThis.last_debug = "Mined " + returned_items[0].volume;
 	}
 }

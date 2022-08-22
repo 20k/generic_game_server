@@ -16,16 +16,16 @@ function get_asteroid_description(asteroid)
 
 	for(var i=0; i < asteroid.cargo.stored.length; i++)
 	{
-		if(asteroid.cargo.stored[i].ore_amount >= largest_ore_amount)
+		if(asteroid.cargo.stored[i].volume >= largest_ore_amount)
 		{
-			largest_ore_amount = asteroid.cargo.stored[i].ore_amount;
+			largest_ore_amount = asteroid.cargo.stored[i].volume;
 			largest_ore_index = i;
 		}
 	}
 
 	var largest_ore = asteroid.cargo.stored[largest_ore_index];
 
-	return largest_ore.ore_name + " (" + largest_ore.ore_amount + ")";
+	return largest_ore.ore_name + " (" + largest_ore.volume + ")";
 }
 
 function format_poi_contents(poi)
