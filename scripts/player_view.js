@@ -47,6 +47,14 @@ export class PlayerView
 	set_is_sys_open(sys, is_open) {
 		this.sys_open[sys.uid] = is_open;
 	}
+	
+	store() {
+		return this;
+	}
+	
+	load(obj) {	
+		Object.assign(this, obj);
+	}
 }
 
 export function make_player_view()
