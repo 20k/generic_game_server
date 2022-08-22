@@ -17,7 +17,7 @@ export class Universe
 		return sys;
 	}
 	
-	tick(delta_time_s) {
+	tick(delta_time_s) {	
 		for(var sys of this.contents)
 		{
 			sys.tick(this, delta_time_s);

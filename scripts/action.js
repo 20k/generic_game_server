@@ -1,11 +1,11 @@
 exec("get_unique_id");
 import {save_uids, load_uids} from "api"
+import {set_debug} from "debug"
 
 function make_move_subobject(e, finish_position)
 {
 	return {
 		//object_uid: e.uid,
-		source_uid: e.uid,
 		start: e.position,
 		finish: finish_position
 	};
@@ -45,7 +45,9 @@ export class ActionMan
 {
 	constructor()
 	{
+		this.type = "actionman";
 		this.actions = [];
+		this.uid = get_unique_id();
 	}
 	
 	add_action(a) {
@@ -57,12 +59,19 @@ export class ActionMan
 	}
 	
 	clear_actions_for(e_uid) {
-		for(var i=0; i < actions.length; i++) {
-			if(actions[i].source_uid == e_uid) {
-				actions.splice(i);
+		//set_debug("Clearing for " + e_uid);
+		
+		var str = "";
+		
+		for(var i=0; i < this.actions.length; i++) {
+			str += "Uid " + this.actions[i].source_uid + "\n";
+			if(this.actions[i].source_uid == e_uid) {
+				this.actions.splice(i, 1);
 				i--;
 			}
 		}
+		
+		set_debug(str);
 	}
 	
 	add_action_time(delta_time_s, action_executor) {
@@ -87,12 +96,13 @@ export class ActionMan
 	
 	load(obj) {
 		this.actions = load_uids(obj.a_uids);
+		this.uid = obj.uid;
 	}
 	
 	store() {
 		var actions_uid = save_uids(this.actions);
 		
-		return {a_uids:actions_uid};
+		return {uid:this.uid, type:this.type, a_uids:actions_uid};
 	}
 }
 
@@ -105,6 +115,7 @@ export function make_move_action(e, finish_position, elapsed_time_s)
 {
 	var obj = make_action();
 	
+	obj.source_uid = e.uid,	
 	obj.subtype = "move";
 	obj.subobject = make_move_subobject(e, finish_position, elapsed_time_s);
 	obj.finish_elapsed = elapsed_time_s;

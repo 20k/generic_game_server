@@ -23,7 +23,12 @@ export class System
 		return poi;
 	}
 	
-	handle_actions(universe, elapsed_time_ss) {
+	handle_actions(universe, elapsed_time_s) {
+		if(this.action_man.actions.length > 0)
+		{
+			set_debug("Debug" + this.action_man.actions.length);
+		}
+		
 		var me = this;
 		
 		function curried_action_executor(act, real_delta_time)
@@ -33,10 +38,12 @@ export class System
 			if(lookup == null)
 				return;
 			
-			execute_action(universe, sys, lookup.poi, lookup.en, act, real_delta_time);
+			set_debug("hi there");
+			
+			execute_action(universe, me, lookup.poi, lookup.en, act, real_delta_time);
 		}
-	
-		this.action_man
+
+		this.action_man.add_action_time(elapsed_time_s, curried_action_executor);
 	}
 	
 	clear_actions_for(e_uid) {
@@ -45,6 +52,8 @@ export class System
 	
 	add_action(act) {
 		this.action_man.add_action(act);
+		
+		//set_debug("Added " + this.action_man.actions.length);
 	}
 	
 	tick(universe, elapsed_time_s) {
@@ -52,7 +61,7 @@ export class System
 			poi.tick(universe, this, elapsed_time_s);
 		}
 		
-		handle_actions(universe, elapsed_time_s);
+		this.handle_actions(universe, elapsed_time_s);
 	}
 	
 	///temporary

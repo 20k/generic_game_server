@@ -1,5 +1,5 @@
 import {execute_action} from "action";
-import {load_object, save_uids, load_uids} from "api"
+import {save_uids, load_uids} from "api"
 
 exec("get_unique_id");
 
@@ -41,17 +41,7 @@ export class Poi
 	}
 	
 	tick(universe, sys, elapsed_time_s) {
-		/*for(var en of this.contents)
-		{
-			var poi = this;
-			
-			function curried_action_executor(act, real_delta_time)
-			{
-				execute_action(universe, sys, poi, en, act, real_delta_time);
-			}
-			
-			en.add_action_time(elapsed_time_s, curried_action_executor);
-		}*/
+
 	}
 	
 	distance(e1, e2) {
