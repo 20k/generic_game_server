@@ -31,6 +31,16 @@ export class Action
 	finished() {
 		return this.current_elapsed >= this.finish_elapsed - 0.000001;
 	}
+
+	import_from_pending(sys, poi, en, pending) {
+		if(pending.pending_action_type == "move") {
+			
+		}
+
+		if(pending.pending_action_type == "mine") {
+
+		}
+	}
 	
 	load(obj) {
 		Object.assign(this, obj);
@@ -73,9 +83,39 @@ export class ActionMan
 		this.uid = get_unique_id();
 	}
 
-	import() {
+	import(universe, my_sys) {
 		var t = db.read_write();
-		var all_reads = db.read_all(2);
+		var all_reads = t.read_all(2);
+
+		for(var i=0; i < all_reads.length; i++)
+		{
+			var lookup = universe.lookup_slow_opt(pending.source_uid);
+
+			if(lookup == null)
+			{
+				t.delete(all_reads[i].k);
+				continue;			
+			}
+
+			if(lookup.sys != my_sys)
+				continue;
+
+			t.delete(all_reads[i].k);
+		}
+
+		for(var i=0; i < all_reads.length; i++)
+		{
+			var pending = all_reads[i].v;
+
+			var lookup = my_sys.lookup_slow_opt(pending.source_uid);
+
+			var act = new Action();
+			act.import_from_pending(my_sys, lookup.poi, lookup.en, pending);
+
+			this.actions.push(act);
+		}
+		
+		t.close();
 	}
 	
 	add_action(a) {

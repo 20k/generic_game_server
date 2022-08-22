@@ -36,6 +36,22 @@ export class Universe
 		this.uid = obj.uid;		
 		this.contents = load_uids(obj.contents_uid)
 	}
+
+	lookup_slow_opt(id) {
+		for(var sys of this.contents)
+		{
+			for(var poi of sys.contents)
+			{
+				for(var e of poi.contents)
+				{
+					if(e.uid == id)
+						return {sys, poi, en:e};
+				}
+			}
+		}
+		
+		return null;
+	}
 }
 
 export function make_universe()
