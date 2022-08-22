@@ -37,6 +37,17 @@ export class Item {
     }
 }
 
+function item_storage_compatible(i1, i2) {
+    if(i1.subtype != i2.subtype)
+         return false;
+
+    if(i1.subtype == "ore") {
+        return i1.ore_type == i2.ore_type;
+    }
+
+    return false;
+}
+
 export class ItemMan {
     constructor() {
         this.uid = get_unique_id();
@@ -57,11 +68,13 @@ export class ItemMan {
 
     fill_item(item) {
         for(var e of this.stored) {
-            if(item_compatible(e, item))
-            {
-
+            if(item_storage_compatible(e, item)) {
+                e.volume += item.volume;
+                return;
             }
         }
+
+        this.add_item(item);
     }
 
     fill_items(items) {
