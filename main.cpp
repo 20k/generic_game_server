@@ -481,6 +481,8 @@ js::value db_write(js::value_context* vctx, js::value js_db_id, js::value js_key
 
 js::value close_transaction_free(js::value_context* vctx, js::value called_on)
 {
+    js::get_global(*vctx)["transact_pending"] = 0;
+
     if(!called_on.has_hidden("db_transaction"))
         return js::make_value(*vctx, "No hidden variable for transaction");
 
@@ -508,6 +510,15 @@ js::value close_transaction(js::value_context* vctx)
 
 js::value start_transaction(js::value_context* vctx, bool is_read_write)
 {
+    {
+        js::value pending = js::get_global(*vctx);
+
+        if((int)pending == 1)
+        {
+            //throw std::runtime_error("Two transaction");
+        }
+    }
+
     db::read_tx* base = nullptr;
 
     if(is_read_write)
@@ -526,6 +537,8 @@ js::value start_transaction(js::value_context* vctx, bool is_read_write)
     js::add_key_value(ret, "write", js::function<db_write>);
     js::add_key_value(ret, "del", js::function<db_del>);
     js::add_key_value(ret, "close", js::function<close_transaction>);
+
+    js::get_global(*vctx)["transact_pending"] = 1;
 
     return ret;
 }
@@ -555,6 +568,7 @@ void system_global(js::value_context& vctx)
 
     glob["db"] = db;
     glob["print"] = js::function<print>;
+    glob["transact_pending"] = 0;
 }
 
 int js_module_set_import_meta(JSContext *ctx, JSValueConst func_val,

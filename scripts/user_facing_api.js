@@ -30,7 +30,7 @@ export function clear_actions_for(e_uid) {
     {
         if(current_actions[i].source_uid == e_uid)
         {
-            current_actions.slice(i, 1);
+            current_actions.splice(i, 1);
             i--;
         }
     }

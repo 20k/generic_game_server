@@ -170,7 +170,7 @@ function interactive_poi_contents(sys, poi, player)
 					var pending = new PendingAction();
 					pending.build_move(player.controlling, e.position);
 
-					clear_actions_for(e.uid);
+					clear_actions_for(player.controlling);
 					add_pending_action(pending);
 				}
 				

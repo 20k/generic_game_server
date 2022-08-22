@@ -183,7 +183,14 @@ export class ActionMan
 		{
 			var lookup = my_sys.lookup_slow_opt(pending.source_uid);
 
+			if(lookup == null)
+				continue;
+
 			var act = pending_action_to_action(my_sys, lookup.poi, lookup.en, pending);
+			
+			if(act == null)
+				continue;
+			
 			this.add_action(act);
 		}
 		
