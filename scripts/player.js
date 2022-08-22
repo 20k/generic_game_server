@@ -1,6 +1,7 @@
 exec("get_unique_id");
 
 import {make_player_view} from "player_view"
+import {load_object, store_object} from "api";
 
 export class Player
 {
@@ -26,12 +27,16 @@ export class Player
 	
 	store()
 	{
-		return this;
+		var stored = store_object(this.view);
+		
+		return {type:this.type, uid:this.uid, controlling:this.controlling, view_uid:stored};
 	}
 	
 	load(obj)
 	{	
-		Object.assign(this, obj);
+		this.uid = obj.uid;
+		this.controlling = obj.controlling;
+		this.view = load_object(obj.view_uid);
 	}
 }
 
