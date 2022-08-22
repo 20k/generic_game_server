@@ -1,5 +1,7 @@
 import {set_debug} from "debug"
 import {get_unique_id} from "get_unique_id"
+import {save_uids, load_uids} from "api"
+import {Item, take_ore_amount, fill_asteroid} from "item";
 
 function make_object_with_position(position)
 {
@@ -7,44 +9,6 @@ function make_object_with_position(position)
 	obj.position = position;
 
 	return obj;
-}
-
-function make_item(name, subtype)
-{
-	return {
-		name:name,
-		type:"item",
-		subtype:subtype,
-		volume:0
-	};
-}
-
-function take_ore_amount(item, amount)
-{
-	if(amount > item.ore_amount) {
-		amount = this.ore_amount;
-	}
-
-	var result = make_item("Ore", "ore");
-	result.volume = amount;
-	result.ore_name = item.ore_name;
-	result.ore_type = item.ore_type;
-	result.ore_amount = amount;
-
-	item.ore_amount -= amount;
-	item.volume = item.ore_amount;
-
-	return result;
-}
-
-function fill_asteroid(asteroid, ore_name, ore_type, ore_amount)
-{
-	var item = make_item("Ore", "ore");
-	item.ore_name = ore_name;
-	item.ore_type = ore_type;
-	item.ore_amount = ore_amount;
-
-	asteroid.ores.push(item);
 }
 
 export class Asteroid
@@ -61,12 +25,19 @@ export class Asteroid
 
 	store()
 	{
-		return this;
+		var ores_uid = save_uids(this.ores);
+
+		return {uid:this.uid, type:this.type, name:this.name, position:this.position, owner:this.owner, o_uid:ores_uid};
 	}
 
 	load(obj)
 	{
-		Object.assign(this, obj);
+		var loaded_ores = load_uids(obj.o_uid);
+
+		this.uid = obj.uid;
+		this.position = obj.position;
+		this.owner = obj.owner;
+		this.ores = loaded_ores;
 	}
 
 	get_total_ore() {
