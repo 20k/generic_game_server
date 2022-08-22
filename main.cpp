@@ -418,6 +418,30 @@ js::value db_read_all(js::value_context* vctx, js::value js_db_id)
     return js::make_value(*vctx, ret);
 }
 
+js::value db_del(js::value_context* vctx, js::value js_db_id, js::value js_key)
+{
+    js::value ret(*vctx);
+
+    int db_id = (int)js_db_id;
+    std::string key = (std::string)js_key;
+
+    std::optional tx_opt = fetch_db_tx(js::get_this(*vctx));
+
+    if(!tx_opt.has_value())
+        return js::make_value(*vctx, "No transaction in db_del");
+
+    if(!tx_opt.value()->is_read_write)
+        return js::make_value(*vctx, "Tried to delete on read only tx");
+
+    db::read_write_tx* rwtx = dynamic_cast<db::read_write_tx*>(tx_opt.value());
+
+    assert(rwtx);
+
+    rwtx->del(db_id, key);
+
+    return js::make_value(*vctx, js::null);
+}
+
 js::value db_write(js::value_context* vctx, js::value js_db_id, js::value js_key, js::value js_value)
 {
     int db_id = (int)js_db_id;
@@ -490,6 +514,7 @@ js::value start_transaction(js::value_context* vctx, bool is_read_write)
     js::add_key_value(ret, "read", js::function<db_read>);
     js::add_key_value(ret, "read_all", js::function<db_read_all>);
     js::add_key_value(ret, "write", js::function<db_write>);
+    js::add_key_value(ret, "del", js::function<db_del>);
     js::add_key_value(ret, "close", js::function<close_transaction>);
 
     return ret;

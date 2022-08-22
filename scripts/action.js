@@ -72,6 +72,11 @@ export class ActionMan
 		this.actions = [];
 		this.uid = get_unique_id();
 	}
+
+	import() {
+		var t = db.read_write();
+		var all_reads = db.read_all(2);
+	}
 	
 	add_action(a) {
 		this.actions.push(a);
