@@ -1,53 +1,57 @@
-function make_player_view()
+exec("get_unique_id");
+
+export class PlayerView
 {
-	/*var obj = {};
-	
-	obj.is_poi_open = {};
-	obj.is_sys_open = {};*/
-	
-	return {
-		poi_open:{},
-		sys_open:{},
-		
-		is_poi_open(sys, poi) {
-			var p_1 = this.poi_open[sys.uid];
-			
-			if(p_1 === undefined)
-				return false;
-			
-			var p_2 = p_1[poi.uid];
-			
-			if(p_2 === undefined)
-				return false;
-			
-			return p_2;
-		},
-		
-		set_is_poi_open(sys, poi, is_open) {
-			if(this.poi_open[sys.uid] === undefined)
-			{
-				this.poi_open[sys.uid] = {};
-			}
-			
-			if(this.poi_open[sys.uid][poi.uid] === undefined)
-			{
-				this.poi_open[sys.uid][poi.uid] = false;
-			}
-			
-			this.poi_open[sys.uid][poi.uid] = is_open;
-		},
-		
-		is_sys_open(sys) {
-			if(this.sys_open[sys.uid] == undefined)
-				return false;
-			
-			return this.sys_open[sys.uid];
-		},
-		
-		set_is_sys_open(sys, is_open) {
-			this.sys_open[sys.uid] = is_open;
-		}
+	constructor() {
+		this.poi_open = {};
+		this.sys_open = {};
+		this.type = "playerview";
+		this.uid = get_unique_id();
 	}
+	
+	is_poi_open(sys, poi) {
+		var p_1 = this.poi_open[sys.uid];
+		
+		if(p_1 === undefined)
+			return false;
+		
+		var p_2 = p_1[poi.uid];
+		
+		if(p_2 === undefined)
+			return false;
+		
+		return p_2;
+	}
+	
+	set_is_poi_open(sys, poi, is_open) {
+		if(this.poi_open[sys.uid] === undefined)
+		{
+			this.poi_open[sys.uid] = {};
+		}
+		
+		if(this.poi_open[sys.uid][poi.uid] === undefined)
+		{
+			this.poi_open[sys.uid][poi.uid] = false;
+		}
+		
+		this.poi_open[sys.uid][poi.uid] = is_open;
+	}
+	
+	is_sys_open(sys) {
+		if(this.sys_open[sys.uid] == undefined)
+			return false;
+		
+		return this.sys_open[sys.uid];
+	}
+	
+	set_is_sys_open(sys, is_open) {
+		this.sys_open[sys.uid] = is_open;
+	}
+}
+
+export function make_player_view()
+{
+	return new PlayerView();
 }
 
 /*function player_open(obj, poi)

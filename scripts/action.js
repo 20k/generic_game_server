@@ -59,7 +59,6 @@ export class ActionMan
 	}
 	
 	clear_actions_for(e_uid) {
-		
 		for(var i=0; i < this.actions.length; i++) {
 			if(this.actions[i].source_uid == e_uid) {
 				this.actions.splice(i, 1);

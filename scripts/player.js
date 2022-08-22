@@ -1,5 +1,6 @@
-exec("player_view");
 exec("get_unique_id");
+
+import {make_player_view} from "player_view"
 
 export class Player
 {

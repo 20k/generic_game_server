@@ -27,6 +27,7 @@ import {Asteroid, Station, Warpgate, Ship} from "object"
 import {Player} from "player"
 import {set_debug} from "debug"
 import {Action, ActionMan} from "action";
+import {PlayerView} from "player_view";
 
 export function get_by_key(uid)
 {
@@ -145,6 +146,11 @@ function allocate_class(type)
 	if(type == "actionman")
 	{
 		return new ActionMan();
+	}
+	
+	if(type == "playerview")
+	{
+		return new PlayerView();
 	}
 		
 	return null;
