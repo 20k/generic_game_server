@@ -40,6 +40,10 @@ export class ItemMan {
         this.stored = [];
     }
 
+    add_item(item) {
+        this.stored.push(item);
+    }
+
     store() {
         var cargo_ids = save_uids(this.stored);
 
@@ -74,5 +78,6 @@ export function fill_asteroid(asteroid, ore_name, ore_type, ore_amount) {
     var item = new Item();
     item.make_ore(ore_type, ore_name, ore_amount);
 
-    asteroid.ores.push(item);
+    asteroid.cargo.add_item(item);
+    asteroid.cargo.storage = item.volume;
 }

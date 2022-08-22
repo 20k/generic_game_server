@@ -11,19 +11,19 @@ function get_asteroid_description(asteroid)
 	var largest_ore_amount = 0;
 	var largest_ore_index = 0;
 
-	if(asteroid.ores.length == 0)
+	if(asteroid.cargo.stored.length == 0)
 		return "Barren";
 
-	for(var i=0; i < asteroid.ores.length; i++)
+	for(var i=0; i < asteroid.cargo.stored.length; i++)
 	{
-		if(asteroid.ores[i].ore_amount >= largest_ore_amount)
+		if(asteroid.cargo.stored[i].ore_amount >= largest_ore_amount)
 		{
-			largest_ore_amount = asteroid.ores[i].ore_amount;
+			largest_ore_amount = asteroid.cargo.stored[i].ore_amount;
 			largest_ore_index = i;
 		}
 	}
 
-	var largest_ore = asteroid.ores[largest_ore_index];
+	var largest_ore = asteroid.cargo.stored[largest_ore_index];
 
 	return largest_ore.ore_name + " (" + largest_ore.ore_amount + ")";
 }

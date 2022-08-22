@@ -1,7 +1,7 @@
 import {set_debug} from "debug"
 import {get_unique_id} from "get_unique_id"
-import {save_uids, load_uids} from "api"
-import {Item, take_ore_amount, fill_asteroid} from "item";
+import {save_uids, load_uids, store_object, load_object} from "api"
+import {Item, take_ore_amount, fill_asteroid, ItemMan} from "item";
 
 function make_object_with_position(position)
 {
@@ -18,32 +18,30 @@ export class Asteroid
 		this.position = [0,0];
 		this.name = "Asteroid";
 		this.type = "asteroid";
-		this.ores = [];
+		this.cargo = new ItemMan();
 		this.owner = -1;
 		this.uid = get_unique_id();
 	}
 
 	store()
 	{
-		var ores_uid = save_uids(this.ores);
+		var cargo_uid = store_object(this.cargo);
 
-		return {uid:this.uid, type:this.type, name:this.name, position:this.position, owner:this.owner, o_uid:ores_uid};
+		return {uid:this.uid, type:this.type, name:this.name, position:this.position, owner:this.owner, c_uid:cargo_uid};
 	}
 
 	load(obj)
 	{
-		var loaded_ores = load_uids(obj.o_uid);
-
+		this.cargo = load_object(obj.c_uid);
 		this.uid = obj.uid;
 		this.position = obj.position;
 		this.owner = obj.owner;
-		this.ores = loaded_ores;
 	}
 
 	get_total_ore() {
 		var total_ore = 0;
 
-		for(var e of this.ores) {
+		for(var e of this.cargo.stored) {
 			total_ore += e.ore_amount;
 		}
 
@@ -64,7 +62,7 @@ export class Asteroid
 
 		var depleted_frac = total_power / total_ore;
 
-		for(var item of this.ores) {
+		for(var item of this.cargo.stored) {
 			result.push(take_ore_amount(item, depleted_frac * item.ore_amount));
 		}
 
