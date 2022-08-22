@@ -1,7 +1,8 @@
 import {make_poi} from "poi";
 import {make_warp_gate} from "object"
-import {load_object, save_uids, load_uids} from "api"
+import {store_object, load_object, save_uids, load_uids} from "api"
 import {set_debug} from "debug"
+import {ActionMan, execute_action} from "action"
 
 export class System
 {
@@ -13,6 +14,7 @@ export class System
 		this.system_name = "Err;"
 		this.contents = [];
 		this.uid = get_unique_id();
+		this.action_man = new ActionMan();
 	}
 	
 	take_poi(poi) {
@@ -21,17 +23,58 @@ export class System
 		return poi;
 	}
 	
+	handle_actions(universe, elapsed_time_ss) {
+		var me = this;
+		
+		function curried_action_executor(act, real_delta_time)
+		{
+			var lookup = me.lookup_slow_opt(act.source_uid);
+			
+			if(lookup == null)
+				return;
+			
+			execute_action(universe, sys, lookup.poi, lookup.en, act, real_delta_time);
+		}
+	
+		this.action_man
+	}
+	
+	clear_actions_for(e_uid) {
+		this.action_man.clear_actions_for(e_uid);		
+	}
+	
+	add_action(act) {
+		this.action_man.add_action(act);
+	}
+	
 	tick(universe, elapsed_time_s) {
 		for(var poi of this.contents) {
 			poi.tick(universe, this, elapsed_time_s);
 		}
+		
+		handle_actions(universe, elapsed_time_s);
+	}
+	
+	///temporary
+	lookup_slow_opt(id) {
+		for(var poi of this.contents)
+		{
+			for(var e of poi.contents)
+			{
+				if(e.uid == id)
+					return {poi, en:e};
+			}
+		}
+		
+		return null;
 	}
 	
 	store()
 	{		
 		var contents_uid = save_uids(this.contents);
+		var action_uid = store_object(this.action_man);
 		
-		return {position:this.position, name:this.name, type:this.type, system_name:this.system_name, contents_uid:contents_uid, uid:this.uid}
+		return {position:this.position, name:this.name, type:this.type, system_name:this.system_name, contents_uid:contents_uid, action_uid:action_uid, uid:this.uid}
 	}
 	
 	load(obj)
@@ -41,6 +84,7 @@ export class System
 		this.type = obj.type;
 		this.system_name = obj.system_name
 		this.contents = load_uids(obj.contents_uid);
+		this.action_man = load_object(obj.action_uid);
 		this.uid = obj.uid;		
 	}
 }

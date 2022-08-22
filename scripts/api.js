@@ -26,7 +26,7 @@ import {Poi} from "poi"
 import {Asteroid, Station, Warpgate, Ship} from "object"
 import {Player} from "player"
 import {set_debug} from "debug"
-import {Action} from "action";
+import {Action, ActionMan} from "action";
 
 export function get_by_key(uid)
 {
@@ -48,6 +48,16 @@ export function store_key_value(uid, e)
 	transact.close();
 }
 
+export function store_object(e)
+{
+	var to_store = e.store();
+	to_store.uid = e.uid;
+
+	store_key_value(e.uid, to_store);
+	
+	return e.uid;
+}
+
 export function load_object(uid)
 {
 	var val = get_by_key(uid);
@@ -65,10 +75,7 @@ export function save_uids(arr)
 	
 	for(var e of arr)
 	{	
-		var to_store = e.store();
-		to_store.uid = e.uid;
-		
-		store_key_value(e.uid, to_store);
+		store_object(e);
 		
 		arr_uid.push(e.uid);
 	}
@@ -134,23 +141,11 @@ function allocate_class(type)
 	{
 		return new Action();
 	}
+	
+	if(type == "actionman")
+	{
+		return new ActionMan();
+	}
 		
 	return null;
-}
-
-export function fix_class(obj)
-{
-	var object = allocate_class(obj.type);
-	
-	Object.assign(object, obj);
-	
-	return object;
-}
-
-export function fix_class_array(arr)
-{
-	for(var i=0; i < arr.length; i++)
-	{
-		arr[i] = fix_class(arr[i]);
-	}
 }

@@ -75,7 +75,7 @@ function format_poi_contents(poi)
 
 var render_id = 0;
 
-function interactive_poi_contents(poi, player)
+function interactive_poi_contents(sys, poi, player)
 {
 	var types = [];
 	var names = [];
@@ -169,8 +169,8 @@ function interactive_poi_contents(poi, player)
 					
 					var act = make_move_action(controlled, e.position, time_to_target);
 					
-					controlled.clear_actions();
-					controlled.add_action(act);
+					sys.clear_actions_for(controlled.uid);
+					sys.add_action(act);
 				}
 				
 				if(e.type == "asteroid") 
@@ -183,8 +183,8 @@ function interactive_poi_contents(poi, player)
 						{						
 							var act = make_mine_action(controlled, e);
 							
-							controlled.clear_actions();
-							controlled.add_action(act);
+							sys.clear_actions_for(controlled.uid);
+							sys.add_action(act);
 						}
 					}
 				}
@@ -313,7 +313,7 @@ function interactive_sys_contents(sys, player_view, player)
 		{
 			imgui.indent();
 			imgui.indent();
-			interactive_poi_contents(poi, player);
+			interactive_poi_contents(sys, poi, player);
 			imgui.unindent();
 			imgui.unindent();
 		}

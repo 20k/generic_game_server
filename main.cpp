@@ -389,6 +389,9 @@ js::value db_write(js::value_context* vctx, js::value js_db_id, js::value js_key
     std::string key = (std::string)js_key;
     std::string data = js_value.to_json();
 
+    if(key.size() == 0)
+        return js::make_value(ctx, "Bad Key");
+
     std::optional tx_opt = fetch_db_tx(js::get_this(*vctx));
 
     if(!tx_opt.has_value())

@@ -1,6 +1,4 @@
-import {make_entity_actionable} from "action" 
 import {set_debug} from "debug"
-import {fix_class_array} from "api"
 
 exec("get_unique_id");
 
@@ -57,8 +55,6 @@ export class Asteroid
 		this.ores = [];
 		this.owner = -1;
 		this.uid = get_unique_id();
-		
-		make_entity_actionable(this);
 	}
 	
 	store()
@@ -69,8 +65,6 @@ export class Asteroid
 	load(obj)
 	{
 		Object.assign(this, obj);
-		
-		fix_class_array(this.actions);
 	}
 	
 	get_total_ore() {
@@ -115,8 +109,6 @@ export class Station
 		this.nickname = "Error nick";
 		this.owner = -1;
 		this.uid = get_unique_id();
-		
-		make_entity_actionable(this);
 	}
 	
 	store()
@@ -127,8 +119,6 @@ export class Station
 	load(obj)
 	{
 		Object.assign(this, obj);
-		
-		fix_class_array(this.actions);
 	}	
 }
 
@@ -144,8 +134,6 @@ export class Warpgate
 		this.src_uid = -1;
 		this.owner = -1;
 		this.uid = get_unique_id();
-		
-		make_entity_actionable(this);
 	}
 	
 	store()
@@ -156,8 +144,6 @@ export class Warpgate
 	load(obj)
 	{
 		Object.assign(this, obj);
-		
-		fix_class_array(this.actions);
 	}
 }
 
@@ -171,8 +157,6 @@ export class Ship
 		this.nickname = "No Nick";
 		this.owner = -1;
 		this.uid = get_unique_id();
-		
-		make_entity_actionable(this);
 	}
 	
 	store()
@@ -183,8 +167,6 @@ export class Ship
 	load(obj)
 	{
 		Object.assign(this, obj);
-		
-		fix_class_array(this.actions);
 	}
 
 	get_speed() {

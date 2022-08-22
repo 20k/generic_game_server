@@ -31,7 +31,7 @@ export class Poi
 		this.poi_name = obj.poi_name
 		this.poi_type = obj.poi_type
 		this.contents = load_uids(obj.contents_uid);
-		this.uid = obj.uid;		
+		this.uid = obj.uid;
 	}
 	
 	take(obj) {
@@ -41,7 +41,7 @@ export class Poi
 	}
 	
 	tick(universe, sys, elapsed_time_s) {
-		for(var en of this.contents)
+		/*for(var en of this.contents)
 		{
 			var poi = this;
 			
@@ -51,7 +51,7 @@ export class Poi
 			}
 			
 			en.add_action_time(elapsed_time_s, curried_action_executor);
-		}
+		}*/
 	}
 	
 	distance(e1, e2) {

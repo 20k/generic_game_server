@@ -1,7 +1,11 @@
+exec("get_unique_id");
+import {save_uids, load_uids} from "api"
+
 function make_move_subobject(e, finish_position)
 {
 	return {
 		//object_uid: e.uid,
+		source_uid: e.uid,
 		start: e.position,
 		finish: finish_position
 	};
@@ -11,6 +15,7 @@ export class Action
 {
 	constructor()
 	{
+		this.uid = get_unique_id();
 		this.type = "action";
 		this.subtype = "";
 		this.subobject = {};
@@ -25,6 +30,69 @@ export class Action
 	
 	finished() {
 		return this.current_elapsed >= this.finish_elapsed - 0.000001;
+	}
+	
+	load(obj) {
+		Object.assign(this, obj);
+	}
+	
+	store() {
+		return this;
+	}
+}
+
+export class ActionMan
+{
+	constructor()
+	{
+		this.actions = [];
+	}
+	
+	add_action(a) {
+		this.actions.push(a);
+	}
+	
+	clear_actions() {
+		this.actions.length = 0;
+	}
+	
+	clear_actions_for(e_uid) {
+		for(var i=0; i < actions.length; i++) {
+			if(actions[i].source_uid == e_uid) {
+				actions.splice(i);
+				i--;
+			}
+		}
+	}
+	
+	add_action_time(delta_time_s, action_executor) {
+		var remaining = delta_time_s;
+		
+		while(this.actions.length > 0 && remaining > 0)
+		{		
+			var consumable = Math.min(this.actions[0].remaining_time(), remaining);
+
+			action_executor(this.actions[0], consumable);
+			
+			this.actions[0].current_elapsed += consumable;
+			
+			remaining -= consumable;
+			
+			if(this.actions[0].finished())
+			{							
+				this.actions.shift();
+			}
+		}
+	}
+	
+	load(obj) {
+		this.actions = load_uids(obj.a_uids);
+	}
+	
+	store() {
+		var actions_uid = save_uids(this.actions);
+		
+		return {a_uids:actions_uid};
 	}
 }
 
@@ -59,49 +127,12 @@ export function make_mine_action(e, target)
 	
 	var obj = make_action();
 	
+	obj.source_uid = e.uid;
 	obj.subtype = "mine";
 	obj.subobject = {target_uid:target.uid}; //crap, need the asteroid object
 	obj.finish_elapsed = time_to_mine;
 	
 	return obj;
-}
-
-export function make_entity_actionable(obj)
-{	
-	obj.actions = [];
-	
-	obj.add_action = function(a) {
-		this.actions.push(a);
-	}
-	
-	obj.clear_actions = function() {
-		this.actions.length = 0;
-	}
-	
-	obj.add_action_time = function(delta_time_s, action_executor) {
-		var remaining = delta_time_s;
-		
-		while(this.actions.length > 0 && remaining > 0)
-		{		
-			var consumable = Math.min(this.actions[0].remaining_time(), remaining);
-
-			action_executor(this.actions[0], consumable);
-			
-			this.actions[0].current_elapsed += consumable;
-			
-			remaining -= consumable;
-			
-			if(this.actions[0].finished())
-			{
-				//var clen = this.actions.length;
-								
-				this.actions.shift();
-				
-				//var dlen = this.actions.length;
-				//globalThis.last_debug = clen + "hi" + dlen;
-			}
-		}
-	}
 }
 
 export function execute_action(universe, sys, poi, en, act, real_time_s)
