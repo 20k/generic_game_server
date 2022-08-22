@@ -223,6 +223,8 @@ struct client_state
     std::atomic_bool is_disconnected{false};
 
     async_queue<nlohmann::json> client_ui_messages;
+
+    uint32_t client_id = 0;
 };
 
 struct script
@@ -648,6 +650,7 @@ void client_ui_thread(std::shared_ptr<client_state> state)
     js::value glob = js::get_global(vctx);
     glob["exec"] = js::function<in_script_eval>;
     glob["mexec"] = js::function<module_exec>;
+    glob.add_hidden("client_id", (int)state->client_id);
 
     JS_SetModuleLoaderFunc(JS_GetRuntime(vctx.ctx), nullptr, js_module_loader, nullptr);
 
@@ -739,6 +742,9 @@ int main()
         js::eval(vctx, s.contents);
     }
 
+    ///to be replaced with a real auth + id system
+    uint32_t client_pseudo_id = 0;
+
     while(1)
     {
         conn.receive_bulk(recv);
@@ -746,6 +752,7 @@ int main()
         for(auto i : recv.new_clients)
         {
             state[i] = std::make_shared<client_state>();
+            state[i]->client_id = client_pseudo_id++;
 
             get_global_fiber_queue().add(client_ui_thread, state[i]);
 
