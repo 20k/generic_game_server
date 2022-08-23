@@ -18,7 +18,7 @@ export function generate_universe(player)
 	poi.take(make_ship([100, 20], "Also A Ship"));
 	poi.take(make_asteroid([150, 10]));
 	poi.take(make_asteroid([300, 10]));
-	poi.take(make_station([5, 223], "Owo station"));
+	player.take_ownership(poi.take(make_station([151, 10.2], "Test Station")));
 	poi.take(make_station([10, 9], "Stationary"));
 
 	var sys1 = make_system("Alpha Blenturi", [10, 10]);

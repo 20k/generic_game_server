@@ -166,6 +166,17 @@ function interactive_poi_contents(sys, poi, player)
 
 		imgui.text(formatted_type + " | " + formatted_name + " | " + formatted_position);
 
+		if((e.type == "ship" || e.type == "station") && e.owner == player.uid && player.controlling != e.uid) {
+			imgui.begindragdroptarget();
+
+			var res = imgui.acceptdragdroppayload("none");
+
+            if(res != null)
+               print(JSON.stringify(res) + " target");
+
+        imgui.enddragdroptarget();
+		}
+
 		if(e.type == "ship" && e.owner == player.uid && player.controlling != e.uid)
 		{
 			/*imgui.sameline();
@@ -220,8 +231,20 @@ function interactive_poi_contents(sys, poi, player)
 		if(e.type == "ship" && player.view.is_uid_open(e.uid)) {
 			imgui.indent();
 
-			for(var e of e.cargo.stored) {
-				imgui.text(e.format());
+			for(var cargo of e.cargo.stored) {
+
+				if(e.owner == player.uid) {
+					imgui.selectable(cargo.format());
+
+					imgui.begindragdropsource();
+
+						imgui.setdragdroppayload("none", {source:e.uid, cargo:cargo.uid});
+
+					imgui.enddragdropsource();
+				}
+				else {
+					imgui.text(cargo.format());
+				}
 			}
 
 			imgui.unindent();
