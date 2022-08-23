@@ -1,6 +1,12 @@
 import {PendingAction} from "action"
 import {clear_actions_for, add_pending_action, transfer_item} from "user_facing_api"
 
+if(globalThis.has_drag_drop == undefined) {
+	globalThis.has_drag_drop = false;
+	globalThis.drag_drop_contents = {};
+	globalThis.drag_amount = imgui.ref(0);
+}
+
 function format_position(position)
 {
 	return "[" + position[0] + ", " + position[1] + "]";
@@ -175,10 +181,10 @@ function interactive_poi_contents(sys, poi, player)
 				var source_uid = res.source;
 				var cargo_uid = res.cargo;
 				var target_uid = e.uid;
-				var amount = 1;
+				//transfer_item(source_uid, target_uid, cargo_uid, amount);
 
-				transfer_item(source_uid, target_uid, cargo_uid, amount);
-				//print(JSON.stringify(res) + " target");
+				globalThis.has_drag_drop = true;
+				globalThis.drag_drop_contents = {source_uid, cargo_uid, target_uid, max_cargo:res.max_cargo};
 			}
 
        		 imgui.enddragdroptarget();
@@ -245,7 +251,7 @@ function interactive_poi_contents(sys, poi, player)
 
 					imgui.begindragdropsource();
 
-						imgui.setdragdroppayload("none", {source:e.uid, cargo:cargo.uid});
+						imgui.setdragdroppayload("none", {source:e.uid, cargo:cargo.uid, max_cargo:cargo.volume});
 
 					imgui.enddragdropsource();
 				}
@@ -397,6 +403,27 @@ export function render_universe_contents(universe, player)
 	for(var sys of universe.contents)
 	{
 		interactive_sys_contents(sys, player.view, player);
+	}
+
+	if(globalThis.has_drag_drop) {
+		///transfer_item(source_uid, target_uid, cargo_uid, amount);
+		imgui.sliderfloat("Transfer", globalThis.drag_amount, 0, globalThis.drag_drop_contents.max_cargo);
+
+		imgui.sameline();
+
+		if(imgui.button("Confirm")) {
+			var o = globalThis.drag_drop_contents;
+
+			transfer_item(o.source_uid, o.target_uid, o.cargo_uid, imgui.get(globalThis.drag_amount));
+
+			globalThis.has_drag_drop = false;
+		}
+
+		imgui.sameline();
+
+		if(imgui.button("Cancel")) {
+			globalThis.has_drag_drop = false;
+		}
 	}
 }
 
