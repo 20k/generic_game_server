@@ -308,15 +308,6 @@ export class ActionMan
 		this.actions.length = 0;
 	}
 
-	clear_actions_for(e_uid) {
-		for(var i=0; i < this.actions.length; i++) {
-			if(this.actions[i].source_uid == e_uid) {
-				this.actions.splice(i, 1);
-				i--;
-			}
-		}
-	}
-
 	add_action_time(delta_time_s, action_executor) {
 		var remaining = delta_time_s;
 

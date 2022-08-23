@@ -40,10 +40,6 @@ export class System
 		this.action_man.add_action_time(elapsed_time_s, curried_action_executor);
 	}
 
-	clear_actions_for(e_uid) {
-		this.action_man.clear_actions_for(e_uid);
-	}
-
 	add_action(act) {
 		this.action_man.add_action(act);
 	}
