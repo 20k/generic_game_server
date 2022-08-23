@@ -92,7 +92,12 @@ export class Station
 
 	load(obj)
 	{
-		//Object.assign(this, obj);
+		var cargo = load_object(obj.c_uid);
+
+		this.nickname = obj.nickname;
+		this.owner = obj.owner;
+		this.position = obj.position;
+		this.cargo = cargo;
 	}
 }
 

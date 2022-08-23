@@ -2,8 +2,12 @@ import {make_poi} from "poi";
 import {make_warp_gate} from "object"
 import {store_object, load_object, save_uids, load_uids} from "api"
 import {set_debug} from "debug"
-import {ActionMan, execute_action} from "action"
+import {ActionMan, execute_action, finalise_action} from "action"
 import {get_unique_id} from "get_unique_id"
+
+function round_warp_position(position) {
+	return [Math.round(position[0]), Math.round(position[1])];
+}
 
 export class System
 {
@@ -37,7 +41,17 @@ export class System
 			execute_action(universe, me, lookup.poi, lookup.en, act, real_delta_time);
 		}
 
-		this.action_man.add_action_time(elapsed_time_s, curried_action_executor);
+		function curried_action_finaliser(act)
+		{
+			var lookup = me.lookup_slow_opt(act.source_uid);
+
+			if(lookup == null)
+				return;
+
+			finalise_action(universe, me, lookup.poi, lookup.en, act);
+		}
+
+		this.action_man.add_action_time(elapsed_time_s, curried_action_executor, curried_action_finaliser);
 	}
 
 	add_action(act) {
@@ -49,6 +63,14 @@ export class System
 
 		if(removed_en == null)
 			return;
+
+		var relative_dir = norm(target_poi.position, source_poi.position);
+		var arrival_radius = 200;
+
+		relative_dir[0] *= arrival_radius;
+		relative_dir[1] *= arrival_radius;
+
+		removed_en.position = round_warp_position(relative_dir);
 
 		target_poi.add_entity(removed_en);
 	}
@@ -113,15 +135,20 @@ export function make_system(system_name, position)
 	return obj;
 }
 
+function norm(p1, p2) {
+	var dx = p2[0] - p1[0];
+	var dy = p2[1] - p1[1];
+
+	var length = Math.sqrt(dx * dx + dy * dy);
+
+	return [dx / length, dy / length];
+}
+
 export function connect_systems(sys1, sys2)
 {
 	var warp_boundary = 100;
 
-	var direction = [sys2.position[0] - sys1.position[0], sys2.position[1] - sys1.position[0]]
-
-	var length = Math.sqrt(direction[0] * direction[0] + direction[1] * direction[1]);
-
-	var n_dir = [direction[0] / length, direction[1] / length]
+	var n_dir = norm(sys1.position, sys2.position);
 
 	var pos_in_1 = [Math.round(n_dir[0] * warp_boundary), Math.round(n_dir[1] * warp_boundary)];
 	var pos_in_2 = [-pos_in_1[0], -pos_in_1[1]]

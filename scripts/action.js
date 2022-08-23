@@ -298,7 +298,7 @@ export class ActionMan
 		this.actions[s_uid].push(a);
 	}
 
-	add_action_time_to(actions, delta_time_s, action_executor) {
+	add_action_time_to(actions, delta_time_s, action_executor, action_finaliser) {
 		var remaining = delta_time_s;
 
 		while(actions.length > 0 && remaining > 0)
@@ -307,31 +307,32 @@ export class ActionMan
 
 			var consumable = Math.min(current_action.remaining_time(), remaining);
 
-			current_action.current_elapsed += consumable;
-
 			///so, how to handle warping
 			action_executor(current_action, consumable);
 
+			current_action.current_elapsed += consumable;
 			remaining -= consumable;
 
 			if(current_action.should_empty_queue()) {
+				action_finaliser(current_action);
 				actions.length = 0;
 				return;
 			}
 
 			if(current_action.finished()) {
+				action_finaliser(current_action);
 				actions.shift();
 				continue;
 			}
 		}
 	}
 
-	add_action_time(delta_time_s, action_executor) {
+	add_action_time(delta_time_s, action_executor, action_finaliser) {
 		for(const k in this.actions) {
 			var actions = this.actions[k];
 			var time_remaining = delta_time_s;
 
-			this.add_action_time_to(actions, time_remaining, action_executor);
+			this.add_action_time_to(actions, time_remaining, action_executor, action_finaliser);
 		}
 	}
 
@@ -425,12 +426,17 @@ export function execute_action(universe, sys, poi, en, act, real_time_s)
 
 		target_object.cargo.fill_item(source_cargo);
 	}
+}
 
+export function finalise_action(universe, sys, poi, en, act) {
 	if(act.subtype == "warp_to_poi") {
-		if(!act.finished())
-			return;
-
 		var target_poi = sys.lookup_poi_slow_opt(act.subobject.dest_poi_uid);
+
+		if(target_poi == null)
+		{
+			print("Err! Target poi null");
+			return;
+		}
 
 		sys.transfer_entity_to_poi(poi, en, target_poi);
 	}

@@ -385,7 +385,9 @@ function interactive_sys_contents(sys, player_view, player)
 		if(player.controlling != -1) {
 			imgui.sameline();
 
-			if(imgui.smallbutton("[warp]##" + render_id++)) {
+			var rstr = "[warp]###" + render_id++;
+
+			if(imgui.smallbutton(rstr)) {
 				clear_actions_for(player.controlling);
 				warp_to_poi(player.controlling, poi.uid);
 				print("target " + poi.uid);

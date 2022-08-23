@@ -108,7 +108,9 @@ export class ItemMan {
         var takeable_volume = Math.min(volume, data.volume);
 
         var result = new Item();
+        var saved_uid = result.uid;
         Object.assign(result, data);
+        result.uid = saved_uid;
 
         result.volume = takeable_volume;
         data.volume -= takeable_volume;
