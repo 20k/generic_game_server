@@ -172,7 +172,7 @@ function interactive_poi_contents(sys, poi, player)
 
 		imgui.text(formatted_type + " | " + formatted_name + " | " + formatted_position);
 
-		if((e.type == "ship" || e.type == "station") && e.owner == player.uid && player.controlling != e.uid) {
+		if((e.type == "ship" || e.type == "station") && e.owner == player.uid) {
 			imgui.begindragdroptarget();
 
 			var res = imgui.acceptdragdroppayload("none");
