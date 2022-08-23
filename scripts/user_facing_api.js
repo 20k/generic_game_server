@@ -40,3 +40,10 @@ export function add_pending_action(pending_act) {
 
     set_current_actions(current_actions);
 }
+
+export function transfer_item(source_entity_uid, destination_entity_uid, cargo_uid, volume) {
+    var pending = new PendingAction();
+    pending.build_transfer_item(source_entity_uid, destination_entity_uid, cargo_uid, volume);
+
+    add_pending_action(pending);
+}

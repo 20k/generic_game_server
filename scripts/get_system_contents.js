@@ -1,5 +1,5 @@
 import {PendingAction} from "action"
-import {clear_actions_for, add_pending_action} from "user_facing_api"
+import {clear_actions_for, add_pending_action, transfer_item} from "user_facing_api"
 
 function format_position(position)
 {
@@ -140,7 +140,7 @@ function interactive_poi_contents(sys, poi, player)
 		var formatted_name = fmt_2[i];
 		var formatted_position = fmt_3[i];
 
-		if(e.type == "ship") {
+		if(e.type == "ship" || e.type == "station") {
 			if(e.cargo.stored.length != 0) {
 				imgui.unindent();
 
@@ -171,10 +171,17 @@ function interactive_poi_contents(sys, poi, player)
 
 			var res = imgui.acceptdragdroppayload("none");
 
-            if(res != null)
-               print(JSON.stringify(res) + " target");
+            if(res != null) {
+				var source_uid = res.source;
+				var cargo_uid = res.cargo;
+				var target_uid = e.uid;
+				var amount = 1;
 
-        imgui.enddragdroptarget();
+				transfer_item(source_uid, target_uid, cargo_uid, amount);
+				//print(JSON.stringify(res) + " target");
+			}
+
+       		 imgui.enddragdroptarget();
 		}
 
 		if(e.type == "ship" && e.owner == player.uid && player.controlling != e.uid)
@@ -228,7 +235,7 @@ function interactive_poi_contents(sys, poi, player)
 			}
 		}
 
-		if(e.type == "ship" && player.view.is_uid_open(e.uid)) {
+		if((e.type == "ship" || e.type == "station") && player.view.is_uid_open(e.uid)) {
 			imgui.indent();
 
 			for(var cargo of e.cargo.stored) {

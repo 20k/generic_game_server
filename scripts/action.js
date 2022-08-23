@@ -2,8 +2,7 @@ import {get_unique_id} from "get_unique_id"
 import {save_uids, load_uids} from "api"
 import {set_debug} from "debug"
 
-function make_move_subobject(e, finish_position)
-{
+function make_move_subobject(e, finish_position) {
 	return {
 		//object_uid: e.uid,
 		start: e.position,
@@ -34,24 +33,19 @@ function make_action()
 	return new Action();
 }
 
-function make_move_action(e, finish_position)
-{
+function make_move_action(e, finish_position) {
 	var elapsed_time_s = time_to_target(e, finish_position);
+	var subobject = make_move_subobject(e, finish_position, elapsed_time_s);
 
 	var obj = make_action();
-
-	obj.source_uid = e.uid,
-	obj.subtype = "move";
-	obj.subobject = make_move_subobject(e, finish_position, elapsed_time_s);
-	obj.finish_elapsed = elapsed_time_s;
+	obj.build_generic(e.uid, "move", subobject, elapsed_time_s);
 
 	return obj;
 }
 
 function make_interrupt_action(e_uid) {
 	var obj = make_action();
-	obj.subtype = "interrupt";
-	obj.source_uid = e_uid;
+	obj.build_generic(e_uid, "interrupt", {}, 0);
 
 	return obj;
 }
@@ -70,11 +64,16 @@ function make_mine_action(e, target)
 	}
 
 	var obj = make_action();
+	obj.build_generic(e.uid, "mine", {target_uid:target.uid}, time_to_mine);
 
-	obj.source_uid = e.uid;
-	obj.subtype = "mine";
-	obj.subobject = {target_uid:target.uid}; //crap, need the asteroid object
-	obj.finish_elapsed = time_to_mine;
+	return obj;
+}
+
+function make_transfer_item_action(source_uid, destination_uid, cargo_uid, volume) {
+	var subobject = {destination_uid, cargo_uid, volume};
+
+	var obj = make_action();
+	obj.build_generic(source_uid, "transfer_item", subobject, 0);
 
 	return obj;
 }
@@ -105,6 +104,14 @@ export class PendingAction {
 		this.pending_action_type = "interrupt";
 		this.source_uid = e_uid;
 	}
+
+	build_transfer_item(source_uid, destination_uid, cargo_uid, volume) {
+		this.pending_action_type = "transfer_item";
+		this.source_uid = source_uid;
+		this.destination_uid = destination_uid;
+		this.cargo_uid = cargo_uid;
+		this.volume = volume;
+	}
 }
 
 function pending_action_to_action(sys, poi, en, pending) {
@@ -125,6 +132,10 @@ function pending_action_to_action(sys, poi, en, pending) {
 		return make_interrupt_action(pending.source_uid);
 	}
 
+	if(pending.pending_action_type == "transfer_item") {
+		return make_transfer_item_action(pending.source_uid, pending.destination_uid, pending.cargo_uid, pending.volume);
+	}
+
 	return null;
 }
 
@@ -139,6 +150,13 @@ export class Action
 
 		this.current_elapsed = 0;
 		this.finish_elapsed = 0;
+	}
+
+	build_generic(source_uid, subtype, subobject, finish_elapsed) {
+		this.source_uid = source_uid;
+		this.subtype = subtype;
+		this.subobject = subobject;
+		this.finish_elapsed = finish_elapsed;
 	}
 
 	remaining_time() {
@@ -335,5 +353,27 @@ export function execute_action(universe, sys, poi, en, act, real_time_s)
 		//	return;
 
 		//globalThis.last_debug = "Mined " + returned_items[0].volume;
+	}
+
+	if(act.subtype == "transfer_item") {
+		var target_object = poi.lookup_slow_opt(act.subobject.destination_uid);
+		var volume = act.subobject.volume;
+		var source_cargo_uid = act.subobject.cargo_uid;
+
+		if(target_object == null)
+			return;
+
+		if(target_object.type != "ship" && target_object.type != "station") {
+			return;
+		}
+
+		///check how much we can store!
+
+		var source_cargo = en.cargo.take_volume_by_id(source_cargo_uid, volume);
+
+		if(source_cargo == null)
+			return;
+
+		target_object.cargo.fill_item(source_cargo);
 	}
 }

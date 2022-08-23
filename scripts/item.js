@@ -83,6 +83,31 @@ export class ItemMan {
         }
     }
 
+    find_by_id(item_uid) {
+        for(var e of this.stored) {
+            if(e.uid == item_uid)
+                return e;
+        }
+
+        return null;
+    }
+
+    take_volume_by_id(item_uid, volume) {
+        var data = this.find_by_id(item_uid);
+
+        if(data == null)
+            return null;
+
+        var takeable_volume = Math.min(volume, data.volume);
+
+        var result = new Item();
+        Object.assign(result, data);
+        result.volume = takeable_volume;
+        data.volume -= takeable_volume;
+
+        return result;
+    }
+
     store() {
         var cargo_ids = save_uids(this.stored);
 

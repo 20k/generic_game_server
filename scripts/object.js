@@ -74,22 +74,25 @@ export class Station
 {
 	constructor()
 	{
-		this.position = [0,0];
 		this.name = "Station";
+		this.uid = get_unique_id();
 		this.type = "station";
 		this.nickname = "Error nick";
 		this.owner = -1;
-		this.uid = get_unique_id();
+		this.position = [0,0];
+		this.cargo = new ItemMan();
 	}
 
 	store()
 	{
-		return this;
+		var cargo_uid = store_object(this.cargo);
+
+		return {name:this.name, nickname:this.nickname, owner:this.owner, position:this.position, c_uid:cargo_uid};
 	}
 
 	load(obj)
 	{
-		Object.assign(this, obj);
+		//Object.assign(this, obj);
 	}
 }
 
