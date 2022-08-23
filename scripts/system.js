@@ -44,6 +44,15 @@ export class System
 		this.action_man.add_action(act);
 	}
 
+	transfer_entity_to_poi(source_poi, en, target_poi) {
+		var removed_en = source_poi.extract_entity(en.uid);
+
+		if(removed_en == null)
+			return;
+
+		target_poi.add_entity(removed_en);
+	}
+
 	tick(universe, elapsed_time_s) {
 		for(var poi of this.contents) {
 			poi.tick(universe, this, elapsed_time_s);

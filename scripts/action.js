@@ -206,6 +206,10 @@ export class Action
 		return this.current_elapsed >= this.finish_elapsed - 0.000001;
 	}
 
+	should_empty_queue() {
+		return this.subtype == "warp_to_poi";
+	}
+
 	load(obj) {
 		Object.assign(this, obj);
 	}
@@ -301,15 +305,19 @@ export class ActionMan
 		{
 			var consumable = Math.min(actions[0].remaining_time(), remaining);
 
+			///so, how to handle warping
 			action_executor(actions[0], consumable);
 
 			actions[0].current_elapsed += consumable;
 
 			remaining -= consumable;
 
-			if(actions[0].finished())
-			{
+			if(actions[0].finished()) {
 				actions.shift();
+			}
+
+			if(actions[0].should_empty_queue()) {
+				actions.length = 0;
 			}
 		}
 	}
@@ -412,5 +420,11 @@ export function execute_action(universe, sys, poi, en, act, real_time_s)
 			return;
 
 		target_object.cargo.fill_item(source_cargo);
+	}
+
+	if(act.subtype == "warp_to_poi") {
+		var target_poi = sys.lookup_poi_slow_opt(act.subobject.dest_poi_uid);
+
+		sys.transfer_entity_to_poi(poi, en, target_poi);
 	}
 }

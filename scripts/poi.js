@@ -39,6 +39,22 @@ export class Poi
 		return obj;
 	}
 
+	extract_entity(e_uid) {
+		for(var i=0; i < this.contents.length; i++) {
+			if(this.contents[i].uid == e_uid) {
+				var obj = this.contents[i];
+				this.contents.splice(i, 1);
+				return obj;
+			}
+		}
+
+		return null;
+	}
+
+	add_entity(e) {
+		this.contents.push(e);
+	}
+
 	tick(universe, sys, elapsed_time_s) {
 
 	}
