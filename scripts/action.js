@@ -1,5 +1,6 @@
 import {get_unique_id} from "get_unique_id"
 import {save_uids, load_uids} from "api"
+import {round_volume} from "item"
 import {set_debug} from "debug"
 
 function make_move_subobject(e, finish_position) {
@@ -360,7 +361,7 @@ export function execute_action(universe, sys, poi, en, act, real_time_s)
 		var volume = act.subobject.volume;
 		var source_cargo_uid = act.subobject.cargo_uid;
 
-		volume = Math.round(volume * 100) / 100;
+		volume = round_volume(volume);
 
 		if(target_object == null)
 			return;

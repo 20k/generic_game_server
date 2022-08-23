@@ -1,6 +1,10 @@
 import {get_unique_id} from "get_unique_id";
 import {save_uids, load_uids} from "api"
 
+export function round_volume(volume) {
+    return Math.round(volume * 100) / 100;
+}
+
 export class Item {
     constructor() {
         this.uid = get_unique_id();
@@ -70,7 +74,7 @@ export class ItemMan {
         for(var e of this.stored) {
             if(item_storage_compatible(e, item)) {
                 e.volume += item.volume;
-                e.volume = Math.round(e.volume * 100) / 100;
+                e.volume = round_volume(e.volume);
                 return;
             }
         }
@@ -94,7 +98,7 @@ export class ItemMan {
     }
 
     take_volume_by_id(item_uid, volume) {
-        volume = Math.round(volume * 100) / 100;
+        volume = round_volume(volume);
 
         var data = this.find_by_id(item_uid);
 
@@ -109,8 +113,8 @@ export class ItemMan {
         result.volume = takeable_volume;
         data.volume -= takeable_volume;
 
-        result.volume = Math.round(result.volume * 100) / 100;
-        data.volume = Math.round(data.volume * 100) / 100;
+        result.volume = round_volume(result.volume);
+        data.volume = round_volume(data.volume);
 
         return result;
     }
@@ -132,6 +136,8 @@ export class ItemMan {
 }
 
 export function take_ore_amount(item, amount) {
+    amount = round_volume(amount);
+
     if(amount > item.volume) {
 		amount = this.volume;
 	}
@@ -139,7 +145,10 @@ export function take_ore_amount(item, amount) {
     var result = new Item();
     result.make_ore(item.ore_type, item.ore_name, amount);
 
-	item.volume -= amount;;
+	item.volume -= amount;
+
+    item.volume = round_volume(item.volume);
+    result.volume = round_volume(result.volume);
 
 	return result;
 }
