@@ -798,8 +798,16 @@ int main()
 
                 }
             }
+            catch(std::runtime_error& err)
+            {
+                std::cout << "Disconnected on read with error " << err.what() << std::endl;
+
+                send.disconnect(id);
+            }
             catch(...)
             {
+                std::cout << "Disconnected on read" << std::endl;
+
                 send.disconnect(id);
             }
         }
@@ -824,8 +832,16 @@ int main()
 
                     send.write_to_websocket(dat);
                 }
+                catch(std::runtime_error& err)
+                {
+                    std::cout << "Disconnected on write with error " << err.what() << std::endl;
+
+                    send.disconnect(id);
+                }
                 catch(...)
                 {
+                    std::cout << "Disconnect on write" << std::endl;
+
                     send.disconnect(id);
                 }
             }
