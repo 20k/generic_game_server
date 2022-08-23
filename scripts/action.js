@@ -360,6 +360,8 @@ export function execute_action(universe, sys, poi, en, act, real_time_s)
 		var volume = act.subobject.volume;
 		var source_cargo_uid = act.subobject.cargo_uid;
 
+		volume = Math.round(volume * 100) / 100;
+
 		if(target_object == null)
 			return;
 

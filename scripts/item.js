@@ -70,6 +70,7 @@ export class ItemMan {
         for(var e of this.stored) {
             if(item_storage_compatible(e, item)) {
                 e.volume += item.volume;
+                e.volume = Math.round(e.volume * 100) / 100;
                 return;
             }
         }
@@ -93,6 +94,8 @@ export class ItemMan {
     }
 
     take_volume_by_id(item_uid, volume) {
+        volume = Math.round(volume * 100) / 100;
+
         var data = this.find_by_id(item_uid);
 
         if(data == null)
@@ -102,8 +105,12 @@ export class ItemMan {
 
         var result = new Item();
         Object.assign(result, data);
+
         result.volume = takeable_volume;
         data.volume -= takeable_volume;
+
+        result.volume = Math.round(result.volume * 100) / 100;
+        data.volume = Math.round(data.volume * 100) / 100;
 
         return result;
     }
