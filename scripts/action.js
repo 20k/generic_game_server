@@ -11,9 +11,9 @@ function make_move_subobject(e, finish_position) {
 	};
 }
 
-function distance(e1, e2_position) {
-	var dx = e2_position[0] - e1.position[0];
-	var dy = e2_position[1] - e1.position[1];
+function distance(e1_position, e2_position) {
+	var dx = e2_position[0] - e1_position[0];
+	var dy = e2_position[1] - e1_position[1];
 
 	return Math.sqrt(dx * dx + dy * dy);
 }
@@ -21,7 +21,7 @@ function distance(e1, e2_position) {
 function time_to_target(source, target_position) {
 	var my_speed = source.get_speed();
 
-	var dist = distance(source, target_position);
+	var dist = distance(source.position, target_position);
 
 	if(my_speed > 0.0001)
 		return dist / my_speed;
@@ -32,6 +32,15 @@ function time_to_target(source, target_position) {
 function make_action()
 {
 	return new Action();
+}
+
+function safe_time_to_target(source_pos, destination_pos, my_speed) {
+	var dist = distance(source_pos, destination_pos);
+
+	if(my_speed > 0.0001)
+		return dist / my_speed;
+
+	return 0;
 }
 
 function make_move_action(e, finish_position) {
@@ -79,6 +88,16 @@ function make_transfer_item_action(source_uid, destination_uid, cargo_uid, volum
 	return obj;
 }
 
+function make_warp_to_poi_action(source_poi, source_entity, dest_poi) {
+	var subobject = {dest_poi_uid: dest_poi.uid};
+	var time = safe_time_to_target(source_poi.position, dest_poi.position, source_entity.get_warp_speed());
+
+	var obj = make_action();
+	obj.build_generic(source_uid, "warp_to_poi", subobject, time);
+
+	return obj;
+}
+
 export class PendingAction {
 	constructor()
 	{
@@ -113,6 +132,12 @@ export class PendingAction {
 		this.cargo_uid = cargo_uid;
 		this.volume = volume;
 	}
+
+	build_warp_to_poi(source_uid, dest_poi_uid) {
+		this.pending_action_type = "warp_to_poi";
+		this.source_uid = source_uid;
+		this.dest_poi_uid = dest_poi_uid;
+	}
 }
 
 function pending_action_to_action(sys, poi, en, pending) {
@@ -135,6 +160,19 @@ function pending_action_to_action(sys, poi, en, pending) {
 
 	if(pending.pending_action_type == "transfer_item") {
 		return make_transfer_item_action(pending.source_uid, pending.destination_uid, pending.cargo_uid, pending.volume);
+	}
+
+	if(pending.pending_action_type == "warp_to_poi") {
+		var target_poi = sys.lookup_poi_slow_opt(pending.dest_poi_uid);
+
+		if(target_poi == null)
+			return;
+
+		if(en.type != "ship") {
+			return;
+		}
+
+		return make_warp_to_poi_action(poi, en, target_poi);
 	}
 
 	return null;

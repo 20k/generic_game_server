@@ -157,6 +157,10 @@ export class Ship
 		return 1.;
 	}
 
+	get_warp_speed() {
+		return 1.;
+	}
+
 	///per second
 	get_mining_power() {
 		return 1;

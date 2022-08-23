@@ -70,6 +70,15 @@ export class System
 		return null;
 	}
 
+	lookup_poi_slow_opt(id) {
+		for(var poi of this.contents) {
+			if(poi.uid == id)
+				return poi;
+		}
+
+		return null;
+	}
+
 	store()
 	{
 		var contents_uid = save_uids(this.contents);
