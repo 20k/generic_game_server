@@ -59,6 +59,9 @@ export class System
 	}
 
 	transfer_entity_to_poi(source_poi, en, target_poi) {
+		if(source_poi == target_poi)
+			return;
+
 		var removed_en = source_poi.extract_entity(en.uid);
 
 		if(removed_en == null)

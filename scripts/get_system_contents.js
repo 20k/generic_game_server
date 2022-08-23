@@ -79,8 +79,6 @@ function format_poi_contents(poi)
 	return merged.join('\n');
 }
 
-var render_id = 0;
-
 function interactive_poi_contents(sys, poi, player)
 {
 	var types = [];
@@ -159,7 +157,7 @@ function interactive_poi_contents(sys, poi, player)
 					str = "-";
 				}
 
-				str += "###" + render_id++;
+				str += "###_invent_" + e.uid;
 
 				if(imgui.smallbutton(str)) {
 					id_open = !id_open;
@@ -199,7 +197,7 @@ function interactive_poi_contents(sys, poi, player)
 
 			imgui.sameline();
 
-			if(imgui.smallbutton("[control]##" + render_id++))
+			if(imgui.smallbutton("[control]##" + e.uid))
 			{
 				player.take_control(e);
 			}
@@ -212,7 +210,7 @@ function interactive_poi_contents(sys, poi, player)
 				imgui.sameline();
 
 				///will need to validate actions
-				if(imgui.smallbutton("[move]##" + render_id++))
+				if(imgui.smallbutton("[move]##" + e.uid))
 				{
 					//var time_to_target = poi.time_to_target(controlled, e);
 
@@ -229,7 +227,7 @@ function interactive_poi_contents(sys, poi, player)
 					{
 						imgui.sameline();
 
-						if(imgui.smallbutton("[mine]##" + render_id++))
+						if(imgui.smallbutton("[mine]##" + e.uid))
 						{
 							var pending = new PendingAction();
 							pending.build_mine(player.controlling, e.uid);
@@ -325,9 +323,6 @@ function format_sys_contents(sys)
 
 function interactive_sys_contents(sys, player_view, player)
 {
-	///hacky
-	//var render_id = sys.uid * 129;
-
 	imgui.pushstylecolor(21, 0, 0, 0, 0);
 	imgui.pushstylecolor(22, 0, 0, 0, 0);
 	imgui.pushstylecolor(23, 0, 0, 0, 0);
@@ -339,7 +334,7 @@ function interactive_sys_contents(sys, player_view, player)
 	if(is_sys_open)
 		sys_str = "-";
 
-	sys_str += "###" + render_id++;
+	sys_str += "###syscontents" + sys.uid;
 
 	if(imgui.button(sys_str))
 	{
@@ -370,7 +365,7 @@ function interactive_sys_contents(sys, player_view, player)
 		if(is_open)
 			str = "-";
 
-		str += "###" + render_id++;
+		str += "###poiview" + poi.uid;
 
 		if(imgui.button(str))
 		{
@@ -385,7 +380,7 @@ function interactive_sys_contents(sys, player_view, player)
 		if(player.controlling != -1) {
 			imgui.sameline();
 
-			var rstr = "[warp]###" + render_id++;
+			var rstr = "[warp]##" + poi.uid;
 
 			if(imgui.smallbutton(rstr)) {
 				clear_actions_for(player.controlling);
@@ -411,8 +406,6 @@ function interactive_sys_contents(sys, player_view, player)
 
 export function render_universe_contents(universe, player)
 {
-	render_id = 0;
-
 	for(var sys of universe.contents)
 	{
 		interactive_sys_contents(sys, player.view, player);
