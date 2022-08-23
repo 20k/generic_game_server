@@ -81,74 +81,29 @@ export function load_uids(arr_uid)
 	return arr;
 }
 
-function allocate_class(type)
-{
-	if(type == "universe")
-	{
-		return new Universe();
-	}
+function allocate_class(type) {
+    const classes = {
+        universe: Universe,
+        system: System,
+        poi: Poi,
+        asteroid: Asteroid,
+        station: Station,
+        warpgate: Warpgate,
+        ship: Ship,
+        player: Player,
+        action: Action,
+        actionman: ActionMan,
+        playerview: PlayerView,
+        item: Item,
+        itemman: ItemMan,
+    }
 
-	if(type == "system")
-	{
-		return new System();
-	}
+    const entity_class = classes[type]
 
-	if(type == "poi")
-	{
-		return new Poi();
-	}
+    if (!entity_class) {
+        print(`bad type: "${type}"`)
+        return null
+    }
 
-	if(type == "asteroid")
-	{
-		return new Asteroid();
-	}
-
-	if(type == "station")
-	{
-		return new Station();
-	}
-
-	if(type == "warpgate")
-	{
-		return new Warpgate();
-	}
-
-	if(type == "ship")
-	{
-		return new Ship();
-	}
-
-	if(type == "player")
-	{
-		return new Player();
-	}
-
-	if(type == "action")
-	{
-		return new Action();
-	}
-
-	if(type == "actionman")
-	{
-		return new ActionMan();
-	}
-
-	if(type == "playerview")
-	{
-		return new PlayerView();
-	}
-
-	if(type == "item")
-	{
-		return new Item();
-	}
-
-	if(type == "itemman")
-	{
-		return new ItemMan();
-	}
-
-	print("Bad type " + type);
-
-	return null;
+    return new entity_class
 }
