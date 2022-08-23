@@ -414,7 +414,11 @@ export function render_universe_contents(universe, player)
 		if(imgui.button("Confirm")) {
 			var o = globalThis.drag_drop_contents;
 
-			transfer_item(o.source_uid, o.target_uid, o.cargo_uid, imgui.get(globalThis.drag_amount));
+			var unrounded = imgui.get(globalThis.drag_amount);
+
+			var amount = Math.ceil(unrounded * 100) / 100;
+
+			transfer_item(o.source_uid, o.target_uid, o.cargo_uid, amount);
 
 			globalThis.has_drag_drop = false;
 		}
