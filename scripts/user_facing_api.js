@@ -49,8 +49,6 @@ export function transfer_item(source_entity_uid, destination_entity_uid, cargo_u
 }
 
 export function warp_to_poi(source_uid, dest_poi_uid) {
-    clear_actions_for(source_uid);
-
     var pending = new PendingAction();
     pending.build_warp_to_poi(source_uid, dest_poi_uid);
 
