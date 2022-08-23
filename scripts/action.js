@@ -220,7 +220,8 @@ export class ActionMan
 	constructor()
 	{
 		this.type = "actionman";
-		this.actions = [];
+		//this.actions = [];
+		this.actions = {};
 		this.uid = get_unique_id();
 	}
 
@@ -271,23 +272,8 @@ export class ActionMan
 			this.add_action(act);
 		}
 
-		var actions_by_entity = {};
-
-		for(var act of this.actions) {
-			var arr = actions_by_entity[act.source_uid];
-
-			if(arr == undefined || arr == null) {
-				actions_by_entity[act.source_uid] = [];
-				arr = actions_by_entity[act.source_uid];
-			}
-
-			arr.push(act);
-		}
-
-		this.actions.length = 0;
-
-		for(const k in actions_by_entity) {
-			var o = actions_by_entity[k];
+		for(const k in this.actions) {
+			var o = this.actions[k];
 
 			for(var i=0; i < o.length; i++) {
 				if(o[i].subtype == "interrupt") {
@@ -295,46 +281,65 @@ export class ActionMan
 					i = -1;
 				}
 			}
-
-			this.actions = this.actions.concat(o);
 		}
 	}
 
 	add_action(a) {
-		this.actions.push(a);
+		var s_uid = a.source_uid;
+
+		if(this.actions[s_uid] == undefined) {
+			this.actions[s_uid] = [];
+		}
+
+		this.actions[s_uid].push(a);
 	}
 
-	clear_actions() {
-		this.actions.length = 0;
-	}
-
-	add_action_time(delta_time_s, action_executor) {
+	add_action_time_to(actions, delta_time_s, action_executor) {
 		var remaining = delta_time_s;
 
-		while(this.actions.length > 0 && remaining > 0)
+		while(actions.length > 0 && remaining > 0)
 		{
-			var consumable = Math.min(this.actions[0].remaining_time(), remaining);
+			var consumable = Math.min(actions[0].remaining_time(), remaining);
 
-			action_executor(this.actions[0], consumable);
+			action_executor(actions[0], consumable);
 
-			this.actions[0].current_elapsed += consumable;
+			actions[0].current_elapsed += consumable;
 
 			remaining -= consumable;
 
-			if(this.actions[0].finished())
+			if(actions[0].finished())
 			{
-				this.actions.shift();
+				actions.shift();
 			}
 		}
 	}
 
+	add_action_time(delta_time_s, action_executor) {
+		for(const k in this.actions) {
+			var actions = this.actions[k];
+			var time_remaining = delta_time_s;
+
+			this.add_action_time_to(actions, time_remaining, action_executor);
+		}
+	}
+
 	load(obj) {
-		this.actions = load_uids(obj.a_uids);
+		var loaded = {};
+
+		for(const k in obj.a_uids) {
+			loaded[k] = load_uids(obj.a_uids[k]);
+		}
+
+		this.actions = loaded;
 		this.uid = obj.uid;
 	}
 
 	store() {
-		var actions_uid = save_uids(this.actions);
+		var actions_uid = {};
+
+		for(const k in this.actions) {
+			actions_uid[k] = save_uids(this.actions[k]);
+		}
 
 		return {uid:this.uid, type:this.type, a_uids:actions_uid};
 	}
