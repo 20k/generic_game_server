@@ -27,7 +27,7 @@ export class Asteroid
 	{
 		var cargo_uid = store_object(this.cargo);
 
-		return {uid:this.uid, type:this.type, name:this.name, position:this.position, owner:this.owner, c_uid:cargo_uid};
+		return {name:this.name, position:this.position, owner:this.owner, c_uid:cargo_uid};
 	}
 
 	load(obj)
@@ -136,7 +136,7 @@ export class Ship
 	{
 		var cargo_uid = store_object(this.cargo);
 
-		return {name:this.name, uid:this.uid, type:this.type, nickname:this.nickname, owner:this.owner, position:this.position, c_uid:cargo_uid};
+		return {name:this.name, nickname:this.nickname, owner:this.owner, position:this.position, c_uid:cargo_uid};
 	}
 
 	load(obj)

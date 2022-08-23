@@ -29,7 +29,7 @@ export class Universe
 	{
 		var contents_uid = save_uids(this.contents);
 
-		return {type:this.type, uid:this.uid, contents_uid}
+		return {contents_uid}
 	}
 
 	load(obj)

@@ -19,7 +19,7 @@ export class Poi
 	{
 		var contents_uid = save_uids(this.contents);
 
-		return {position:this.position, name:this.name, type:this.type, poi_name:this.poi_name, poi_type:this.poi_type, contents_uid, uid:this.uid}
+		return {position:this.position, name:this.name, poi_name:this.poi_name, poi_type:this.poi_type, contents_uid}
 	}
 
 	load(obj)

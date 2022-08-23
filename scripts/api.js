@@ -33,6 +33,7 @@ export function store_object(e)
 {
 	var to_store = e.store();
 	to_store.uid = e.uid;
+	to_store.type = e.type;
 
 	store_key_value(e.uid, to_store);
 

@@ -75,7 +75,7 @@ export class System
 		var contents_uid = save_uids(this.contents);
 		var action_uid = store_object(this.action_man);
 
-		return {position:this.position, name:this.name, type:this.type, system_name:this.system_name, contents_uid:contents_uid, action_uid:action_uid, uid:this.uid}
+		return {position:this.position, name:this.name, system_name:this.system_name, contents_uid:contents_uid, action_uid:action_uid}
 	}
 
 	load(obj)
