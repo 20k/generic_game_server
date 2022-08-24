@@ -168,6 +168,10 @@ export class Ship
 		return 1.;
 	}
 
+	get_warp_time() {
+		return 5;
+	}
+
 	///per second
 	get_mining_power() {
 		return 1;

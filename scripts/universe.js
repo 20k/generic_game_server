@@ -76,7 +76,7 @@ export function activate_warp_gate(universe, en, warp_gate) {
 	var sys_2 = universe.lookup_sys_slow_opt(warp_gate.dst_sys_uid);
 
 	///impossible
-	if(sys_1 == sys_2)
+	if(sys_1.uid == sys_2.uid)
 		return;
 
 	var poi_1 = sys_1.lookup_poi_slow_opt(warp_gate.src_poi_uid);

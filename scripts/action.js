@@ -2,6 +2,7 @@ import {get_unique_id} from "get_unique_id"
 import {save_uids, load_uids} from "api"
 import {round_volume} from "item"
 import {set_debug} from "debug"
+import {activate_warp_gate} from "universe"
 
 function make_move_subobject(e, finish_position) {
 	return {
@@ -98,6 +99,16 @@ function make_warp_to_poi_action(source_poi, source_entity, dest_poi) {
 	return obj;
 }
 
+function make_activate_warp_gate_action(source_entity, warp_gate_uid) {
+	var subobject = {warp_gate_uid};
+	var time = source_en.get_warp_time();
+
+	var obj = make_action();
+	obj.build_generic(source_entity.uid, "activate_warp_gate", subobject, time);
+
+	return obj;
+}
+
 export class PendingAction {
 	constructor()
 	{
@@ -138,6 +149,12 @@ export class PendingAction {
 		this.source_uid = source_uid;
 		this.dest_poi_uid = dest_poi_uid;
 	}
+
+	build_activate_warp_gate(source_uid, warp_gate_uid) {
+		this.pending_action_type = "activate_warp_gate";
+		this.source_uid = source_uid;
+		this.warp_gate_uid = warp_gate_uid;
+	}
 }
 
 function pending_action_to_action(sys, poi, en, pending) {
@@ -173,6 +190,10 @@ function pending_action_to_action(sys, poi, en, pending) {
 		}
 
 		return make_warp_to_poi_action(poi, en, target_poi);
+	}
+
+	if(pending.pending_action_type == "activate_warp_gate") {
+		return make_activate_warp_gate_action(en, pending.warp_gate_uid);
 	}
 
 	return null;
@@ -439,5 +460,15 @@ export function finalise_action(universe, sys, poi, en, act) {
 		}
 
 		sys.transfer_entity_to_poi(poi, en, target_poi);
+	}
+
+	if(act.subtype == "activate_warp_gate") {
+		///todo: load straight from db
+		var warp_gate_unnecessarily_slow = sys.lookup_slow_opt(act.subobject.warp_gate_uid);
+
+		if(distance(warp_gate_unnecessarily_slow.position, en.position) > 10)
+			return;
+
+		activate_warp_gate(universe, en, warp_gate_unnecessarily_slow);
 	}
 }

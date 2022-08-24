@@ -54,3 +54,10 @@ export function warp_to_poi(source_uid, dest_poi_uid) {
 
     add_pending_action(pending);
 }
+
+export function activate_warp_gate(source_uid, warp_gate_uid) {
+    var pending = new PendingAction();
+    pending.build_activate_warp_gate(source_uid, warp_gate_uid);
+
+    add_pending_action(pending);
+}
