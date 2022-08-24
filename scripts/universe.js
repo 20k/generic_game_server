@@ -1,5 +1,6 @@
 import {get_unique_id} from "get_unique_id"
 import {load_object, save_uids, load_uids} from "api"
+import {norm, round_warp_position} from "system";
 
 export class Universe
 {
@@ -38,6 +39,15 @@ export class Universe
 		this.contents = load_uids(obj.contents_uid)
 	}
 
+	lookup_sys_slow_opt(sys_id) {
+		for(var e of this.contents) {
+			if(e.uid == sys_id)
+				return e;
+		}
+
+		return null;
+	}
+
 	lookup_slow_opt(id) {
 		for(var sys of this.contents)
 		{
@@ -59,6 +69,44 @@ export class Universe
 			sys.action_man.import(this, sys);
 		}
 	}
+}
+
+export function activate_warp_gate(universe, en, warp_gate) {
+	var sys_1 = universe.lookup_sys_slow_opt(warp_gate.src_sys_uid);
+	var sys_2 = universe.lookup_sys_slow_opt(warp_gate.dst_sys_uid);
+
+	///impossible
+	if(sys_1 == sys_2)
+		return;
+
+	var poi_1 = sys_1.lookup_poi_slow_opt(warp_gate.src_poi_uid);
+
+	///impossible
+	if(poi_1 == null)
+		return;
+
+	var poi_2 = sys_2.lookup_poi_slow_opt(warp_gate.dst_poi_uid);
+
+	///impossible
+	if(poi_2 == null)
+		return;
+
+	var relative_dir = norm(sys_2.position, sys_1.position);
+	var arrival_radius = 10;
+
+	relative_dir[0] *= arrival_radius;
+	relative_dir[1] *= arrival_radius;
+
+	relative_dir = round_warp_position(relative_dir);
+
+	var removed = poi_1.extract_entity(en.uid);
+
+	///could happen
+	if(removed == null)
+		return;
+
+	removed.position = relative_dir;
+	poi_2.add_entity(removed);
 }
 
 export function make_universe()

@@ -5,7 +5,7 @@ import {set_debug} from "debug"
 import {ActionMan, execute_action, finalise_action} from "action"
 import {get_unique_id} from "get_unique_id"
 
-function round_warp_position(position) {
+export function round_warp_position(position) {
 	return [Math.round(position[0]), Math.round(position[1])];
 }
 
@@ -138,7 +138,7 @@ export function make_system(system_name, position)
 	return obj;
 }
 
-function norm(p1, p2) {
+export function norm(p1, p2) {
 	var dx = p2[0] - p1[0];
 	var dy = p2[1] - p1[1];
 
@@ -159,8 +159,8 @@ export function connect_systems(sys1, sys2)
 	var poi_1 = make_poi("Gate to " + sys2.system_name, "warpgate", pos_in_1);
 	var poi_2 = make_poi("Gate to " + sys1.system_name, "warpgate", pos_in_2);
 
-	var gate_1 = make_warp_gate(sys1, sys2, poi_2);
-	var gate_2 = make_warp_gate(sys2, sys1, poi_1);
+	var gate_1 = make_warp_gate(sys1, poi_1, sys2, poi_2);
+	var gate_2 = make_warp_gate(sys2, poi_2, sys1, poi_1);
 
 	poi_1.take(gate_1);
 	poi_2.take(gate_2);

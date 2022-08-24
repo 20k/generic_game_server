@@ -112,6 +112,7 @@ export class Warpgate
 		this.dest_sys_uid = -1;
 		this.src_sys_uid = -1;
 		this.dest_poi_uid = -1;
+		this.src_poi_uid = -1;
 		this.owner = -1;
 		this.uid = get_unique_id();
 	}
@@ -193,7 +194,7 @@ export function make_station(position, station_name)
 	return obj;
 }
 
-export function make_warp_gate(src_sys, dest_sys, dest_poi)
+export function make_warp_gate(src_sys, src_poi, dest_sys, dest_poi)
 {
 	var obj = new Warpgate();
 
@@ -201,6 +202,7 @@ export function make_warp_gate(src_sys, dest_sys, dest_poi)
 	obj.dest_sys_uid = dest_sys.uid;
 	obj.src_sys_uid = src_sys.uid;
 	obj.dest_poi_uid = dest_poi.uid;
+	obj.src_poi_uid = src_poi.uid;
 
 	return obj;
 }
