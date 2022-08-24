@@ -109,8 +109,9 @@ export class Warpgate
 		this.name = "Warp Gate";
 		this.type = "warpgate";
 		this.nickname = "Bad Dest Name";
-		this.dest_uid = -1;
-		this.src_uid = -1;
+		this.dest_sys_uid = -1;
+		this.src_sys_uid = -1;
+		this.dest_poi_uid = -1;
 		this.owner = -1;
 		this.uid = get_unique_id();
 	}
@@ -192,13 +193,14 @@ export function make_station(position, station_name)
 	return obj;
 }
 
-export function make_warp_gate(src_sys, dest_sys)
+export function make_warp_gate(src_sys, dest_sys, dest_poi)
 {
 	var obj = new Warpgate();
 
 	obj.nickname = dest_sys.system_name;
-	obj.dest_uid = dest_sys.uid;
-	obj.src_uid = src_sys.uid;
+	obj.dest_sys_uid = dest_sys.uid;
+	obj.src_sys_uid = src_sys.uid;
+	obj.dest_poi_uid = dest_poi.uid;
 
 	return obj;
 }

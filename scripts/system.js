@@ -159,8 +159,8 @@ export function connect_systems(sys1, sys2)
 	var poi_1 = make_poi("Gate to " + sys2.system_name, "warpgate", pos_in_1);
 	var poi_2 = make_poi("Gate to " + sys1.system_name, "warpgate", pos_in_2);
 
-	var gate_1 = make_warp_gate(sys1, sys2);
-	var gate_2 = make_warp_gate(sys2, sys1);
+	var gate_1 = make_warp_gate(sys1, sys2, poi_2);
+	var gate_2 = make_warp_gate(sys2, sys1, poi_1);
 
 	poi_1.take(gate_1);
 	poi_2.take(gate_2);
