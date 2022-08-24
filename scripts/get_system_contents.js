@@ -1,6 +1,7 @@
 import {PendingAction} from "action"
 import {clear_actions_for, add_pending_action, transfer_item} from "user_facing_api"
-import { warp_to_poi } from "./user_facing_api";
+import { warp_to_poi, activate_warp_gate } from "user_facing_api";
+import {distance} from "action";
 
 if(globalThis.has_drag_drop == undefined) {
 	globalThis.has_drag_drop = false;
@@ -238,6 +239,15 @@ function interactive_poi_contents(sys, poi, player)
 					}
 				}
 			}
+
+			if(controlled.type == "ship" && e.type == "warpgate" && distance(e.position, controlled.position) <= 10) {
+				imgui.sameline();
+
+				if(imgui.smallbutton("[activate]")) {
+					clear_actions_for(player.controlling);
+					activate_warp_gate(player.controlling, e.uid);
+				}
+			}
 		}
 
 		if((e.type == "ship" || e.type == "station") && player.view.is_uid_open(e.uid)) {
@@ -385,7 +395,6 @@ function interactive_sys_contents(sys, player_view, player)
 			if(imgui.smallbutton(rstr)) {
 				clear_actions_for(player.controlling);
 				warp_to_poi(player.controlling, poi.uid);
-				print("target " + poi.uid);
 			}
 		}
 

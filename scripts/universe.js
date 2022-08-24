@@ -75,6 +75,16 @@ export function activate_warp_gate(universe, en, warp_gate) {
 	var sys_1 = universe.lookup_sys_slow_opt(warp_gate.src_sys_uid);
 	var sys_2 = universe.lookup_sys_slow_opt(warp_gate.dst_sys_uid);
 
+	if(sys_1 == null) {
+		print("Null sys1 " + warp_gate.src_sys_uid);
+		return;
+	}
+
+	if(sys_2 == null) {
+		print("Null sys2 " + warp_gate.dst_sys_uid);
+		return;
+	}
+
 	///impossible
 	if(sys_1.uid == sys_2.uid)
 		return;

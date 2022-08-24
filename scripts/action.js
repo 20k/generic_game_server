@@ -12,7 +12,7 @@ function make_move_subobject(e, finish_position) {
 	};
 }
 
-function distance(e1_position, e2_position) {
+export function distance(e1_position, e2_position) {
 	var dx = e2_position[0] - e1_position[0];
 	var dy = e2_position[1] - e1_position[1];
 
@@ -101,7 +101,7 @@ function make_warp_to_poi_action(source_poi, source_entity, dest_poi) {
 
 function make_activate_warp_gate_action(source_entity, warp_gate_uid) {
 	var subobject = {warp_gate_uid};
-	var time = source_en.get_warp_time();
+	var time = source_entity.get_warp_time();
 
 	var obj = make_action();
 	obj.build_generic(source_entity.uid, "activate_warp_gate", subobject, time);
@@ -463,8 +463,16 @@ export function finalise_action(universe, sys, poi, en, act) {
 	}
 
 	if(act.subtype == "activate_warp_gate") {
+		if(en.type != "ship")
+			return;
+
 		///todo: load straight from db
-		var warp_gate_unnecessarily_slow = sys.lookup_slow_opt(act.subobject.warp_gate_uid);
+		var warp_gate_unnecessarily_slow = poi.lookup_slow_opt(act.subobject.warp_gate_uid);
+
+		if(warp_gate_unnecessarily_slow == null) {
+			print("No warp gate")
+			return;
+		}
 
 		if(distance(warp_gate_unnecessarily_slow.position, en.position) > 10)
 			return;
