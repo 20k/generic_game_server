@@ -113,7 +113,7 @@ export function load_components(arr) {
     var ret = [];
 
     for(var e of arr) {
-        ret.push(load_component(arr));
+        ret.push(load_component(e));
     }
 
     return ret;
