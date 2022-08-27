@@ -107,6 +107,10 @@ export class Station
 		this.cargo = cargo;
 	}
 
+	get_free_storage() {
+		return Math.max(this.get_maximum_storage() - this.cargo.current_volume(), 0)
+	}
+
 	get_maximum_storage() {
 		return aggregate_static_component_stat(this, "cargo", "max");
 	}
@@ -190,6 +194,10 @@ export class Ship
 	///per second
 	get_mining_power() {
 		return 1;
+	}
+
+	get_free_storage() {
+		return Math.max(this.get_maximum_storage() - this.cargo.current_volume(), 0)
 	}
 
 	get_maximum_storage() {

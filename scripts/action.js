@@ -65,15 +65,17 @@ function make_interrupt_action(e_uid) {
 
 function make_mine_action(e, target)
 {
-	var total_ore = target.get_total_ore();
+	var to_mine = target.get_total_ore();
+
+	to_mine = Math.min(to_mine, e.get_free_storage());
 
 	var time_to_mine = 0;
 
 	var mine_power = e.get_mining_power();
 
-	if(total_ore > 0.0001 && mine_power > 0.0001)
+	if(mine_power > 0.0001)
 	{
-		time_to_mine = total_ore / mine_power;
+		time_to_mine = to_mine / mine_power;
 	}
 
 	var obj = make_action();
@@ -410,21 +412,22 @@ export function execute_action(universe, sys, poi, en, act, real_time_s)
 
 	if(act.subtype == "mine")
 	{
-		//globalThis.last_debug = "mine"
+		if(en.type != "ship" && en.type != "station") {
+			return;
+		}
 
 		var object = poi.lookup_slow_opt(act.subobject.target_uid);
 
 		if(object == null)
 			return;
 
-		var returned_items = object.mine(en.get_mining_power() * real_time_s);
+		var mineable = en.get_mining_power() * real_time_s;
+
+		mineable = Math.min(mineable, en.get_free_storage());
+
+		var returned_items = object.mine(mineable);
 
 		en.cargo.fill_items(returned_items);
-
-		//if(returned_items.length == 0)
-		//	return;
-
-		//globalThis.last_debug = "Mined " + returned_items[0].volume;
 	}
 
 	if(act.subtype == "transfer_item") {
@@ -440,6 +443,8 @@ export function execute_action(universe, sys, poi, en, act, real_time_s)
 		if(target_object.type != "ship" && target_object.type != "station") {
 			return;
 		}
+
+		volume = Math.min(volume, target_object.get_free_storage());
 
 		///check how much we can store!
 
