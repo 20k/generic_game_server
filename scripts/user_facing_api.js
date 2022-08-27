@@ -5,6 +5,7 @@ import { PendingAction } from "./action";
 function get_current_actions() {
     var player_id = globalThis.player.uid;
 
+    // @ts-ignore
     var t = db.read_only();
     var current_actions = t.read(2, player_id);
     t.close();
@@ -18,6 +19,7 @@ function get_current_actions() {
 function set_current_actions(acts) {
     var player_id = globalThis.player.uid;
 
+    // @ts-ignore
     var t2 = db.read_write();
     t2.write(2, player_id, acts);
     t2.close();

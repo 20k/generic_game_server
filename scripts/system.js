@@ -1,11 +1,11 @@
 // @ts-check
 
-import {make_poi} from "poi";
-import {make_warp_gate} from "object"
-import {store_object, load_object, save_uids, load_uids} from "api"
-import {set_debug} from "debug"
-import {ActionMan, execute_action, finalise_action} from "action"
-import {get_unique_id} from "get_unique_id"
+import {make_poi} from "./poi";
+import {make_warp_gate} from "./object"
+import {store_object, load_object, save_uids, load_uids} from "./api"
+import {set_debug} from "./debug"
+import {ActionMan, execute_action, finalise_action} from "./action"
+import {get_unique_id} from "./get_unique_id"
 
 export function round_warp_position(position) {
 	return [Math.round(position[0]), Math.round(position[1])];

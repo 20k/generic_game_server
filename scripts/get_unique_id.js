@@ -14,6 +14,7 @@ export function get_unique_id()
 		return -1;
 	}
 
+	// @ts-ignore
 	var t = db.read_write();
 
 	var gid = t.read(3, 1);

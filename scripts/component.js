@@ -85,6 +85,7 @@ export function get_component_by_name(name) {
         return make_warp_drive_default(name, 1, {});
     }
 
+    // @ts-ignore
     print("Err");
 }
 
@@ -97,6 +98,7 @@ export function load_component(reduced_obj) {
     var dyn = reduced_obj.dyn;
 
     var default_object = get_component_by_name(name);
+    // @ts-ignore
     default_object.data_dynamic = dyn;
 
     return default_object;

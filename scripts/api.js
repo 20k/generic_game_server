@@ -1,18 +1,19 @@
 // @ts-check
 
-import {Universe} from "universe";
-import {System} from "system";
-import {Poi} from "poi"
-import {Asteroid, Station, Warpgate, Ship} from "object"
-import {Player} from "player"
-import {set_debug} from "debug"
-import {Action, ActionMan} from "action";
-import {PlayerView} from "player_view";
-import {set_defer_uids} from "get_unique_id";
-import {Item, ItemMan} from "item";
+import {Universe} from "./universe";
+import {System} from "./system";
+import {Poi} from "./poi"
+import {Asteroid, Station, Warpgate, Ship} from "./object"
+import {Player} from "./player"
+import {set_debug} from "./debug"
+import {Action, ActionMan} from "./action";
+import {PlayerView} from "./player_view";
+import {set_defer_uids} from "./get_unique_id";
+import {Item, ItemMan} from "./item";
 
 export function get_by_key(uid)
 {
+	// @ts-ignore
 	var transact = db.read_only();
 
 	var result = transact.read(1, uid);
@@ -24,6 +25,7 @@ export function get_by_key(uid)
 
 export function store_key_value(uid, e)
 {
+	// @ts-ignore
 	var transact = db.read_write();
 
 	transact.write(1, uid, e);
@@ -103,6 +105,7 @@ function allocate_class(type) {
     const entity_class = classes[type]
 
     if (!entity_class) {
+        // @ts-ignore
         print(`bad type: "${type}"`)
         return null
     }

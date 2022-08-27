@@ -1,8 +1,8 @@
 // @ts-check
 
-import {get_unique_id} from "get_unique_id"
-import {load_object, save_uids, load_uids} from "api"
-import {norm, round_warp_position} from "system";
+import {get_unique_id} from "./get_unique_id"
+import {load_object, save_uids, load_uids} from "./api"
+import {norm, round_warp_position} from "./system";
 
 export class Universe
 {
@@ -78,11 +78,13 @@ export function activate_warp_gate(universe, en, warp_gate) {
 	var sys_2 = universe.lookup_sys_slow_opt(warp_gate.dst_sys_uid);
 
 	if(sys_1 == null) {
+		// @ts-ignore
 		print("Null sys1 " + warp_gate.src_sys_uid);
 		return;
 	}
 
 	if(sys_2 == null) {
+		// @ts-ignore
 		print("Null sys2 " + warp_gate.dst_sys_uid);
 		return;
 	}

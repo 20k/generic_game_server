@@ -1,10 +1,10 @@
 // @ts-check
 
 //mexec("universe")
-import {make_poi} from "poi"
-import {make_asteroid, make_station, make_warp_gate, make_ship} from "object";
-import {make_universe} from "universe"
-import {make_system, connect_systems} from "system"
+import {make_poi} from "./poi"
+import {make_asteroid, make_station, make_warp_gate, make_ship} from "./object";
+import {make_universe} from "./universe"
+import {make_system, connect_systems} from "./system"
 
 export function generate_universe(player)
 {

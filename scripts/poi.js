@@ -1,8 +1,8 @@
 // @ts-check
 
-import {execute_action} from "action";
-import {save_uids, load_uids} from "api"
-import {get_unique_id} from "get_unique_id"
+import {execute_action} from "./action";
+import {save_uids, load_uids} from "./api"
+import {get_unique_id} from "./get_unique_id"
 
 export class Poi
 {
