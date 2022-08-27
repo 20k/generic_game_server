@@ -252,3 +252,9 @@ export function add_example_components(obj) {
 	obj.components.push(get_component_by_name("thruster"));
 	obj.components.push(get_component_by_name("warpdrive"));
 }
+
+export function add_example_station_components(obj) {
+	obj.components.push(get_component_by_name("big_cargo"));
+	obj.components.push(get_component_by_name("thruster"));
+	obj.components.push(get_component_by_name("warpdrive"));
+}

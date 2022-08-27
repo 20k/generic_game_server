@@ -90,6 +90,10 @@ export function get_component_by_name(name) {
         return make_cargo_default(name, 10, {});
     }
 
+    if(name == "big_cargo") {
+        return make_cargo_default(name, 1000, {});
+    }
+
     if(name == "thruster") {
         return make_thruster_default(name, 1, {});
     }

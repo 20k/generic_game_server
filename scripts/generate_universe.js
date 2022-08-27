@@ -2,7 +2,7 @@
 
 //mexec("universe")
 import {make_poi} from "./poi"
-import {make_asteroid, make_station, make_warp_gate, make_ship, add_example_components} from "./object";
+import {make_asteroid, make_station, make_warp_gate, make_ship, add_example_components, add_example_station_components} from "./object";
 import {make_universe} from "./universe"
 import {make_system, connect_systems} from "./system"
 
@@ -20,8 +20,16 @@ export function generate_universe(player)
 
 	poi.take(make_asteroid([150, 10]));
 	poi.take(make_asteroid([300, 10]));
-	player.take_ownership(poi.take(make_station([151, 10.2], "Test Station")));
-	poi.take(make_station([10, 9], "Stationary"));
+
+	///add_example_station_components
+
+	var station_1 = poi.take(make_station([151, 10.2], "Test Station"));
+	var station_2 = poi.take(make_station([10, 9], "Stationary"));
+
+	add_example_station_components(station_1);
+	add_example_station_components(station_2);
+
+	player.take_ownership(station_1);
 
 	var sys1 = make_system("Alpha Blenturi", [10, 10]);
 	var sys2 = make_system("Barnard's Spire", [15, 13]);
