@@ -147,7 +147,7 @@ function interactive_poi_contents(sys, poi, player)
 		var formatted_position = fmt_3[i];
 
 		if(e.type == "ship" || e.type == "station") {
-			if(e.cargo.stored.length != 0) {
+			if(e.get_maximum_storage() != 0)
 				imgui.unindent();
 
 				var id_open = player.view.is_uid_open(e.uid);
@@ -253,8 +253,9 @@ function interactive_poi_contents(sys, poi, player)
 		if((e.type == "ship" || e.type == "station") && player.view.is_uid_open(e.uid)) {
 			imgui.indent();
 
-			for(var cargo of e.cargo.stored) {
+			imgui.text("Cargo: " + e.cargo.current_volume() + "/" + e.get_maximum_storage());
 
+			for(var cargo of e.cargo.stored) {
 				if(e.owner == player.uid) {
 					imgui.selectable(cargo.format());
 

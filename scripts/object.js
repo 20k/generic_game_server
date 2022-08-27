@@ -83,24 +83,32 @@ export class Station
 		this.nickname = "Error nick";
 		this.owner = -1;
 		this.position = [0,0];
+		this.components = [];
 		this.cargo = new ItemMan();
 	}
 
 	store()
 	{
 		var cargo_uid = store_object(this.cargo);
+		var reduced_arr = save_components(this.components);
 
-		return {name:this.name, nickname:this.nickname, owner:this.owner, position:this.position, c_uid:cargo_uid};
+		return {name:this.name, nickname:this.nickname, owner:this.owner, position:this.position, c_uid:cargo_uid, c_reduced:reduced_arr};
 	}
 
 	load(obj)
 	{
+		var expanded_components = load_components(obj.c_reduced);
 		var cargo = load_object(obj.c_uid);
 
 		this.nickname = obj.nickname;
 		this.owner = obj.owner;
 		this.position = obj.position;
+		this.components = expanded_components;
 		this.cargo = cargo;
+	}
+
+	get_maximum_storage() {
+		return aggregate_static_component_stat(this, "cargo", "max");
 	}
 }
 

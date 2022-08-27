@@ -64,6 +64,16 @@ export class ItemMan {
         this.stored = [];
     }
 
+    current_volume() {
+        var result = 0;
+
+        for(var e of this.stored) {
+            result += e.volume;
+        }
+
+        return result;
+    }
+
     add_item(item) {
         this.stored.push(item);
     }
