@@ -147,7 +147,7 @@ function interactive_poi_contents(sys, poi, player)
 		var formatted_position = fmt_3[i];
 
 		if(e.type == "ship" || e.type == "station") {
-			if(e.get_maximum_storage() != 0)
+			if(e.get_maximum_storage() != 0) {
 				imgui.unindent();
 
 				var id_open = player.view.is_uid_open(e.uid);
