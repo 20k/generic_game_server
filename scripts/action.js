@@ -1,10 +1,10 @@
 // @ts-check
 
-import {get_unique_id} from "get_unique_id"
-import {save_uids, load_uids} from "api"
-import {round_volume} from "item"
-import {set_debug} from "debug"
-import {activate_warp_gate} from "universe"
+import {get_unique_id} from "./get_unique_id"
+import {save_uids, load_uids} from "./api"
+import {round_volume} from "./item"
+import {set_debug} from "./debug"
+import {activate_warp_gate} from "./universe"
 
 function make_move_subobject(e, finish_position) {
 	return {
@@ -253,6 +253,7 @@ export class ActionMan
 	}
 
 	import(universe, my_sys) {
+		// @ts-ignore
 		var t = db.read_write();
 		var all_reads = t.read_all(2);
 
@@ -457,6 +458,7 @@ export function finalise_action(universe, sys, poi, en, act) {
 
 		if(target_poi == null)
 		{
+			// @ts-ignore
 			print("Err! Target poi null");
 			return;
 		}
@@ -472,6 +474,7 @@ export function finalise_action(universe, sys, poi, en, act) {
 		var warp_gate_unnecessarily_slow = poi.lookup_slow_opt(act.subobject.warp_gate_uid);
 
 		if(warp_gate_unnecessarily_slow == null) {
+			// @ts-ignore
 			print("No warp gate")
 			return;
 		}

@@ -1,10 +1,10 @@
 // @ts-check
 
-import {set_debug} from "debug"
-import {get_unique_id} from "get_unique_id"
-import {save_uids, load_uids, store_object, load_object} from "api"
-import {Item, take_ore_amount, fill_asteroid, ItemMan} from "item";
-import {save_components, load_components} from "component"
+import {set_debug} from "./debug"
+import {get_unique_id} from "./get_unique_id"
+import {save_uids, load_uids, store_object, load_object} from "./api"
+import {Item, take_ore_amount, fill_asteroid, ItemMan} from "./item";
+import {save_components, load_components} from "./component"
 
 function make_object_with_position(position)
 {

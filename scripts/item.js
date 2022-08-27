@@ -1,7 +1,7 @@
 // @ts-check
 
-import {get_unique_id} from "get_unique_id";
-import {save_uids, load_uids} from "api"
+import {get_unique_id} from "./get_unique_id";
+import {save_uids, load_uids} from "./api"
 
 export function round_volume(volume) {
     return Math.round(volume * 100) / 100;
