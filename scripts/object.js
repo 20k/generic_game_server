@@ -2,6 +2,7 @@ import {set_debug} from "debug"
 import {get_unique_id} from "get_unique_id"
 import {save_uids, load_uids, store_object, load_object} from "api"
 import {Item, take_ore_amount, fill_asteroid, ItemMan} from "item";
+import {save_components, load_components} from "component"
 
 function make_object_with_position(position)
 {
@@ -139,24 +140,28 @@ export class Ship
 		this.owner = -1;
 		this.position = [0,0];
 
+		this.components = [];
 		this.cargo = new ItemMan();
 	}
 
 	store()
 	{
 		var cargo_uid = store_object(this.cargo);
+		var reduced_arr = save_components(this.components);
 
-		return {name:this.name, nickname:this.nickname, owner:this.owner, position:this.position, c_uid:cargo_uid};
+		return {name:this.name, nickname:this.nickname, owner:this.owner, position:this.position, c_uid:cargo_uid, c_reduced:reduced_arr};
 	}
 
 	load(obj)
 	{
+		var expanded_components = load_components(obj.c_reduced);
 		var cargo = load_object(obj.c_uid);
 
 		this.uid = obj.uid;
 		this.nickname = obj.nickname;
 		this.owner = obj.owner;
 		this.position = obj.position;
+		this.components = expanded_components;
 		this.cargo = cargo;
 	}
 

@@ -25,11 +25,11 @@ class component {
         this.data_cost = {};
     }
 
-    build(dynamic, static, resource, cost) {
-        this.data_dynamic = dynamic;
-        this.data_static = static;
-        this.data_resource = resource;
-        this.data_cost = cost;
+    build(dynamic_in, static_in, resource_in, cost_in) {
+        this.data_dynamic = dynamic_in;
+        this.data_static = static_in;
+        this.data_resource = resource_in;
+        this.data_cost = cost_in;
     }
 }
 
@@ -83,4 +83,38 @@ export function get_component_by_name(name) {
     }
 
     print("Err");
+}
+
+export function save_component(full_obj) {
+    return {name:full_obj.data_static.name, dyn:full_obj.data_dynamic};
+}
+
+export function load_component(reduced_obj) {
+    var name = reduced_obj.name;
+    var dyn = reduced_obj.dyn;
+
+    var default_object = get_component_by_name(name);
+    default_object.data_dynamic = dyn;
+
+    return default_object;
+}
+
+export function save_components(arr) {
+    var ret = [];
+
+    for(var e of arr) {
+        ret.push(save_component(e));
+    }
+
+    return ret;
+}
+
+export function load_components(arr) {
+    var ret = [];
+
+    for(var e of arr) {
+        ret.push(load_component(arr));
+    }
+
+    return ret;
 }
