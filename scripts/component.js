@@ -69,6 +69,7 @@ function make_warp_drive_default(name, speed, cost) {
     return c;
 }
 
+///specific weapons, eg large_laser or lrm32 or something
 export function get_component_by_name(name) {
     if(name == "cargo") {
         return make_cargo_default(name, 10, {});
