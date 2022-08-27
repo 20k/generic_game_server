@@ -1,3 +1,5 @@
+// @ts-check
+
 import {Universe} from "universe";
 import {System} from "system";
 import {Poi} from "poi"

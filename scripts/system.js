@@ -1,3 +1,5 @@
+// @ts-check
+
 import {make_poi} from "poi";
 import {make_warp_gate} from "object"
 import {store_object, load_object, save_uids, load_uids} from "api"

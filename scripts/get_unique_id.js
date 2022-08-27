@@ -1,6 +1,8 @@
+// @ts-check
+
 //globalThis.globally_unique = 0;
 
-var defer_uids = 0;
+var defer_uids = false;
 
 export function set_defer_uids(val) {
 	defer_uids = val;

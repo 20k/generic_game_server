@@ -1,3 +1,5 @@
+// @ts-check
+
 import {PendingAction} from "action"
 import {clear_actions_for, add_pending_action, transfer_item} from "user_facing_api"
 import { warp_to_poi, activate_warp_gate } from "user_facing_api";

@@ -1,3 +1,5 @@
+// @ts-check
+
 //mexec("universe")
 import {make_poi} from "poi"
 import {make_asteroid, make_station, make_warp_gate, make_ship} from "object";

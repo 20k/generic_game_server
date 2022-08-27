@@ -1,3 +1,5 @@
+// @ts-check
+
 import {get_unique_id} from "get_unique_id";
 import {save_uids, load_uids} from "api"
 

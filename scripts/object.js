@@ -1,3 +1,5 @@
+// @ts-check
+
 import {set_debug} from "debug"
 import {get_unique_id} from "get_unique_id"
 import {save_uids, load_uids, store_object, load_object} from "api"
@@ -110,9 +112,9 @@ export class Warpgate
 		this.name = "Warp Gate";
 		this.type = "warpgate";
 		this.nickname = "Bad Dest Name";
-		this.dest_sys_uid = -1;
+		this.dst_sys_uid = -1;
 		this.src_sys_uid = -1;
-		this.dest_poi_uid = -1;
+		this.dst_poi_uid = -1;
 		this.src_poi_uid = -1;
 		this.owner = -1;
 		this.uid = get_unique_id();

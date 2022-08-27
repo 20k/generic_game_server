@@ -1,3 +1,5 @@
+// @ts-check
+
 class component_construction_cost {
 
 }

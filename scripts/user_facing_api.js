@@ -1,3 +1,5 @@
+// @ts-check
+
 import { PendingAction } from "./action";
 
 function get_current_actions() {

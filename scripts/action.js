@@ -1,3 +1,5 @@
+// @ts-check
+
 import {get_unique_id} from "get_unique_id"
 import {save_uids, load_uids} from "api"
 import {round_volume} from "item"
@@ -46,7 +48,7 @@ function safe_time_to_target(source_pos, destination_pos, my_speed) {
 
 function make_move_action(e, finish_position) {
 	var elapsed_time_s = time_to_target(e, finish_position);
-	var subobject = make_move_subobject(e, finish_position, elapsed_time_s);
+	var subobject = make_move_subobject(e, finish_position);
 
 	var obj = make_action();
 	obj.build_generic(e.uid, "move", subobject, elapsed_time_s);
