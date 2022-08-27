@@ -70,8 +70,8 @@ function make_warp_drive_default(name, speed, cost) {
 }
 
 export function get_component_by_name(name) {
-    if(name == "cargo_example") {
-        return make_cargo_default(name, 15, {});
+    if(name == "cargo") {
+        return make_cargo_default(name, 10, {});
     }
 
     if(name == "thruster") {
