@@ -71,6 +71,19 @@ function make_warp_drive_default(name, speed, cost) {
     return c;
 }
 
+export function aggregate_static_component_stat(ship, category, name) {
+    var val = 0;
+
+    for(var e of ship.components) {
+        if(e.data_static.category != category)
+            continue;
+
+        val += e.data_static[name];
+    }
+
+    return val;
+}
+
 ///specific weapons, eg large_laser or lrm32 or something
 export function get_component_by_name(name) {
     if(name == "cargo") {
