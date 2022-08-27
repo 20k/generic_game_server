@@ -61,7 +61,7 @@ function make_warp_drive_default(name, speed, cost) {
     var stat = {};
     stat.speed = speed;
     stat.name = name;
-    stat.category = "warpderive";
+    stat.category = "warpdrive";
 
     var c = new component();
     c.build({}, stat, {}, cost);
