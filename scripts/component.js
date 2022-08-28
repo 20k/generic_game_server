@@ -71,6 +71,52 @@ function make_warp_drive_default(name, speed, cost) {
     return c;
 }
 
+
+function make_hull_default(name, amount, cost) {
+    var stat = {};
+    stat.max = amount;
+    stat.name = name;
+    stat.category = "hull";
+
+    var dyn = {};
+    dyn.current = amount;
+
+    var c = new component();
+    c.build(dyn, stat, {}, cost);
+
+    return c;
+}
+
+function make_armour_default(name, amount, cost) {
+    var stat = {};
+    stat.max = amount;
+    stat.name = name;
+    stat.category = "armour";
+
+    var dyn = {};
+    dyn.current = amount;
+
+    var c = new component();
+    c.build(dyn, stat, {}, cost);
+
+    return c;
+}
+
+function make_shield_default(name, amount, cost) {
+    var stat = {};
+    stat.max = amount;
+    stat.name = name;
+    stat.category = "shield";
+
+    var dyn = {};
+    dyn.current = amount;
+
+    var c = new component();
+    c.build(dyn, stat, {}, cost);
+
+    return c;
+}
+
 export function aggregate_static_component_stat(ship, category, name) {
     var val = 0;
 
@@ -100,6 +146,18 @@ export function get_component_by_name(name) {
 
     if(name == "warpdrive") {
         return make_warp_drive_default(name, 1, {});
+    }
+
+    if(name == "hull") {
+        return make_hull_default(name, 100, {});
+    }
+
+    if(name == "armour") {
+        return make_armour_default(name, 100, {});
+    }
+
+    if(name == "shield") {
+        return make_shield_default(name, 100, {});
     }
 
     // @ts-ignore
