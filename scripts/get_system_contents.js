@@ -2,6 +2,7 @@ import {PendingAction} from "action"
 import {clear_actions_for, add_pending_action, transfer_item} from "user_facing_api"
 import { warp_to_poi, activate_warp_gate } from "user_facing_api";
 import {distance} from "action";
+import { format_component } from "./component";
 
 if(globalThis.has_drag_drop == undefined) {
 	globalThis.has_drag_drop = false;
@@ -267,6 +268,14 @@ function interactive_poi_contents(sys, poi, player)
 				}
 				else {
 					imgui.text(cargo.format());
+				}
+			}
+
+			if(e.components != undefined) {
+				imgui.text("Components:");
+
+				for(var c of e.components) {
+					imgui.text(format_component(c));
 				}
 			}
 
