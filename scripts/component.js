@@ -190,6 +190,29 @@ export function get_component_by_name(name) {
     print("Err");
 }
 
+export function format_component(e) {
+    var name = e.data_static.name;
+    var category = e.data_static.category;
+
+    if(category == "cargo") {
+        return name + ": " + e.data_static.max;
+    }
+
+    if(category == "thruster") {
+        return name + ": " + e.data_static.speed;
+    }
+
+    if(category == "warpdrive") {
+        return name + ": " + e.data_static.speed;
+    }
+
+    if(category == "hull" || category == "armour" || category == "shield") {
+        return name + ": " + e.data_dynamic.current + "/" + e.data_static.max;
+    }
+
+    return name + " (Unformatted)";
+}
+
 export function save_component(full_obj) {
     return {name:full_obj.data_static.name, dyn:full_obj.data_dynamic};
 }
