@@ -4,7 +4,7 @@ import {set_debug} from "./debug"
 import {get_unique_id} from "./get_unique_id"
 import {save_uids, load_uids, store_object, load_object} from "./api"
 import {Item, take_ore_amount, fill_asteroid, ItemMan} from "./item";
-import {save_components, load_components, get_component_by_name, aggregate_static_component_stat} from "./component"
+import {save_components, load_components, get_component_by_name, aggregate_static_component_stat, add_dynamic_component_stat} from "./component"
 
 function make_object_with_position(position)
 {
@@ -203,6 +203,47 @@ export class Ship
 	get_maximum_storage() {
 		return aggregate_static_component_stat(this, "cargo", "max");
 	}
+}
+
+function get_max_shield(e) {
+	return aggregate_static_component_stat(e, "shield", "max");
+}
+
+function get_max_armour(e) {
+	return aggregate_static_component_stat(e, "armour", "max");
+}
+
+function get_max_hull(e) {
+	return aggregate_static_component_stat(e, "hull", "max");
+}
+
+///amount is strictly positive
+function apply_sequential_damage(ship, amount) {
+	var negative_amount = -amount;
+
+	///so we apply 5 damage
+	///which is -5 stat
+	///my shields are at 10, so we add -5 and get 5
+	///next = 5, current = 10
+	///5 - 10 = -5
+	///do -5 (damage) - diff, = -5 + 5 = 0
+	function adder(comp, to_add) {
+		var current = comp.data_dynamic.current;
+		var next = current + to_add;
+
+		next = Math.min(next, comp.data_dyamic.max);
+		next = Math.max(next, 0);
+
+		comp.data_dynamic.current = next;
+
+		return next - current;
+	}
+
+	var v1 = add_dynamic_component_stat(ship, "shield", negative_amount, adder);
+	var v2 = add_dynamic_component_stat(ship, "armour", v1, adder);
+	var v3 = add_dynamic_component_stat(ship, "hull", v2, adder);
+
+	return v3;
 }
 
 export function make_asteroid(position)

@@ -143,6 +143,19 @@ export function aggregate_dynamic_component_stat(ship, category, name) {
     return val;
 }
 
+export function add_dynamic_component_stat(ship, category, amount, clamped_adder) {
+    var residual = amount;
+
+    for(var e of ship.components) {
+        if(e.data_dynamic.category != category)
+            continue;
+
+        residual -= clamped_adder(e, residual);
+    }
+
+    return residual;
+}
+
 ///specific weapons, eg large_laser or lrm32 or something
 export function get_component_by_name(name) {
     if(name == "cargo") {
