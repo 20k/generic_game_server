@@ -218,7 +218,7 @@ function get_max_hull(e) {
 }
 
 ///amount is strictly positive
-function apply_sequential_damage(ship, amount) {
+export function apply_sequential_damage(ship, amount) {
 	var negative_amount = -amount;
 
 	///so we apply 5 damage
@@ -231,7 +231,7 @@ function apply_sequential_damage(ship, amount) {
 		var current = comp.data_dynamic.current;
 		var next = current + to_add;
 
-		next = Math.min(next, comp.data_dyamic.max);
+		next = Math.min(next, comp.data_static.max);
 		next = Math.max(next, 0);
 
 		comp.data_dynamic.current = next;

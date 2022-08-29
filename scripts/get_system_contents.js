@@ -3,6 +3,7 @@ import {clear_actions_for, add_pending_action, transfer_item} from "user_facing_
 import { warp_to_poi, activate_warp_gate } from "user_facing_api";
 import {distance} from "action";
 import { format_component } from "./component";
+import { apply_sequential_damage } from "./object";
 
 if(globalThis.has_drag_drop == undefined) {
 	globalThis.has_drag_drop = false;
@@ -202,6 +203,14 @@ function interactive_poi_contents(sys, poi, player)
 			if(imgui.smallbutton("[control]##" + e.uid))
 			{
 				player.take_control(e);
+			}
+		}
+
+		if(e.type == "ship" || e.type == "station") {
+			imgui.sameline();
+
+			if(imgui.smallbutton("[Damage]##" + e.uid)) {
+				apply_sequential_damage(e, 13);
 			}
 		}
 
